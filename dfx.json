@@ -15,11 +15,24 @@
       "dependencies": ["backend"],
       "type": "assets",
       "source": ["dist/"]
+    },
+    "User":{
+      "type": "motoko",
+      "main": "backend/Storages/User/User.mo"
+    },
+    "Property":{
+      "type": "motoko",
+      "main": "backend/Storages/Property/Property.mo"
+    },
+    "Renter":{
+      "type": "motoko",
+      "main": "backend/Storages/Renter/Renter.mo"
     }
+
   },
   "defaults": {
     "build": {
-      "packtool": "npm run --silent sources"
+      "packtool": "mops sources"
     }
   },
   "output_env_file": ".env",

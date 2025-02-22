@@ -1,0 +1,9 @@
+Stderr:
+/mnt/c/Users/jason/Documents/Programming Project/Fullstack/Codefess-ICP/Staychaintion/backend/Storages/User/User.mo:36.24-36.32: type error [M0057], unbound variable fullName
+Did you mean variable fullname?
+/mnt/c/Users/jason/Documents/Programming Project/Fullstack/Codefess-ICP/Staychaintion/backend/Storages/User/User.mo:43.13-43.47: type error [M0096], expression of type
+  ?UserProfile
+cannot produce expected type
+  ()
+
+  
