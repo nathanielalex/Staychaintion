@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { backend } from '@/declarations/backend';
+import { backend } from '../utility/backend';
 
 interface RegisterPageProps {
   setIsRegistered: React.Dispatch<React.SetStateAction<boolean>>;

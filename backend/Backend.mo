@@ -1,7 +1,13 @@
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import Option "mo:base/Option";
+import Text "mo:base/Text";
 actor class Backend() {
+  public shared func greet(name : Text) : async Text {
+    let message = "Hello, " # name # "!";
+    return message;
+  };
+
   public shared (msg) func whoami() : async Principal {
     msg.caller
   };

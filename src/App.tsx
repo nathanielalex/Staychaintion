@@ -1,7 +1,7 @@
 import { useAuth, AuthProvider } from './utility/use-auth-client';
 import LoggedOut from './pages/LoggedOut';
 import './App.css';
-import { backend } from './declarations/backend';
+import { backend } from './utility/backend';
 import { Principal } from '@dfinity/principal';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
