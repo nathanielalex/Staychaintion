@@ -16,6 +16,7 @@ import ProfilePage from "./pages/profiles/ProfilePage";
 import AnimatedCursor from 'react-animated-cursor';
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "./assets/motoko.png";
+import Maps from "@/pages/Maps"
 
 
 const pageVariants = {
@@ -82,6 +83,8 @@ const AnimatedRoutes = () => {
             <Route path="/chat" element={<ChatPage />} />
 
             <Route path="/profiles" element={<ProfilePage />} />
+
+            <Route path="/maps" element={<Maps />} />
 
             <Route path="*" element={<NotFoundPage />} />
 
