@@ -7,6 +7,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
+import RegisterPage2 from './pages/auth/RegisterPage';
 import { useEffect, useState } from 'react';
 
 import LandingPage from './pages/LandingPage';
@@ -103,6 +104,8 @@ function App() {
               )
             }
           />
+
+          <Route path="/register2" element={<RegisterPage2 />} />
 
           {/* Wildcard Route for 404 Page */}
           <Route path="*" element={<NotFoundPage />} />
