@@ -18,6 +18,7 @@ import PropertyListPage from './pages/PropertyListPage';
 import MainLayout from './pages/layout/MainLayout';
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "./assets/motoko.png";
+import { PropertyFilterProvider } from './context/PropertyFilterContext';
 
 
 const pageVariants = {
@@ -79,7 +80,11 @@ const AnimatedRoutes = () => {
             } } /></motion.div>} />
 
             <Route element={<MainLayout/>}>
-              <Route path="/list" element={<PropertyListPage/>} />
+              <Route path="/list" element={
+                <PropertyFilterProvider>
+                  <PropertyListPage/>
+                </PropertyFilterProvider>
+              } />
             </Route>
 
             <Route path="/landing" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LandingPage /></motion.div>} />

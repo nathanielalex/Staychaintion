@@ -1,12 +1,14 @@
 import PropertyCard from '@/components/PropertyCard';
+import PropertyFilter from '@/components/PropertyFilter';
 import PropertyGrid from '@/components/PropertyGrid';
 import PropertyCardSkeleton from '@/components/skeleton/PropertyCardSkeleton';
 import PropertyGridSkeleton from '@/components/skeleton/PropertyGridSkeleton';
 import { Button } from '@/components/ui/button'
+import { PropertyFilterContext } from '@/context/PropertyFilterContext';
 import { useScrollToBottom } from '@/hooks/useScrollToBottom';
 import { delay } from '@/lib/utils';
 import { Property } from '@/types';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 const dummy: Property = {
   uuid: '1234',
@@ -35,6 +37,7 @@ const getProperties = async () => {
 
 function PropertyListPage() {
 
+  const {filter} = useContext(PropertyFilterContext);
   const [properties, setProperties] = useState<Property[]>(dummies);
   const [isLoading, setLoading] = useState(false);
   const isBottom = useScrollToBottom();
@@ -54,6 +57,7 @@ function PropertyListPage() {
 
   return (
     <div className='h-fit w-full'>
+      <PropertyFilter/>
       <PropertyGrid properties={properties}/>
       {isLoading && <PropertyGridSkeleton className='mt-4'/>}
     </div>
