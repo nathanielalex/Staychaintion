@@ -1,9 +1,12 @@
-import React from 'react'
+import { Property } from '@/types'
+import PropertyCard from './PropertyCard'
 
-function PropertyGrid() {
+function PropertyGrid({properties}:{properties:Property[]}) {
   return (
-    <div>
-      
+    <div className="w-full h-full grid items-start grid-cols-5 gap-4">
+      {properties.map((item) => 
+        <PropertyCard property={item}/>
+      )}
     </div>
   )
 }

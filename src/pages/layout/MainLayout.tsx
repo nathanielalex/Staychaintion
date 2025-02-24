@@ -15,11 +15,11 @@ function MainLayout() {
         </div>
       </nav>
 
-      <div className="h-screen mt-20">
+      <div className="min-h-screen mt-20 px-20">
         <Outlet/>
       </div>
 
-      <div className="bg-blue-200 h-32 w-full absolute bottom-0">
+      <div className="bg-blue-200 h-32 w-full mt-10">
       </div>
     </>
   )

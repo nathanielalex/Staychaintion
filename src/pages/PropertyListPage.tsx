@@ -1,4 +1,5 @@
 import PropertyCard from '@/components/PropertyCard';
+import PropertyGrid from '@/components/PropertyGrid';
 import { Button } from '@/components/ui/button'
 import { Property } from '@/types';
 import React from 'react'
@@ -20,10 +21,24 @@ const dummy: Property = {
   favorite: false,
 };
 
+const properties = [
+  dummy,
+  dummy,
+  dummy,
+  dummy,
+  dummy,
+  dummy,
+  dummy,
+  dummy,
+  dummy,
+  dummy,
+  dummy,
+]
+
 function PropertyListPage() {
   return (
-    <div>
-      <PropertyCard property={dummy}/>
+    <div className='h-fit w-full'>
+      <PropertyGrid properties={properties}/>
     </div>
   )
 }
