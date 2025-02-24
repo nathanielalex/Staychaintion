@@ -7,16 +7,16 @@ function LoggedOut() {
   return (
     <div
       className="w-full h-screen flex items-center justify-center"
-      style={{ background: 'linear-gradient(90deg, #efd5ff 0%, #515ada 100%)' }}
+      style={{ background: 'linear-gradient(67deg, #ddddff 0%, #5151fa 100%)' }}
     >
       <div className="rounded-lg max-w-lg bg-white p-10 shadow-xl dark:bg-gray-800 transition-all ease-in-out duration-300 ">
         <div className="flex justify-center mb-6">
           <Unlink className="w-20 h-20 text-yellow-300 animate-pulse" />
         </div>
-        <h1 className="mb-4 text-3xl font-bold text-purple-500 text-center">
+        <h1 className="mb-4 text-3xl font-bold text-blue-500 text-center">
           Welcome to Unchained
         </h1>
-        <p className="mb-8 text-lg text-purple-400 text-center">
+        <p className="mb-8 text-lg text-blue-400 text-center">
           Please Login First!
         </p>
         <button
@@ -27,7 +27,7 @@ function LoggedOut() {
         >
           Connect
         </button>
-        <p className="mt-4 text-sm text-purple-400 text-center">
+        <p className="mt-4 text-sm text-blue-400 text-center">
           Secure, transparent, and unforgettable experiences await!
         </p>
       </div>

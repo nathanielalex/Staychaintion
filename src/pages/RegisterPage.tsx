@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { backend } from '@/declarations/backend';
+import { backend } from '../utility/backend';
 
 interface RegisterPageProps {
   setIsRegistered: React.Dispatch<React.SetStateAction<boolean>>;
@@ -64,7 +64,7 @@ export default function RegisterPage({ setIsRegistered }: RegisterPageProps) {
               name="name"
               value={name}
               onChange={handleNameChange}
-              className="w-full px-3 py-2 border border-[#EBEBEB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]"
+              className="w-full px-3 py-2 border border-[#EBEBEB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF5A5F] text-white"
               required
             />
             <label
@@ -79,7 +79,8 @@ export default function RegisterPage({ setIsRegistered }: RegisterPageProps) {
               name="dateOfBirth"
               value={dateOfBirth}
               onChange={handleDateOfBirthChange}
-              className="w-full px-3 py-2 border border-[#EBEBEB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]"
+              className="w-full px-3 py-2 border border-[#EBEBEB] rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]
+              text-white"
               required
             />
           </div>

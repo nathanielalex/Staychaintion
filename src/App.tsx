@@ -1,20 +1,112 @@
 import { useAuth, AuthProvider } from './utility/use-auth-client';
 import LoggedOut from './pages/LoggedOut';
 import './App.css';
-import { backend } from './declarations/backend';
+import { backend } from './utility/backend';
 import { Principal } from '@dfinity/principal';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
-import { useEffect, useState } from 'react';
+import RegisterPage2 from './pages/auth/RegisterPage';
+import { SetStateAction, useEffect, useState } from 'react';
+import LandingPage from './pages/LandingPage';
+import NotFoundPage from "./pages/NotFoundPage";
+import ChatPage from "./pages/Chat";
+import ProfilePage from "./pages/profiles/ProfilePage";
+import AnimatedCursor from 'react-animated-cursor';
+import PropertyListPage from './pages/PropertyListPage';
+import MainLayout from './pages/layout/MainLayout';
+import { AnimatePresence, motion } from "framer-motion";
+import Logo from "./assets/motoko.png";
+
+
+const pageVariants = {
+
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+  
+};
+
+
+
+const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onComplete();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 0 }}
+      exit={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="fixed inset-0 flex justify-center items-center bg-white z-50"
+    >
+      <img src={Logo} alt="Loading..." className="w-32 h-32 animate-pulse" />
+    </motion.div>
+  );
+};
+
+const AnimatedRoutes = () => {
+
+  const location = useLocation();
+  const [loading, setLoading] = useState(true);
+
+
+  return (
+
+    <>
+
+      {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
+
+      <AnimatePresence mode="wait">
+
+        {!loading && (
+
+          <Routes location={location} key={location.pathname}>
+
+            <Route path="/" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LoggedOut /></motion.div>} />
+
+            <Route path="/home" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><HomePage /></motion.div>} />
+
+            <Route path="/register" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
+              throw new Error('Function not implemented.');
+            } } /></motion.div>} />
+
+            <Route path="/list" element={<PropertyListPage/>} />
+
+            <Route path="/landing" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LandingPage /></motion.div>} />
+
+            <Route path="/register2" element={<RegisterPage2 />} />
+
+            <Route path="/chat" element={<ChatPage />} />
+
+            <Route path="/profiles" element={<ProfilePage />} />
+
+            <Route path="*" element={<NotFoundPage />} />
+
+          </Routes>
+
+        )}
+
+      </AnimatePresence>
+
+    </>
+
+  );
+
+};
 
 function App() {
+
   const auth = useAuth();
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Guard to prevent destructuring before the hook is ready
   if (!auth) return null;
 
   const { isAuthenticated, principal } = auth;
@@ -23,10 +115,7 @@ function App() {
     const checkIfRegistered = async () => {
       if (isAuthenticated && principal) {
         try {
-          // Convert string principal to Principal object
           const principalObj = Principal.fromText(principal);
-
-          // Call the backend to check registration
           const result = await backend.hasProfile(principalObj);
           setIsRegistered(result);
         } catch (error) {
@@ -39,48 +128,26 @@ function App() {
     if (isAuthenticated && principal) {
       checkIfRegistered();
     } else {
-      setLoading(false); // Ensure loading state is turned off if not authenticated
+      setLoading(false);
     }
   }, [isAuthenticated, principal]);
 
   if (loading) {
-    // You can display a loading spinner or placeholder here
     return <div>Loading...</div>;
   }
 
   return (
+
     <main id="pageContent">
       <BrowserRouter>
         <ToastContainer />
-        <Routes>
-          <Route
-            path="/"
-            element={isAuthenticated ? <Navigate to="/home" /> : <LoggedOut />}
-          />
-          <Route
-            path="/home"
-            element={
-              isAuthenticated && isRegistered ? (
-                <HomePage />
-              ) : (
-                <Navigate to="/register" />
-              )
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              isAuthenticated && !isRegistered ? (
-                <RegisterPage setIsRegistered={setIsRegistered} />
-              ) : (
-                <Navigate to="/" />
-              )
-            }
-          />
-        </Routes>
+        <AnimatedCursor />
+        <AnimatedRoutes />
       </BrowserRouter>
     </main>
+
   );
+
 }
 
 export default () => (

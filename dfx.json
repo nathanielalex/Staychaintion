@@ -16,6 +16,10 @@
       "type": "assets",
       "source": ["dist/"]
     },
+    "chatbot": {
+      "main": "src/backend/chatbot.mo",
+      "type": "motoko"
+    },
     "User":{
       "type": "motoko",
       "main": "backend/Storages/User/User.mo"

@@ -3,28 +3,31 @@ import Source "mo:uuid/async/SourceV4";
 import Text "mo:base/Text";
 
 module {
+    
     public type UserProfile = {
         id: Principal;
-        fullName : Text;
-        email : Text;
+        fullName: Text;
+        email: Text;
         dateOfBirth: Text;
-        profileUrl : Text;
+        profilePictureUrl: Text;
     };
 
     public type Renter = {
         id: Principal;
-        fullName : Text;
+        fullName: Text;
+        email: Text;
         dateOfBirth: Text;
-        email : Text;
-        profileUrl : Text;
-        propertiesId : [var Text];
+        profileUrl: Text;
+        propertiesId: [Text];
     };
     
     public type Property = {
         id: Text;
         name : Text;
-        builtInDate : Text;
-        pictures : [var Text];
+        description: Text;
+        location: Text;
+        builtInDate: Text;
+        pictures: [Text];
     };
 
     public func generateUUID() : async Text {

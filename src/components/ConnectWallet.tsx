@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { backend } from '../declarations/backend';
+import { backend } from '../utility/backend';
 import { toast } from 'react-toastify';
 import { Principal } from '@dfinity/principal';
 
