@@ -12,6 +12,9 @@ import { useEffect, useState } from 'react';
 
 import LandingPage from './pages/LandingPage';
 import NotFoundPage from "./pages/NotFoundPage";
+import ChatPage from "./pages/Chat";
+
+import ProfilePage from "./pages/profiles/ProfilePage";
 
 import AnimatedCursor from 'react-animated-cursor';
 
@@ -106,6 +109,10 @@ function App() {
           />
 
           <Route path="/register2" element={<RegisterPage2 />} />
+
+          <Route path="/chat" element={<ChatPage />} />
+
+          <Route path="/profiles" element={<ProfilePage />} />
 
           {/* Wildcard Route for 404 Page */}
           <Route path="*" element={<NotFoundPage />} />
