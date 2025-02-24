@@ -13,6 +13,8 @@ import LandingPage from './pages/LandingPage';
 import NotFoundPage from "./pages/NotFoundPage";
 
 import AnimatedCursor from 'react-animated-cursor';
+import PropertyListPage from './pages/PropertyListPage';
+import MainLayout from './pages/layout/MainLayout';
 
 function App() {
   const auth = useAuth();
@@ -79,6 +81,13 @@ function App() {
               )
             }
           />
+
+          <Route element={<MainLayout/>}>
+            <Route
+              path="/list"
+              element={<PropertyListPage/>}
+            />
+          </Route>
 
           <Route
             path="/register"

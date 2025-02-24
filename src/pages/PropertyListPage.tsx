@@ -1,8 +1,11 @@
+import { Button } from '@/components/ui/button'
 import React from 'react'
 
 function PropertyListPage() {
   return (
-    <div>PropertyListPage</div>
+    <div>
+      <Button>Testing</Button>
+    </div>
   )
 }
 
