@@ -21,7 +21,6 @@ actor {
     };
 
     public shared func registerRenter(renter: Renter) : async Text {
-
         try{
             renterProfiles.put(renter.id, renter);
             return "";
@@ -58,13 +57,14 @@ actor {
         switch (renterProfiles.get(id)) {
             case null { return 0 };
             case (?renter) {
-                var prof: UserProfile = {
+                var prof: Renter = {
                     id = renter.id;
                     fullName = renter.fullName;
                     email = renter.email;
                     dateOfBirth = renter.dateOfBirth;
                     ballance = newBalance;
-                    profilePictureUrl = renter.profilePictureUrl;
+                    profileUrl = renter.profileUrl;
+                    propertiesId = renter.propertiesId;
                 };
 
                 try {

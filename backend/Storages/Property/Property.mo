@@ -22,7 +22,7 @@ actor {
     };
 
     public shared func registerProperty(name: Text, description: Text, location: Text, builtInDate: Text, pictures: [Text]) : async Text {
-        let id = await generateUUID();
+        let id = await Util.generateUUID();
 
         let prop : Property = {
             id = id;
