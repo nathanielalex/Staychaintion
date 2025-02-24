@@ -9,6 +9,11 @@ import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import { useEffect, useState } from 'react';
 
+import LandingPage from './pages/LandingPage';
+import NotFoundPage from "./pages/NotFoundPage";
+
+import AnimatedCursor from 'react-animated-cursor';
+
 function App() {
   const auth = useAuth();
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
@@ -49,14 +54,21 @@ function App() {
   }
 
   return (
+    
     <main id="pageContent">
+
       <BrowserRouter>
+
         <ToastContainer />
+        <AnimatedCursor/>
+
         <Routes>
+
           <Route
             path="/"
             element={isAuthenticated ? <Navigate to="/home" /> : <LoggedOut />}
           />
+
           <Route
             path="/home"
             element={
@@ -67,6 +79,7 @@ function App() {
               )
             }
           />
+
           <Route
             path="/register"
             element={
@@ -77,10 +90,31 @@ function App() {
               )
             }
           />
+
+          <Route
+            path="/landing"
+            element={
+              isAuthenticated && !isRegistered ? (
+                <LandingPage/>
+              ) : (
+
+                <RegisterPage setIsRegistered={setIsRegistered} />
+                
+              )
+            }
+          />
+
+          {/* Wildcard Route for 404 Page */}
+          <Route path="*" element={<NotFoundPage />} />
+
         </Routes>
+
       </BrowserRouter>
+
     </main>
+
   );
+
 }
 
 export default () => (
