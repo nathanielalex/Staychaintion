@@ -4,6 +4,9 @@ import {print} "mo:base/Debug";
 import Error "mo:base/Error";
 import Util "../Util";
 import Iter "mo:base/Iter";
+import Array "mo:base/Array";
+import Text "mo:base/Text";
+import Property "canister:Property";
 
 actor {
     type Renter = Util.Renter;
@@ -78,4 +81,35 @@ actor {
             };
         };
     };
+
+    public shared func addPropertyToRenter(renterId: Principal, property: Util.UnregisteredProperty) : async Nat {
+        switch (renterProfiles.get(renterId)) {
+            case null { return 0 };
+            case (?renter) {
+                let propId: Text = await Property.registerProperty(property);
+                var prof: Renter = {
+                    id = renter.id;
+                    fullName = renter.fullName;
+                    email = renter.email;
+                    dateOfBirth = renter.dateOfBirth;
+                    ballance = renter.ballance;
+                    profileUrl = renter.profileUrl;
+                    propertiesId = Array.append<Text>(renter.propertiesId, [propId]);
+                };
+
+                try {
+                    renterProfiles.delete(prof.id);
+                    renterProfiles.put(prof.id, prof);
+                    return 1;
+                } catch (e: Error) {
+                    print("Error adding property to renter: " # Error.message(e));
+                    return 0;
+                };
+            };
+        };
+    };
+
+    public query func getRenterProperties(): async Nat{
+        return 0;
+    }
 };

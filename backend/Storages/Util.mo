@@ -25,7 +25,19 @@ module {
     
     public type Property = {
         id: Text;
+        owner: Principal;
         name : Text;
+        pricePerNight: Nat;
+        description: Text;
+        location: Text;
+        builtInDate: Text;
+        pictures: [Text];
+    };
+
+    public type UnregisteredProperty = {
+        owner: Principal;
+        name : Text;
+        pricePerNight: Nat;
         description: Text;
         location: Text;
         builtInDate: Text;

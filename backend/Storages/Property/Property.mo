@@ -21,16 +21,18 @@ actor {
         propertyInfo := TrieMap.fromEntries<Text, Property>(Iter.fromArray(stablePropertyInfo), Text.equal, Text.hash);
     };
 
-    public shared func registerProperty(name: Text, description: Text, location: Text, builtInDate: Text, pictures: [Text]) : async Text {
+    public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {
         let id = await Util.generateUUID();
 
         let prop : Property = {
             id = id;
-            name = name;
-            description = description;
-            location = location;
-            builtInDate = builtInDate;
-            pictures = pictures;
+            owner = unreg.owner;
+            name = unreg.name;
+            pricePerNight= unreg.pricePerNight;
+            description = unreg.description;
+            location = unreg.location;
+            builtInDate = unreg.builtInDate;
+            pictures = unreg.pictures;
         };
 
         try {
