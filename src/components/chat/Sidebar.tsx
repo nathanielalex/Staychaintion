@@ -1,8 +1,15 @@
 import type React from "react"
 import ContactList from "@/components/chat/ContactList"
+import {Button} from "@/components/ui/button"
+import {useNavigate} from "react-router-dom"
 
 interface SidebarProps {
   onSelectContact: (contact: string) => void
+}
+
+const handleSubmit = () => {
+  const navigate = useNavigate();
+  navigate('/')
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onSelectContact }) => {
@@ -12,6 +19,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelectContact }) => {
         <h1 className="text-2xl font-bold">Chats</h1>
       </div>
       <ContactList onSelectContact={onSelectContact} />
+      <Button onClick={handleSubmit}
+        className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+      >
+        Back to Home
+      </Button>
     </div>
   )
 }

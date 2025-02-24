@@ -15,6 +15,10 @@
       "dependencies": ["backend"],
       "type": "assets",
       "source": ["dist/"]
+    },
+    "chatbot": {
+      "main": "src/backend/chatbot.mo",
+      "type": "motoko"
     }
   },
   "defaults": {

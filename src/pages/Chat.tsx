@@ -3,6 +3,7 @@ import { useState } from "react"
 import Sidebar from "@/components/chat/Sidebar"
 import ChatWindow from "@/components/chat/ChatWindow"
 
+
 const Chat: React.FC = () => {
   const [selectedContact, setSelectedContact] = useState<string | null>(null)
 
