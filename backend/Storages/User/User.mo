@@ -8,25 +8,29 @@ import Util "../Util";
 import { print } "mo:base/Debug";
 
 actor {
-    var userProfiles = TrieMap.TrieMap<Principal, Util.UserProfile>(Principal.equal, Principal.hash);
 
-    stable var stableUserProfiles: [(Principal, Util.UserProfile)] = [];
+    type UserProfile = Util.UserProfile;
+
+    var userProfiles = TrieMap.TrieMap<Principal, UserProfile>(Principal.equal, Principal.hash);
+
+    stable var stableUserProfiles: [(Principal, UserProfile)] = [];
 
     system func preupgrade() {
         stableUserProfiles := Iter.toArray(userProfiles.entries());
     };
 
     system func postupgrade() {
-        userProfiles := TrieMap.fromEntries<Principal, Util.UserProfile>(Iter.fromArray(stableUserProfiles), Principal.equal, Principal.hash);
+        userProfiles := TrieMap.fromEntries<Principal, UserProfile>(Iter.fromArray(stableUserProfiles), Principal.equal, Principal.hash);
     };
 
-    public shared func registerUser(id: Principal, fullName: Text, email: Text, dateOfBirth: Text, profilePictureUrl: Text) : async Nat {
+    public shared func registerUser(id: Principal, fullName: Text, email: Text, dateOfBirth: Text, ballance: Nat, profilePictureUrl: Text) : async Nat {
         
-        var prof: Util.UserProfile = {
+        var prof: UserProfile = {
             id = id;
             fullName = fullName;
             email = email;
             dateOfBirth = dateOfBirth;
+            ballance = ballance;
             profilePictureUrl = profilePictureUrl;
         };
 
@@ -40,7 +44,7 @@ actor {
     };
 
     public shared func updateUser(id: Principal, fullName: Text, email: Text, dateOfBirth: Text, profilePictureUrl: Text) : async Nat {
-        var prof: Util.UserProfile = {
+        var prof: UserProfile = {
             id = id;
             fullName = fullName;
             email = email;
@@ -49,7 +53,6 @@ actor {
         };
 
         try {
-
             userProfiles.delete(prof.id);
             userProfiles.put(prof.id, prof);
             return 1;
@@ -60,8 +63,40 @@ actor {
 
     };
 
-    public query func getUser(id: Principal) : async ?Util.UserProfile {
+    public query func getUser(id: Principal) : async ?UserProfile {
         return userProfiles.get(id);
+    };
+
+    public shared func getUserBalance(id: Principal) : async Nat {
+        switch (userProfiles.get(id)) {
+            case null { return 0 };
+            case (?user) { return user.ballance };
+        };
+    };
+
+    public shared func updateUserBalance(id: Principal, newBalance: Nat) : async Nat {
+        switch (userProfiles.get(id)) {
+            case null { return 0 };
+            case (?user) {
+                var prof: UserProfile = {
+                    id = user.id;
+                    fullName = user.fullName;
+                    email = user.email;
+                    dateOfBirth = user.dateOfBirth;
+                    ballance = newBalance;
+                    profilePictureUrl = user.profilePictureUrl;
+                };
+
+                try {
+                    userProfiles.delete(prof.id);
+                    userProfiles.put(prof.id, prof);
+                    return 1;
+                } catch (e: Error) {
+                    print("Error updating user: " # Error.message(e));
+                    return 0;
+                };
+            };
+        };
     };
 
 };

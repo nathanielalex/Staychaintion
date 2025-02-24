@@ -6,22 +6,25 @@ import Iter "mo:base/Iter";
 import Util "../Util";
 
 actor {
-    var propertyInfo = TrieMap.TrieMap<Text, Util.Property>(Text.equal, Text.hash);
 
-    stable var stablePropertyInfo: [(Text, Util.Property)] = [];
+    type Property = Util.Property;
+
+    var propertyInfo = TrieMap.TrieMap<Text, Property>(Text.equal, Text.hash);
+
+    stable var stablePropertyInfo: [(Text, Property)] = [];
 
     system func preupgrade() {
         stablePropertyInfo := Iter.toArray(propertyInfo.entries());
     };
 
     system func postupgrade() {
-        propertyInfo := TrieMap.fromEntries<Text, Util.Property>(Iter.fromArray(stablePropertyInfo), Text.equal, Text.hash);
+        propertyInfo := TrieMap.fromEntries<Text, Property>(Iter.fromArray(stablePropertyInfo), Text.equal, Text.hash);
     };
 
     public shared func registerProperty(name: Text, description: Text, location: Text, builtInDate: Text, pictures: [Text]) : async Text {
-        let id = await Util.generateUUID();
+        let id = await generateUUID();
 
-        let prop : Util.Property = {
+        let prop : Property = {
             id = id;
             name = name;
             description = description;
@@ -38,7 +41,7 @@ actor {
         };
     };
 
-    public shared func updateProperty(updatedProp: Util.Property) : async Int {
+    public shared func updateProperty(updatedProp: Property) : async Int {
 
         try {
             propertyInfo.delete(updatedProp.id);
@@ -50,7 +53,7 @@ actor {
         };
     };
 
-    public query func getProperty(propertyId: Text) : async ?Util.Property {
+    public query func getProperty(propertyId: Text) : async ?Property {
         return propertyInfo.get(propertyId);
     };
 

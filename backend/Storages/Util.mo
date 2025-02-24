@@ -9,6 +9,7 @@ module {
         fullName: Text;
         email: Text;
         dateOfBirth: Text;
+        ballance: Nat;
         profilePictureUrl: Text;
     };
 
@@ -18,6 +19,7 @@ module {
         email: Text;
         dateOfBirth: Text;
         profileUrl: Text;
+        ballance: Nat;
         propertiesId: [Text];
     };
     
