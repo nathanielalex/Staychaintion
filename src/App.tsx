@@ -14,6 +14,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ChatPage from "./pages/Chat";
 import ProfilePage from "./pages/profiles/ProfilePage";
 import AnimatedCursor from 'react-animated-cursor';
+import PropertyListPage from './pages/PropertyListPage';
+import MainLayout from './pages/layout/MainLayout';
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "./assets/motoko.png";
 
