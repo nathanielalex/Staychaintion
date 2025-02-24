@@ -8,7 +8,7 @@ module {
         fullName : Text;
         email : Text;
         dateOfBirth: Text;
-        profileUrl : Text;
+        profilePictureUrl : Text;
     };
 
     public type Renter = {
