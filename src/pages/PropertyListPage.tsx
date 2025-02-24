@@ -1,5 +1,7 @@
 import PropertyCard from '@/components/PropertyCard';
 import PropertyGrid from '@/components/PropertyGrid';
+import PropertyCardSkeleton from '@/components/skeleton/PropertyCardSkeleton';
+import PropertyGridSkeleton from '@/components/skeleton/PropertyGridSkeleton';
 import { Button } from '@/components/ui/button'
 import { useScrollToBottom } from '@/hooks/useScrollToBottom';
 import { delay } from '@/lib/utils';
@@ -27,7 +29,7 @@ const dummy: Property = {
 const dummies: Property[] = Array.from({length: 20}).map(_ => dummy)
 
 const getProperties = async () => {
-  await delay(()=>{}, 1000);
+  await delay(()=>{}, 3000);
   return dummies;
 }
 
@@ -53,6 +55,7 @@ function PropertyListPage() {
   return (
     <div className='h-fit w-full'>
       <PropertyGrid properties={properties}/>
+      {isLoading && <PropertyGridSkeleton className='mt-4'/>}
     </div>
   )
 }
