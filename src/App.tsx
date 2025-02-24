@@ -77,6 +77,8 @@ const AnimatedRoutes = () => {
               throw new Error('Function not implemented.');
             } } /></motion.div>} />
 
+            <Route path="/list" element={<PropertyListPage/>} />
+
             <Route path="/landing" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LandingPage /></motion.div>} />
 
             <Route path="/register2" element={<RegisterPage2 />} />
