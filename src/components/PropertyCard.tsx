@@ -32,7 +32,7 @@ function PropertyCard({ property }: { property: Property }) {
         </AspectRatio>
       </CardHeader>
 
-      <CardFooter className="px-0 flex gap-8 justify-start">
+      <CardFooter className="px-2 pt-2 flex gap-8 justify-start">
         <div>
           <h2>{property.title}</h2>
           <h3>{formatPrice(property.price)}</h3>
@@ -42,6 +42,7 @@ function PropertyCard({ property }: { property: Property }) {
           <h2>{property.rating.toPrecision(3)}</h2>
         </div>
       </CardFooter>
+      
     </Card>
   );
 }
