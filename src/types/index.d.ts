@@ -1,7 +1,7 @@
 export interface Property {
+  uuid: string,
   title: string,
-  slug: string,
-  
+
   thumbnail: string,
   images: string[],
   
@@ -11,7 +11,6 @@ export interface Property {
 
   currency: string,
   price: number,
-
 }
 
 export interface User {

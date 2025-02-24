@@ -15,7 +15,7 @@ function MainLayout() {
         </div>
       </nav>
 
-      <div className="h-screen">
+      <div className="h-screen mt-20">
         <Outlet/>
       </div>
 
