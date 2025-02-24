@@ -6,7 +6,7 @@ import { Star } from 'lucide-react'
 
 function PropertyCardSkeleton() {
   return (
-    <Card className="max-w-64 h-fit">
+    <Card className="w-full h-fit">
       <CardHeader className="p-0 w-full h-auto aspect-square">
         <Skeleton className='w-full h-full'/>
       </CardHeader>

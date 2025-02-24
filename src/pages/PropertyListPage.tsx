@@ -38,7 +38,7 @@ function PropertyListPage() {
   const [properties, setProperties] = useState<Property[]>(dummies);
   const [isLoading, setLoading] = useState(false);
   const isBottom = useScrollToBottom();
-  
+
   useEffect(()=>{
     if(isBottom){
       setLoading(true)
