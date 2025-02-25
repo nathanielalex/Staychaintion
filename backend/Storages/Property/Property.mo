@@ -32,6 +32,10 @@ actor {
             description = unreg.description;
             location = unreg.location;
             builtInDate = unreg.builtInDate;
+            bedroomCount: unreg.bedroomCount;
+            guestCapacity: unreg.guestCapacity;
+            bathroomCount: unreg.bathroomCount;
+            bedCount: unreg.bedCount;
             pictures = unreg.pictures;
         };
 

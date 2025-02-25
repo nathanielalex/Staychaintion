@@ -1,6 +1,7 @@
 import UUID "mo:uuid/UUID";
 import Source "mo:uuid/async/SourceV4";
 import Text "mo:base/Text";
+import Nat "mo:base/Nat";
 
 module {
     
@@ -31,6 +32,10 @@ module {
         description: Text;
         location: Text;
         builtInDate: Text;
+        bedroomCount: Nat;
+        guestCapacity: Nat;
+        bathroomCount: Nat;
+        bedCount: Nat;
         pictures: [Text];
     };
 
@@ -41,6 +46,10 @@ module {
         description: Text;
         location: Text;
         builtInDate: Text;
+        bedroomCount: Nat;
+        guestCapacity: Nat;
+        bathroomCount: Nat;
+        bedCount: Nat;
         pictures: [Text];
     };
 

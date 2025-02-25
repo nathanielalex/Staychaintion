@@ -43,15 +43,7 @@ actor {
         };
     };
 
-    public shared func updateUser(id: Principal, fullName: Text, email: Text, dateOfBirth: Text,ballance: Nat, profilePictureUrl: Text) : async Nat {
-        var prof: UserProfile = {
-            id = id;
-            fullName = fullName;
-            email = email;
-            dateOfBirth = dateOfBirth;
-            ballance = ballance;
-            profilePictureUrl = profilePictureUrl;
-        };
+    public shared func updateUser(prof : UserProfile) : async Nat {
 
         try {
             userProfiles.delete(prof.id);
