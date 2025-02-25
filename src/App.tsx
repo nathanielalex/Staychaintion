@@ -18,11 +18,8 @@ import PropertyListPage from './pages/PropertyListPage';
 import MainLayout from './pages/layout/MainLayout';
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "./assets/motoko.png";
-<<<<<<< HEAD
 import Maps from "@/pages/Maps"
-=======
 import { PropertyFilterProvider } from './context/PropertyFilterContext';
->>>>>>> d3d82477c1caf43901d4013c8bb35618c220f877
 
 
 const pageVariants = {
