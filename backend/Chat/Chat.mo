@@ -3,9 +3,10 @@ import TrieMap "mo:base/TrieMap";
 import Text "mo:base/Text";
 import Result "mo:base/Result";
 import Random "mo:base/Random";
+import Array "mo:base/Array";
 import Source "mo:uuid/Source";
 import UUID "mo:uuid/UUID";
-import User "../Storages/User/User";
+// import User "../Storages/User/User";
 import Util "../Storages/Util";
 
 
@@ -26,11 +27,6 @@ actor class Backend() {
     
     let messages = TrieMap.TrieMap<Text, Message>(Text.equal, Text.hash);
     let chats = TrieMap.TrieMap<Text, Chat>(Text.equal, Text.hash);
-
-    // public shared func generateUUID() : async Text {
-    //     let g = Source.Source();
-    //     return UUID.toText(await g.new());
-    // };
 
     func getMessage(messageId : Text) : Result.Result<Message, Text> {
         let message = messages.get(messageId);
@@ -57,6 +53,7 @@ actor class Backend() {
         return #err("Not found");
     };
 
+    /*
     public shared func getAllMessages(user1 : Principal, user2 : Principal) : async Result.Result<[(Text, Text, Int, Principal, Text)], Text> {
         var allMessages: [(Text, Text, Int, Principal, Text)] = [];
         let chat = await getChat(user1, user2);
@@ -91,9 +88,10 @@ actor class Backend() {
         };
         return #ok(allMessages);
     };
+    */
     
     public shared func createChat(user1: Principal, user2: Principal) : async Result.Result<Chat, Text> {
-        let chatId = await generateUUID();
+        let chatId = await Util.generateUUID();
         switch (await getChat(user1, user2)) {
             case (#ok(existingChat)) {
                 return #ok(existingChat);  // Return existing chat
@@ -115,19 +113,23 @@ actor class Backend() {
         let chat = await getChat(user1, user2);
         switch (chat) {
             case (#ok(existingChat)) {
-                let messageId = await generateUUID();
+                let messageId = await Util.generateUUID();
                 let message = {
                     id = messageId;
                     content = content;
                     sender = user1;
                     timestamp = Time.now();
                 };
-                // Add message to chat's messages list
-                // existingChat.messages := Array.append(existingChat.messages, [messageId]);
-                let updatedMessages = Array.append(existingChat.messages, [messageId]);
-                existingChat.messages := updatedMessages;
+                let chatMessages = existingChat.messages;
+                let newMessage = Array.append<Text>(chatMessages, [message.id]);
+                let newChat = {
+                    id = existingChat.id;
+                    user1 = user1;
+                    user2 = user2;
+                    messages = newMessage;
+                };
+                chats.put(existingChat.id, newChat);
                 messages.put(messageId, message);
-                chats.put(existingChat.id, existingChat);  // Save updated chat
                 return #ok(message);
             };
             case (#err(_)) {
@@ -136,6 +138,6 @@ actor class Backend() {
         };
     };
 
-
+     
 
 };
