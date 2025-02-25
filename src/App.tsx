@@ -14,9 +14,15 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ChatPage from "./pages/Chat";
 import ProfilePage from "./pages/profiles/ProfilePage";
 import AnimatedCursor from 'react-animated-cursor';
+import PropertyListPage from './pages/PropertyListPage';
+import MainLayout from './pages/layout/MainLayout';
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "./assets/motoko.png";
+<<<<<<< HEAD
 import Maps from "@/pages/Maps"
+=======
+import { PropertyFilterProvider } from './context/PropertyFilterContext';
+>>>>>>> d3d82477c1caf43901d4013c8bb35618c220f877
 
 
 const pageVariants = {
@@ -68,6 +74,7 @@ const AnimatedRoutes = () => {
 
           <Routes location={location} key={location.pathname}>
 
+
             <Route path="/" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LoggedOut /></motion.div>} />
 
             <Route path="/home" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><HomePage /></motion.div>} />
@@ -75,6 +82,14 @@ const AnimatedRoutes = () => {
             <Route path="/register" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
               throw new Error('Function not implemented.');
             } } /></motion.div>} />
+
+            <Route element={<MainLayout/>}>
+              <Route path="/list" element={
+                <PropertyFilterProvider>
+                  <PropertyListPage/>
+                </PropertyFilterProvider>
+              } />
+            </Route>
 
             <Route path="/landing" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LandingPage /></motion.div>} />
 
