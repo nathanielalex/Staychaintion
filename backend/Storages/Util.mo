@@ -1,6 +1,7 @@
 import UUID "mo:uuid/UUID";
 import Source "mo:uuid/async/SourceV4";
 import Text "mo:base/Text";
+import Nat "mo:base/Nat";
 
 module {
     
@@ -9,6 +10,7 @@ module {
         fullName: Text;
         email: Text;
         dateOfBirth: Text;
+        ballance: Nat;
         profilePictureUrl: Text;
     };
 
@@ -18,15 +20,36 @@ module {
         email: Text;
         dateOfBirth: Text;
         profileUrl: Text;
+        ballance: Nat;
         propertiesId: [Text];
     };
     
     public type Property = {
         id: Text;
+        owner: Principal;
         name : Text;
+        pricePerNight: Nat;
         description: Text;
         location: Text;
         builtInDate: Text;
+        bedroomCount: Nat;
+        guestCapacity: Nat;
+        bathroomCount: Nat;
+        bedCount: Nat;
+        pictures: [Text];
+    };
+
+    public type UnregisteredProperty = {
+        owner: Principal;
+        name : Text;
+        pricePerNight: Nat;
+        description: Text;
+        location: Text;
+        builtInDate: Text;
+        bedroomCount: Nat;
+        guestCapacity: Nat;
+        bathroomCount: Nat;
+        bedCount: Nat;
         pictures: [Text];
     };
 

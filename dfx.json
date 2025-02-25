@@ -17,8 +17,8 @@
       "source": ["dist/"]
     },
     "chatbot": {
-      "main": "src/backend/chatbot.mo",
-      "type": "motoko"
+      "type": "motoko",
+      "main": "backend/chatbot.mo"
     },
     "User": {
       "type": "motoko",
