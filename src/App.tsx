@@ -33,6 +33,13 @@ import AdminAnalytics from './pages/admin/analytics/page';
 import AdminProperties from './pages/admin/properties/page';
 
 
+// AI
+
+import PredictPrice from './pages/ai/PredictPrice';
+import StayAI from './pages/ai/StayAI';
+import RoomClassifier from './pages/ai/RoomClassifier';
+
+
 const pageVariants = {
 
   initial: { opacity: 0, y: 20 },
@@ -82,6 +89,7 @@ const AnimatedRoutes = () => {
 
           <Routes location={location} key={location.pathname}>
 
+            {/* DEFAULT PAGES SECTION */}
 
             <Route path="/" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LoggedOut /></motion.div>} />
 
@@ -91,28 +99,29 @@ const AnimatedRoutes = () => {
               throw new Error('Function not implemented.');
             } } />} />
 
+            <Route path="/register2" element={<RegisterPage2 />} />
+
+
+            {/* MAIN PAGES SECTION */}
+            
+
             <Route element={<MainLayout/>}>
               <Route path="/list" element={
                 <PropertyFilterProvider>
                   <PropertyListPage/>
                 </PropertyFilterProvider>
               } />
-              {/* <Route path="/maps" element={<Maps />} /> */}
-              {/* <Route path="/admin" element={<AdminDashboard />} /> */}
               <Route path="/teams" element={<TeamPage />} />
               <Route path="/landing" element={<LandingPage />} />
             </Route>
 
+              {/* ADMIN PAGES SECTION */}
             
             <Route path="/admin" element={<AdminLayout children={<AdminDashboard />} />}>
-              
             </Route>
 
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/admin/properties" element={<AdminProperties />} />
-
-
-            <Route path="/register2" element={<RegisterPage2 />} />
 
             <Route path="/chat" element={<ChatPage />} />
 
@@ -120,7 +129,15 @@ const AnimatedRoutes = () => {
 
             <Route path="/maps" element={<Maps />} />
 
-            {/* <Route path="/admin" element={<AdminDashboard />} /> */}
+            {/* AI PAGES SECTION */}
+
+            <Route path="/predicts" element={<PredictPrice />} />
+
+            <Route path="/chatbot" element={<StayAI />} />
+
+            <Route path="/room-classifier" element={<RoomClassifier />} />
+
+            {/* ERROR PAGE SECTION */}
 
             <Route path="*" element={<NotFoundPage />} />
 

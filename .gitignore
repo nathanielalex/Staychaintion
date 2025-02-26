@@ -36,3 +36,4 @@ dist-ssr
 .env.development
 .env.test
 .env.production
+ai-model/predictions/price_model.pkl
