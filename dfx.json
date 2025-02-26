@@ -32,9 +32,10 @@
       "type": "motoko",
       "main": "backend/Storages/Renter/Renter.mo"
     },
-    "Chat": {
+    "Chat_backend": {
+      "dependencies": ["User"],
       "type": "motoko",
-      "main": "backend/Chat/Chat.mo"
+      "main": "backend/Chat_backend/Chat.mo"
     }
   },
   "defaults": {
