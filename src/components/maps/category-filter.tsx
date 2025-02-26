@@ -11,10 +11,10 @@ const categories: Category[] = [
   { id: "beachfront", name: "Beachfront", icon: "🏖️" },
   { id: "mansions", name: "Mansions", icon: "🏰" },
   { id: "tiny-homes", name: "Tiny homes", icon: "🏡" },
-  // Add more categories as needed
 ]
 
 export default function CategoryFilter() {
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   return (
@@ -23,7 +23,7 @@ export default function CategoryFilter() {
         <button
           key={category.id}
           onClick={() => setSelectedCategory(category.id)}
-          className={`flex flex-col items-center gap-2 min-w-[56px] transition-opacity ${
+          className={`flex flex-col items-center gap-2 min-w-[56px] transition-opacity text-white ${
             selectedCategory && selectedCategory !== category.id ? "opacity-60" : ""
           }`}
         >

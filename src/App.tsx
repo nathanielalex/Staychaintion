@@ -17,9 +17,20 @@ import AnimatedCursor from 'react-animated-cursor';
 import PropertyListPage from './pages/PropertyListPage';
 import MainLayout from './pages/layout/MainLayout';
 import { AnimatePresence, motion } from "framer-motion";
-import Logo from "./assets/motoko.png";
+import Logo from "./assets/house.png";
 import Maps from "@/pages/Maps"
 import { PropertyFilterProvider } from './context/PropertyFilterContext';
+
+import TeamPage from './pages/TeamPage';
+
+
+// Admin
+
+import AdminLayout from './pages/admin/Layout';
+import AdminDashboard from './pages/admin/Page';
+
+import AdminAnalytics from './pages/admin/analytics/page';
+import AdminProperties from './pages/admin/properties/page';
 
 
 const pageVariants = {
@@ -74,11 +85,11 @@ const AnimatedRoutes = () => {
 
             <Route path="/" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LoggedOut /></motion.div>} />
 
-            <Route path="/home" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><HomePage /></motion.div>} />
+            <Route path="/home" element={<HomePage />} />
 
-            <Route path="/register" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
+            <Route path="/register" element={<RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
               throw new Error('Function not implemented.');
-            } } /></motion.div>} />
+            } } />} />
 
             <Route element={<MainLayout/>}>
               <Route path="/list" element={
@@ -86,9 +97,20 @@ const AnimatedRoutes = () => {
                   <PropertyListPage/>
                 </PropertyFilterProvider>
               } />
+              {/* <Route path="/maps" element={<Maps />} /> */}
+              {/* <Route path="/admin" element={<AdminDashboard />} /> */}
+              <Route path="/teams" element={<TeamPage />} />
+              <Route path="/landing" element={<LandingPage />} />
             </Route>
 
-            <Route path="/landing" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LandingPage /></motion.div>} />
+            
+            <Route path="/admin" element={<AdminLayout children={<AdminDashboard />} />}>
+              
+            </Route>
+
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/properties" element={<AdminProperties />} />
+
 
             <Route path="/register2" element={<RegisterPage2 />} />
 
@@ -97,6 +119,8 @@ const AnimatedRoutes = () => {
             <Route path="/profiles" element={<ProfilePage />} />
 
             <Route path="/maps" element={<Maps />} />
+
+            {/* <Route path="/admin" element={<AdminDashboard />} /> */}
 
             <Route path="*" element={<NotFoundPage />} />
 
