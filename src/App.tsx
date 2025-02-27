@@ -43,6 +43,7 @@ import AdminProperties from './pages/admin/properties/page';
 import PredictPrice from './pages/ai/PredictPrice';
 import StayAI from './pages/ai/StayAI';
 import RoomClassifier from './pages/ai/RoomClassifier';
+import ProtectedRoute from './utility/ProtectedRoute';
 
 
 const pageVariants = {
@@ -80,7 +81,7 @@ const AnimatedRoutes = () => {
 
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-
+  const { isAuthenticated } = useAuth();
 
   return (
 
@@ -98,7 +99,16 @@ const AnimatedRoutes = () => {
 
             <Route path="/" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LoggedOut /></motion.div>} />
 
-            <Route path="/home" element={<HomePage />} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* <Route path="/home" element={<HomePage />} /> */}
 
             <Route path="/register" element={<RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
               throw new Error('Function not implemented.');
