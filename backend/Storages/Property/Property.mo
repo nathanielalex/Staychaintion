@@ -28,14 +28,14 @@ actor {
             id = id;
             owner = unreg.owner;
             name = unreg.name;
-            pricePerNight= unreg.pricePerNight;
+            pricePerNight = unreg.pricePerNight;
             description = unreg.description;
             location = unreg.location;
             builtInDate = unreg.builtInDate;
-            bedroomCount: unreg.bedroomCount;
-            guestCapacity: unreg.guestCapacity;
-            bathroomCount: unreg.bathroomCount;
-            bedCount: unreg.bedCount;
+            bedroomCount = unreg.bedroomCount;
+            guestCapacity = unreg.guestCapacity;
+            bathroomCount = unreg.bathroomCount;
+            bedCount = unreg.bedCount;
             pictures = unreg.pictures;
         };
 
@@ -46,6 +46,7 @@ actor {
             return "Error registering property: " # Error.message(e);
         };
     };
+
 
     public shared func updateProperty(updatedProp: Property) : async Int {
 

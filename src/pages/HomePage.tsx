@@ -81,8 +81,8 @@ export default function WhoAmIPage() {
 
   const [result, setResult] = React.useState('');
 
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [isConnected, setIsConnected] = useState(false)
+  // const [isConnecting, setIsConnecting] = useState(false)
+  // const [isConnected, setIsConnected] = useState(false)
 
   const handleClick = async () => {
     // console.log("test");
@@ -125,7 +125,7 @@ export default function WhoAmIPage() {
           <Button
             variant="ghost"
             className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-            disabled={!isConnected}
+            
             id="logout"
             onClick={logout}
           >
@@ -147,11 +147,10 @@ export default function WhoAmIPage() {
               <User className="w-5 h-5 text-blue-600" />
               <span className="text-lg font-medium text-blue-600">Who am I?</span>
             </div>
-
+            
             <Button
               type="button"
               id="whoamiButton"
-              className="px-6 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               onClick={handleClick}
             >
               Who am I?
@@ -224,8 +223,8 @@ export default function WhoAmIPage() {
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{
-          opacity: isConnected ? 1 : 0,
-          y: isConnected ? 0 : 50,
+          opacity: 1,
+          y: 0,
         }}
         className="fixed bottom-8 right-8 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg"
       >
