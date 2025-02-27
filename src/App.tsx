@@ -21,6 +21,7 @@ import Logo from "./assets/house.png";
 import Maps from "@/pages/Maps"
 import { PropertyFilterProvider } from './context/PropertyFilterContext';
 
+import RegisterFinal from './pages/auth/page';
 import LegalPage from './pages/legal/page';
 
 import ContactPage from './pages/contact/page';
@@ -44,6 +45,11 @@ import PredictPrice from './pages/ai/PredictPrice';
 import StayAI from './pages/ai/StayAI';
 import RoomClassifier from './pages/ai/RoomClassifier';
 import ProtectedRoute from './utility/ProtectedRoute';
+
+
+// Marketing Page
+
+import MarketingGrowthPage from './pages/marketing/page';
 
 
 const pageVariants = {
@@ -116,6 +122,8 @@ const AnimatedRoutes = () => {
 
             <Route path="/register2" element={<RegisterPage2 />} />
 
+            <Route path="/register-page" element={<RegisterFinal />} />
+
             <Route path="/legal" element={<LegalPage />} />
 
             {/* MAIN PAGES SECTION */}
@@ -157,6 +165,12 @@ const AnimatedRoutes = () => {
             <Route path="/chatbot" element={<StayAI />} />
 
             <Route path="/room-classifier" element={<RoomClassifier />} />
+
+            {/* Other Pages */}
+
+            <Route element={<MainLayout/>}>
+              <Route path="/marketing" element={<MarketingGrowthPage />} />
+            </Route>
 
             {/* ERROR PAGE SECTION */}
 
