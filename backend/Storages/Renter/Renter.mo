@@ -7,6 +7,7 @@ import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Text "mo:base/Text";
 import Property "canister:Property";
+// to resolve "Property" not defined, please deploy the Property canister first, then the Renter canister, this will remove the error 
 
 actor {
     type Renter = Util.Renter;
@@ -109,7 +110,26 @@ actor {
         };
     };
 
-    public query func getRenterProperties(): async Nat{
-        return 0;
+    public query func getRenterProperties(renterId: Principal): async Nat{
+        let renter: Renter = await getRenter(renterId);
+        var prop: [Property] = [];
+        for(propId in renter.propertiesId){
+            let property: ?Property = await Property.getPropertyInfo(propId);
+            switch(property){
+                case null{};
+                case (?prop){ prop := Array.append<Property>(prop, [prop]); };
+            };
+        }
+    };
+
+    public query func getRenterFromName(name_query:Text): async [Renter]{
+        var renter_array: [Renter] = [];
+        for(renter in renterProfiles.vals()){
+            if(Text.contains(renter.fullName, #text name_query)){
+                renter_array := Array.append<Renter>(renter_array, [renter]);
+            };
+        };
+        return renter_array;
     }
+
 };

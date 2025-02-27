@@ -12,7 +12,7 @@ actor {
     type Property = Util.Property;
 
     var propertyInfo = TrieMap.TrieMap<Text, Property>(Text.equal, Text.hash);
-    var propertyIdIndexes = Array.Array<Text>(propertyInfo.size());
+    // var propertyIdIndexes = Array.init<Text>(propertyInfo.size());
 
     stable var stablePropertyInfo: [(Text, Property)] = [];
 
@@ -23,7 +23,7 @@ actor {
 
     system func postupgrade() {
         propertyInfo := TrieMap.fromEntries<Text, Property>(Iter.fromArray(stablePropertyInfo), Text.equal, Text.hash);
-        propertyIdIndexes := Array.fromIterable<Text>(propertyInfo.keys());
+        // propertyIdIndexes := Array.fromIterable<Text>(propertyInfo.keys());
     };
 
     public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {
@@ -37,10 +37,10 @@ actor {
             description = unreg.description;
             location = unreg.location;
             builtInDate = unreg.builtInDate;
-            bedroomCount: unreg.bedroomCount;
-            guestCapacity: unreg.guestCapacity;
-            bathroomCount: unreg.bathroomCount;
-            bedCount: unreg.bedCount;
+            bedroomCount= unreg.bedroomCount;
+            guestCapacity= unreg.guestCapacity;
+            bathroomCount= unreg.bathroomCount;
+            bedCount= unreg.bedCount;
             pictures = unreg.pictures;
         };
 
@@ -71,17 +71,26 @@ actor {
         return propertyInfo.size();
     };
 
-    public query func queryProperty(start_index: Nat, count:Nat) : async [Property] {
-        
-        return Array.take<Property>(entries, count);
+    public query func getPropertyFromName(name_query:Text): async [Property]{
+        var property_array: [Property] = [];
+        for(prop in renterProfiles.vals()){
+            if(Text.contains(renter.fullName, #text name_query)){
+                property_array := Array.append<Renter>(property_array, [prop]);
+            };
+        };
+        return property_array;
     };
 
     public query func getPropertyAfter(propertyId: Text, count: Nat) : async [Property] {
-        let index = propertyIdIndexes.indexOf(propertyId);
-        if (index == -1) {
-            return [];
-        };
-        return Array.take<Property>(propertyIdIndexes, index + 1, count);
+        if(propertyId == ""){
+
+        } else {
+            let index = propertyIdIndexes.indexOf(propertyId);
+            if (index == -1) {
+                return [];
+            };
+            return Array.take<Property>(propertyIdIndexes, index + 1, count);
+        }
     };
 
 };
