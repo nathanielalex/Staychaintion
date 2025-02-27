@@ -22,6 +22,7 @@ import Maps from "@/pages/Maps"
 import { PropertyFilterProvider } from './context/PropertyFilterContext';
 
 import TeamPage from './pages/TeamPage';
+import PropertiesPage from './pages/properties/page';
 
 
 // Admin
@@ -113,6 +114,7 @@ const AnimatedRoutes = () => {
               } />
               <Route path="/teams" element={<TeamPage />} />
               <Route path="/landing" element={<LandingPage />} />
+              <Route path="/properties" element={<PropertiesPage />} />
             </Route>
 
               {/* ADMIN PAGES SECTION */}
