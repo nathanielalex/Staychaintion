@@ -6,11 +6,11 @@ import Random "mo:base/Random";
 import Array "mo:base/Array";
 import Source "mo:uuid/Source";
 import UUID "mo:uuid/UUID";
-// import User "../Storages/User/User";
+import UserProfile "canister:User";
 import Util "../Storages/Util";
+import Vector "mo:vector/Class";
 
-
-actor class Backend() {
+actor {
     type Message = {
         id : Text;
         content : Text;
@@ -41,6 +41,33 @@ actor class Backend() {
     };
 
     //get all chat
+    public shared func getAllChats(currUser : Principal) : async Result.Result<[UserProfile.UserProfile], Text> {
+        let contactList = Vector.Vector<UserProfile.UserProfile>();
+        for (chat in chats.vals()) {
+            if (chat.user1 == currUser) {
+                let contact = await UserProfile.getUser(chat.user2);
+                switch (contact) {
+                    case (?userProfile) {
+                        contactList.add(userProfile);
+                    };
+                    case (null) {
+                        return #err("failed fetching user");
+                    };
+                };
+            } else if (chat.user2 == currUser) {
+                let contact = await UserProfile.getUser(chat.user1);
+                switch (contact) {
+                    case (?userProfile) {
+                        contactList.add(userProfile);
+                    };
+                    case (null) {
+                        return #err("failed fetching user");
+                    };
+                };
+            };
+        };
+        return #ok(Vector.toArray(contactList));
+    };
 
     public shared query func getChat(user1 : Principal, user2 : Principal) : async Result.Result<Chat, Text> {
         for (chat in chats.vals()) {
@@ -53,7 +80,7 @@ actor class Backend() {
         return #err("Not found");
     };
 
-    /*
+    
     public shared func getAllMessages(user1 : Principal, user2 : Principal) : async Result.Result<[(Text, Text, Int, Principal, Text)], Text> {
         var allMessages: [(Text, Text, Int, Principal, Text)] = [];
         let chat = await getChat(user1, user2);
@@ -63,22 +90,23 @@ actor class Backend() {
                 for (messageId in chat.messages.vals()) {
                     let message = getMessage(messageId);
                     switch (message) {
-                        case (#ok(msg)) {
-                            let sender = await User.getUserById(message.sender); //nanti import
+                        case (#ok(message)) {
+                            let sender = await UserProfile.getUser(message.sender); //nanti import
                             var senderName = "";
                             var senderPfp = "";
                             switch (sender) {
-                                case (#ok(sender)) {
-                                    senderName := sender.name;
-                                    senderPfp := sender.profileUrl;
-                                };
-                                case (#err(msg)) {
+                                case(null) {
                                     senderName := "Not found!";
+                                    senderPfp := ""; // or some default profile URL if needed
+                                };
+                                case(?userProfile) {
+                                    senderName := userProfile.fullName;
+                                    senderPfp := userProfile.profilePictureUrl;
                                 };
                             };
-                            allMessages := Array.append(allMessages, [(senderName, message.content, message.timestamp, message.user, senderPfp)]);
+                            allMessages := Array.append(allMessages, [(senderName, message.content, message.timestamp, message.sender, senderPfp)]);
                         };
-                        case (#err(msg)) {};
+                        case (#err(message)) {};
                     };
                 };
             };
@@ -88,7 +116,7 @@ actor class Backend() {
         };
         return #ok(allMessages);
     };
-    */
+    
     
     public shared func createChat(user1: Principal, user2: Principal) : async Result.Result<Chat, Text> {
         let chatId = await Util.generateUUID();
