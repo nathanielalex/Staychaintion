@@ -21,9 +21,13 @@ import Logo from "./assets/house.png";
 import Maps from "@/pages/Maps"
 import { PropertyFilterProvider } from './context/PropertyFilterContext';
 
+import LegalPage from './pages/legal/page';
+
+import ContactPage from './pages/contact/page';
+
 import TeamPage from './pages/TeamPage';
 import PropertiesPage from './pages/properties/page';
-
+import PropertyDetailPage from './pages/properties/[id]/page';
 
 // Admin
 
@@ -102,9 +106,9 @@ const AnimatedRoutes = () => {
 
             <Route path="/register2" element={<RegisterPage2 />} />
 
+            <Route path="/legal" element={<LegalPage />} />
 
             {/* MAIN PAGES SECTION */}
-            
 
             <Route element={<MainLayout/>}>
               <Route path="/list" element={
@@ -112,9 +116,11 @@ const AnimatedRoutes = () => {
                   <PropertyListPage/>
                 </PropertyFilterProvider>
               } />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/teams" element={<TeamPage />} />
               <Route path="/landing" element={<LandingPage />} />
               <Route path="/properties" element={<PropertiesPage />} />
+              <Route path="/properties/details" element={<PropertyDetailPage />} />
             </Route>
 
               {/* ADMIN PAGES SECTION */}
