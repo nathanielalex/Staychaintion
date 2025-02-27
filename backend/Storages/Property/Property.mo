@@ -3,15 +3,19 @@ import Text "mo:base/Text";
 import Error "mo:base/Error";
 import Debug "mo:base/Debug";
 import Iter "mo:base/Iter";
+import Array "mo:base/Array";
 import Util "../Util";
+// import Region "mo:base/Region";
 
 actor {
 
     type Property = Util.Property;
 
     var propertyInfo = TrieMap.TrieMap<Text, Property>(Text.equal, Text.hash);
+    var propertyIdIndexes = Array.Array<Text>(propertyInfo.size());
 
     stable var stablePropertyInfo: [(Text, Property)] = [];
+
 
     system func preupgrade() {
         stablePropertyInfo := Iter.toArray(propertyInfo.entries());
@@ -19,6 +23,7 @@ actor {
 
     system func postupgrade() {
         propertyInfo := TrieMap.fromEntries<Text, Property>(Iter.fromArray(stablePropertyInfo), Text.equal, Text.hash);
+        propertyIdIndexes := Array.fromIterable<Text>(propertyInfo.keys());
     };
 
     public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {
@@ -48,7 +53,6 @@ actor {
     };
 
     public shared func updateProperty(updatedProp: Property) : async Int {
-
         try {
             propertyInfo.delete(updatedProp.id);
             propertyInfo.put(updatedProp.id, updatedProp);
@@ -59,8 +63,25 @@ actor {
         };
     };
 
-    public query func getProperty(propertyId: Text) : async ?Property {
+    public query func getPropertyInfo(propertyId: Text) : async ?Property {
         return propertyInfo.get(propertyId);
+    };
+
+    public query func propertyCount(): async Nat {
+        return propertyInfo.size();
+    };
+
+    public query func queryProperty(start_index: Nat, count:Nat) : async [Property] {
+        
+        return Array.take<Property>(entries, count);
+    };
+
+    public query func getPropertyAfter(propertyId: Text, count: Nat) : async [Property] {
+        let index = propertyIdIndexes.indexOf(propertyId);
+        if (index == -1) {
+            return [];
+        };
+        return Array.take<Property>(propertyIdIndexes, index + 1, count);
     };
 
 };
