@@ -120,8 +120,11 @@ const AnimatedRoutes = () => {
             <Route path="/admin" element={<AdminLayout children={<AdminDashboard />} />}>
             </Route>
 
-            <Route path="/admin/analytics" element={<AdminAnalytics />} />
-            <Route path="/admin/properties" element={<AdminProperties />} />
+            <Route path="/admin/analytics" element={<AdminLayout children={<AdminAnalytics />} />}>
+            </Route>
+
+            <Route path="/admin/properties" element={<AdminLayout children={<AdminProperties />} />}>
+            </Route>
 
             <Route path="/chat" element={<ChatPage />} />
 

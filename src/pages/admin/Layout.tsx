@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { LayoutDashboard, Home, BarChart3, Settings, Menu, X } from "lucide-react"
+import { LayoutDashboard, Home, BarChart3, Settings, Menu, X, House } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface AdminLayoutProps {
@@ -38,6 +38,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   ]
 
   return (
+
     <div className="min-h-screen bg-gray-50">
       {/* Sidebar */}
       <motion.aside
@@ -51,9 +52,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <div className="flex h-16 items-center justify-between px-4 border-b border-gray-200">
           <a href="/admin" className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-              <span className="text-white font-semibold">R</span>
+              <span className="text-white font-semibold"><House/></span>
             </div>
-            <span className="text-xl font-semibold">ResearchAI</span>
+            <span className="text-xl font-semibold">StayChaintion</span>
           </a>
           <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden p-2 rounded-lg hover:bg-gray-100">
             <X className="w-5 h-5" />
@@ -78,7 +79,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className={cn("transition-all duration-300", isSidebarOpen ? "lg:ml-64" : "lg:ml-0")}>
         {/* Top Bar */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4">
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-lg hover:bg-gray-100">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-lg text-white hover:bg-gray-100 hover:text-black">
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center space-x-4">
@@ -91,7 +92,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         {/* Page Content */}
         <main className="p-6">{children}</main>
       </div>
+
     </div>
+
   )
+
 }
 

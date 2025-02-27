@@ -31,12 +31,12 @@ export default function Navbar() {
       {/* Logo */}
       <a href="/" className="flex items-center space-x-2">
         <House className="w-8 h-8 text-blue-500" />
-        <span className="text-gray-900 font-medium text-xl">Staychaintion</span>
+        <span className="text-gray-900 font-medium text-xl">StayChaintion</span>
       </a>
 
       {/* Desktop Navigation Links */}
       <div className="hidden md:flex items-center space-x-8">
-        <NavLink href="/features">Features</NavLink>
+        <NavLink href="/landing">Home</NavLink>
         <NavLink href="/how-it-works">How it Works</NavLink>
         <NavLink href="/examples">Examples</NavLink>
         <NavLink href="/pricing">Pricing</NavLink>
@@ -66,8 +66,8 @@ export default function Navbar() {
           exit={{ y: -20, opacity: 0 }}
           className="absolute top-full left-0 right-0 bg-white shadow-md p-4 flex flex-col space-y-2 md:hidden"
         >
-          <NavLink href="/features" onClick={() => setIsMenuOpen(false)}>
-            Features
+          <NavLink href="/landing" onClick={() => setIsMenuOpen(false)}>
+            Home
           </NavLink>
           <NavLink href="/how-it-works" onClick={() => setIsMenuOpen(false)}>
             How it Works

@@ -1,13 +1,10 @@
-"use client"
+"use client";
 
-import React from "react"
-
-import { motion } from "framer-motion"
-import { Canvas, useFrame } from "@react-three/fiber"
-import { Environment, OrbitControls } from "@react-three/drei"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import type * as THREE from "three"
+import React, { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import * as THREE from "three";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function TeamSection() {
   return (
@@ -48,94 +45,116 @@ export default function TeamSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="h-[500px] lg:h-[600px] rounded-2xl overflow-hidden bg-gradient-to-br from-blue-50 to-white"
+            className="flex justify-center items-center h-[500px] lg:h-[600px] rounded-2xl overflow-hidden bg-gradient-to-br from-blue-50 to-white"
           >
-            <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-              <Scene />
-              <OrbitControls
-                enableZoom={false}
-                enablePan={false}
-                minPolarAngle={Math.PI / 2.5}
-                maxPolarAngle={Math.PI / 2.5}
-              />
-              <Environment preset="studio" />
-            </Canvas>
+            <ThreeScene />
           </motion.div>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-function Scene() {
-  return (
-    <group>
-      {/* Ambient light */}
-      <ambientLight intensity={0.5} />
+function ThreeScene() {
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
 
-      {/* Directional light */}
-      <directionalLight position={[10, 10, 5]} intensity={1} />
+  useEffect(() => {
+    if (!sceneRef.current) return;
 
-      {/* Main floating sphere */}
-      <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial color="#4285F4" roughness={0.2} metalness={0.8} />
-      </mesh>
+    const width = sceneRef.current.clientWidth;
+    const height = sceneRef.current.clientHeight;
 
-      {/* Orbiting smaller spheres */}
-      <OrbitingSpheres count={5} radius={2} />
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+    camera.position.z = 5;
 
-      {/* Decorative rings */}
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[2, 0.02, 16, 100]} />
-        <meshStandardMaterial color="#4285F4" opacity={0.2} transparent />
-      </mesh>
+    // Renderer setup
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(width, height);
+    sceneRef.current.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
 
-      <mesh rotation={[Math.PI / 3, Math.PI / 6, 0]}>
-        <torusGeometry args={[2.5, 0.02, 16, 100]} />
-        <meshStandardMaterial color="#4285F4" opacity={0.1} transparent />
-      </mesh>
-    </group>
-  )
-}
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
 
-function OrbitingSpheres({ count, radius }: { count: number; radius: number }) {
-  return (
-    <>
-      {Array.from({ length: count }).map((_, i) => (
-        <OrbitingSphere key={i} index={i} radius={radius} speed={0.5 + i * 0.1} offset={(Math.PI * 2 * i) / count} />
-      ))}
-    </>
-  )
-}
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(10, 10, 5);
+    scene.add(directionalLight);
 
-function OrbitingSphere({
-  index,
-  radius,
-  speed,
-  offset,
-}: {
-  index: number
-  radius: number
-  speed: number
-  offset: number
-}) {
-  const mesh = React.useRef<THREE.Mesh>(null)
+    // Main Sphere
+    const mainSphere = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 32, 32),
+      new THREE.MeshStandardMaterial({
+        color: "#4285F4",
+        roughness: 0.2,
+        metalness: 0.8,
+      })
+    );
+    scene.add(mainSphere);
 
-  useFrame((state) => {
-    if (mesh.current) {
-      const angle = state.clock.elapsedTime * speed + offset
-      mesh.current.position.x = Math.cos(angle) * radius
-      mesh.current.position.z = Math.sin(angle) * radius
-      mesh.current.position.y = Math.sin(state.clock.elapsedTime + index) * 0.5
+    // Orbiting Small Spheres
+    const orbitingSpheres: THREE.Mesh[] = [];
+    const orbitRadius = 2;
+    for (let i = 0; i < 5; i++) {
+      const smallSphere = new THREE.Mesh(
+        new THREE.SphereGeometry(0.2, 16, 16),
+        new THREE.MeshStandardMaterial({
+          color: "#4285F4",
+          roughness: 0.3,
+          metalness: 0.7,
+        })
+      );
+      orbitingSpheres.push(smallSphere);
+      scene.add(smallSphere);
     }
-  })
 
-  return (
-    <mesh ref={mesh} scale={0.2}>
-      <sphereGeometry args={[1, 16, 16]} />
-      <meshStandardMaterial color="#4285F4" roughness={0.3} metalness={0.7} />
-    </mesh>
-  )
+    // Animation Loop
+    let frameId: number;
+    const animate = (time: number) => {
+      frameId = requestAnimationFrame(animate);
+
+      // Rotate Main Sphere
+      mainSphere.rotation.y += 0.005;
+
+      // Move Orbiting Spheres
+      orbitingSpheres.forEach((sphere, i) => {
+        const angle = (time / 1000) * (0.5 + i * 0.1);
+        sphere.position.x = Math.cos(angle) * orbitRadius;
+        sphere.position.z = Math.sin(angle) * orbitRadius;
+        sphere.position.y = Math.sin(time / 1000 + i) * 0.5;
+      });
+
+      renderer.render(scene, camera);
+    };
+
+    animate(0);
+
+    // Handle Resize
+    const handleResize = () => {
+      if (sceneRef.current) {
+        const newWidth = sceneRef.current.clientWidth;
+        const newHeight = sceneRef.current.clientHeight;
+        renderer.setSize(newWidth, newHeight);
+        camera.aspect = newWidth / newHeight;
+        camera.updateProjectionMatrix();
+      }
+    };
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup on unmount
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", handleResize);
+      if (sceneRef.current) {
+        sceneRef.current.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+      scene.clear();
+    };
+  }, []);
+
+  return <div ref={sceneRef} className="w-full h-full" />;
 }
-
