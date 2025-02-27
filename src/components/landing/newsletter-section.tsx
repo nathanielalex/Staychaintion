@@ -55,17 +55,17 @@ export default function NewsletterSection() {
               <span className="text-blue-600 font-medium">Join Our Community</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-              Stay Updated with <span className="text-blue-600">Research Innovation</span>
+              Stay Updated with <span className="text-blue-600">StayChaintion</span>
             </h2>
             <p className="text-gray-600 text-lg md:text-xl max-w-lg">
-              Join our community of researchers and AI enthusiasts. Get exclusive updates, research insights, and early
+              Join our community of property enthusiasts. Get exclusive updates, research insights, and early
               access to new features.
             </p>
 
             {/* Benefits List */}
             <div className="space-y-4 pt-4">
               {[
-                "Weekly research digests",
+                "Weekly property list update",
                 "Early access to new features",
                 "Exclusive webinars and tutorials",
                 "Community discussions",
@@ -101,7 +101,7 @@ export default function NewsletterSection() {
               <form onSubmit={handleSubmit} className="relative space-y-6">
                 <div className="space-y-2">
                   <h3 className="text-2xl font-semibold text-gray-900">Join the Community</h3>
-                  <p className="text-gray-600">Be part of the future of research and AI.</p>
+                  <p className="text-gray-600">Be part of the future of Web3 and AI.</p>
                 </div>
 
                 <div className="space-y-4">

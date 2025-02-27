@@ -6,36 +6,37 @@ import { Plus, Minus } from "lucide-react"
 
 const faqs = [
   {
-    question: "How does ResearchAI analyze research papers?",
+    question: "How does StayChaintion help property owners maximize earnings?",
     answer:
-      "ResearchAI uses advanced natural language processing and machine learning algorithms to analyze research papers. Our AI can understand complex academic language, identify key findings, and extract relevant information while maintaining the context and nuance of the original research.",
+      "StayChaintion utilizes AI-powered dynamic pricing to analyze market trends, occupancy rates, and local demand, ensuring you get the best possible price for your property. Our smart pricing recommendations help you increase bookings while maximizing revenue.",
   },
   {
-    question: "What file formats are supported for paper uploads?",
+    question: "What types of properties can be listed on StayChaintion?",
     answer:
-      "We support various academic paper formats including PDF, DOC/DOCX, and direct text uploads. Our system can also process papers from popular academic databases and repositories through their URLs.",
+      "You can list a variety of properties including apartments, villas, guesthouses, and vacation homes. Whether you're renting out a single room or an entire property, StayChaintion provides the tools you need to manage your listings efficiently.",
   },
   {
-    question: "How accurate is the AI-powered analysis?",
+    question: "How does StayChaintion ensure secure transactions?",
     answer:
-      "Our AI system maintains a high accuracy rate of over 95% in identifying key information and summarizing research papers. All results are validated against established academic standards, and we continuously improve our models through expert feedback.",
+      "We leverage blockchain technology to provide secure, transparent, and tamper-proof transactions. Payments can be made through traditional methods or cryptocurrencies, ensuring fast and safe transactions without intermediaries.",
   },
   {
-    question: "Can I collaborate with team members on paper analysis?",
+    question: "Can I manage my property remotely with StayChaintion?",
     answer:
-      "Yes! ResearchAI offers robust collaboration features. You can share analyses, add comments, and work together with team members in real-time. Our platform supports role-based access control and version tracking.",
+      "Yes! StayChaintion provides an intuitive dashboard where you can update pricing, manage availability, and communicate with guests from anywhere. Our AI-powered automation tools help you streamline operations and reduce manual work.",
   },
   {
-    question: "Is my research data secure?",
+    question: "What makes StayChaintion different from other rental platforms?",
     answer:
-      "Absolutely. We employ enterprise-grade encryption for all data storage and transmission. Our platform complies with academic data protection standards, and you retain full control over your research data.",
+      "Unlike traditional rental platforms, StayChaintion integrates AI-driven insights, Web3 payments, and blockchain security to offer a seamless, transparent, and efficient rental experience for both property owners and travelers.",
   },
   {
-    question: "What kind of support do you offer?",
+    question: "Is there a fee for listing my property on StayChaintion?",
     answer:
-      "We provide 24/7 technical support, comprehensive documentation, and regular training sessions. Our team of academic experts is also available for specialized assistance with research-specific queries.",
+      "StayChaintion offers competitive pricing with low commission rates. We believe in fair and transparent pricing, ensuring that property owners keep more of their earnings while benefiting from our advanced AI tools and Web3 ecosystem.",
   },
-]
+];
+
 
 export default function FAQSection() {
   return (

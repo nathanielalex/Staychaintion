@@ -23,14 +23,13 @@ export default function TeamSection() {
               <span className="text-blue-600 font-medium">Meet Our Team</span>
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-              The Brilliant Minds Behind <span className="text-blue-600">Staychaintion</span>
+              The Brilliant Minds Behind <span className="text-blue-600">StayChaintion</span>
             </h2>
             <p className="text-gray-600 text-lg md:text-xl max-w-lg">
-              Our team of experts combines deep AI knowledge with research expertise to revolutionize how you work with
-              academic papers.
+              Our team of experts combines deep AI knowledge teamworking with Front-end Master and ICP Web3 Enthusiasts.
             </p>
             <div className="pt-4">
-              <a href="/team">
+              <a href="/teams">
                 <Button className="group bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 h-auto text-lg">
                   Meet the Team
                   <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />

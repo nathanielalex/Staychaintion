@@ -130,7 +130,7 @@ export default function WhoAmIPage() {
             onClick={logout}
           >
             <LogOut className="w-4 h-4 mr-2" />
-            log out
+            Log out
           </Button>
         </motion.div>
 

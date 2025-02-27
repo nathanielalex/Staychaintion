@@ -5,38 +5,38 @@ import { Bot, BookOpen, PenTool, Share2, Sparkles, Zap } from "lucide-react"
 
 const features = [
   {
-    title: "AI-Powered Analysis",
-    description: "Advanced machine learning algorithms analyze your research papers with high accuracy and speed.",
+    title: "AI-Powered Pricing",
+    description: "Utilizes AI to analyze market trends and suggest the optimal rental price for your property.",
     icon: Bot,
     gradient: "from-blue-400 to-blue-600",
   },
   {
-    title: "Smart Summarization",
-    description: "Automatically generate concise summaries of complex research papers and documents.",
+    title: "Smart Property Insights",
+    description: "Get data-driven insights about demand, peak seasons, and rental performance in your area.",
     icon: BookOpen,
     gradient: "from-blue-500 to-indigo-600",
   },
   {
-    title: "Visual Content Creation",
-    description: "Transform research findings into engaging visual presentations and infographics.",
+    title: "Visual Property Enhancement",
+    description: "AI-enhanced image analysis improves property photos, detects missing amenities, and boosts listing appeal.",
     icon: PenTool,
     gradient: "from-indigo-400 to-blue-600",
   },
   {
-    title: "Easy Collaboration",
-    description: "Share and collaborate on research papers with team members in real-time.",
+    title: "Seamless Guest Interaction",
+    description: "StayAI-powered chatbot helps answer guest inquiries and automate communication.",
     icon: Share2,
     gradient: "from-blue-400 to-indigo-500",
   },
   {
-    title: "Citation Assistant",
-    description: "Automatically format and manage citations in various academic styles.",
+    title: "Automated Listing Optimization",
+    description: "AI suggests listing improvements to attract more bookings and increase revenue.",
     icon: Sparkles,
     gradient: "from-indigo-500 to-blue-500",
   },
   {
-    title: "Quick Integration",
-    description: "Seamlessly integrate with your existing research workflow and tools.",
+    title: "Secure Web3 Transactions",
+    description: "Blockchain-based payments ensure fast, secure, and transparent transactions for hosts and guests.",
     icon: Zap,
     gradient: "from-blue-500 to-indigo-400",
   },
@@ -78,7 +78,7 @@ export default function Features() {
             transition={{ duration: 0.5 }}
             className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
           >
-            Powerful Features for Your Research
+            Powerful Features for Your Property Rentals
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -87,7 +87,7 @@ export default function Features() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-gray-600 text-lg max-w-2xl mx-auto"
           >
-            Transform the way you handle research with our cutting-edge AI tools and features
+            Maximize your rental income with Web3 and AI-powered tools.
           </motion.p>
         </div>
 

@@ -9,9 +9,9 @@ const testimonials = [
   {
     id: 1,
     content:
-      "ResearchAI has transformed the way we handle academic papers. The AI-powered analysis saves us countless hours and provides insights we might have missed.",
-    author: "Dr. Emily Thompson",
-    role: "Research Director",
+      "StayChaintion's AI-powered pricing tool helped me maximize my earnings! The dynamic pricing recommendations are spot-on, and my bookings have increased by 30%.",
+    author: "James Anderson",
+    role: "Superhost, Bali Villas",
     company: "Stanford University",
     image: "/images/testimony/img1.png",
     companyLogo: "/images/testimony/img4.png",
@@ -19,8 +19,8 @@ const testimonials = [
   {
     id: 2,
     content:
-      "The automated summarization feature is incredible. It helps our team quickly understand complex research papers and make informed decisions faster.",
-    author: "Michael Chen",
+      "I love how easy it is to find high-quality stays with StayChaintion. The AI-driven property insights ensure I always book the best-rated and well-maintained rentals.",
+    author: "Angela Chen",
     role: "Lead Data Scientist",
     company: "TechCorp Research",
     image: "/images/testimony/img2.png",
@@ -29,7 +29,7 @@ const testimonials = [
   {
     id: 3,
     content:
-      "As a research institution, we needed a tool that could handle vast amounts of scientific literature. ResearchAI exceeded our expectations in every way.",
+      "Web3 payments on StayChaintion are a game-changer! I can securely receive payments in crypto, and the blockchain transparency gives me peace of mind.",
     author: "Dr. Sarah Martinez",
     role: "Head of Research",
     company: "BioTech Industries",
@@ -104,7 +104,7 @@ export default function TestimonySection() {
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">What Our Users Say</h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Discover how ResearchAI is transforming research workflows around the world
+            Discover how StayChaintion is transforming property around the world
           </p>
         </motion.div>
 

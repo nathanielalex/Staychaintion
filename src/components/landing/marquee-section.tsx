@@ -90,14 +90,14 @@ function MarqueeContent({ direction = "left" }: { direction?: "left" | "right" }
   }, [direction])
 
   const items = [
-    "Research AI",
-    "Smart Analysis",
+    "Powerful AI",
+    "Smart Contract",
     "Quick Results",
-    "AI Power",
-    "Research AI",
-    "Smart Analysis",
+    "ICP Integrated",
+    "Powerful AI",
+    "Smart Contract",
     "Quick Results",
-    "AI Power",
+    "ICP Integrated",
   ]
 
   return (

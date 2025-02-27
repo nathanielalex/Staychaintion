@@ -18,10 +18,10 @@ export default function Hero() {
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
-              Transform Your Research with
+            Unlock Your Property's True Value with
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-600">
                 {" "}
-                AI Power
+                StayChaintion
               </span>
             </h1>
           </motion.div>
@@ -32,8 +32,7 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-gray-600 text-xl mb-8 max-w-2xl mx-auto"
           >
-            Upload your research papers and let our AI transform them into engaging presentations, podcasts, and visual
-            content.
+            List your property with Web3 technology and AI-driven insights to maximize your rental income securely and efficiently
           </motion.p>
 
           <motion.div
@@ -44,11 +43,11 @@ export default function Hero() {
           >
             <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white px-8">
               <FileText className="mr-2 h-5 w-5" />
-              Upload Paper
+              Explore Listings
             </Button>
             <Button size="lg" variant="outline" className="text-blue-500 border-blue-500 hover:bg-blue-500/10">
               <Sparkles className="mr-2 h-5 w-5" />
-              See Examples
+              View More
             </Button>
           </motion.div>
         </div>
