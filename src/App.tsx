@@ -178,8 +178,9 @@ function App() {
     const checkIfRegistered = async () => {
       if (isAuthenticated && principal) {
         try {
-          const principalObj = Principal.fromText(principal);
-          const result = await backend.hasProfile(principalObj);
+          // const principalObj = Principal.fromText(principal);
+          // const principalObj = principal;
+          const result = await backend.hasProfile(principal);
           setIsRegistered(result);
         } catch (error) {
           console.error('Error checking registration:', error);
