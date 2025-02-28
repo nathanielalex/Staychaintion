@@ -125,9 +125,13 @@ const AnimatedRoutes = () => {
 
             <Route path="/register2" element={<RegisterPage2 />} />
 
-            <Route path="/register-page" element={<RegisterFinal />} />
-
             <Route path="/legal" element={<LegalPage />} />
+
+            <Route path="/chat" element={<ChatPage />} />
+
+            <Route path="/profiles" element={<ProfilePage />} />
+
+            <Route path="/maps" element={<Maps />} />
 
             {/* MAIN PAGES SECTION */}
 
@@ -154,12 +158,6 @@ const AnimatedRoutes = () => {
 
             <Route path="/admin/properties" element={<AdminLayout children={<AdminProperties />} />}>
             </Route>
-
-            <Route path="/chat" element={<ChatPage />} />
-
-            <Route path="/profiles" element={<ProfilePage />} />
-
-            <Route path="/maps" element={<Maps />} />
 
             {/* AI PAGES SECTION */}
 
