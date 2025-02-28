@@ -53,6 +53,13 @@ import MarketingGrowthPage from './pages/marketing/page';
 import InfluencerAffiliatePage from './pages/influencer/page';
 import BlogPage from './pages/blog/page';
 import BlogDetailPage from './pages/blog/[id]/page'
+import CaseStudyPage from './pages/case-studies/[id]/page';
+import InfluencerJoinPage from './pages/influencer/join/page';
+
+
+// Marketplace Page
+
+import MarketplacePage from './pages/marketplace/page';
 
 
 const pageVariants = {
@@ -174,6 +181,12 @@ const AnimatedRoutes = () => {
               <Route path="/marketing/influencer" element={<InfluencerAffiliatePage />} />
               <Route path="/marketing/blogs" element={<BlogPage />} />
               <Route path="/blog/:id" element={<BlogDetailPage />} />
+              <Route path="/case-studies/:id" element={<CaseStudyPage />} />
+              <Route path="/influencer-affiliate/join" element={<InfluencerJoinPage />} />
+            </Route>
+
+            <Route element={<MainLayout/>}>
+              <Route path="/marketplace" element={<MarketplacePage />} />
             </Route>
 
             {/* ERROR PAGE SECTION */}

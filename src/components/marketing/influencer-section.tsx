@@ -49,10 +49,12 @@ export default function InfluencerSection() {
         transition={{ duration: 0.5, delay: 0.3 }}
         className="text-center"
       >
-        <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
-          Join Our Program
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
+        <a href="/influencer-affiliate/join">
+          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+            Join Our Program
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </a>
       </motion.div>
     </section>
   )
