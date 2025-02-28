@@ -1,29 +1,50 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Search, SlidersHorizontal, Home, Building, Tent, Castle, Mountain, PocketIcon as Pool } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import PropertyCard from "@/components/properties/property-card"
 import { SparklesCore } from "@/components/landing/sparkles"
+import { Principal } from "@dfinity/principal"
+import { Property_backend } from "@/declarations/Property_backend"
+import { Property } from "@/declarations/Property_backend/Property_backend.did"
+import { UnregisteredProperty } from "@/declarations/Property_backend/Property_backend.did"
 
 // Sample data
-const properties = [
-  {
-    id: 1,
-    name: "Luxury A-Frame Cabin",
-    location: "Tambon Huai Sat Yai, Thailand",
-    price: 1000000,
-    rating: 4.98,
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png",
-    type: "cabin",
-    guests: 4,
-    bedrooms: 2,
-    bathrooms: 1,
-  },
-  // Add more properties...
-]
+
+// interface Property {
+//   id: number;
+//   // owner: Principal;
+//   name: string;
+//   pricePerNight: number;
+//   // description: string;
+//   location: string;
+//   // builtInDate: number;
+//   bedroomCount: number;
+//   guestCapacity: number;
+//   bathroomCount: number;
+//   rating: number;
+//   image: string;
+//   type: string;
+// }
+
+// const dummyProperty = [
+//   {
+//     id: 1,
+//     name: "Luxury A-Frame Cabin",
+//     location: "Tambon Huai Sat Yai, Thailand",
+//     price: 1000000,
+//     rating: 4.98,
+//     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png",
+//     type: "cabin",
+//     guests: 4,
+//     bedrooms: 2,
+//     bathrooms: 1,
+//   },
+//   // Add more properties...
+// ]
 
 const categories = [
   { id: "all", name: "All", icon: Home },
@@ -39,12 +60,68 @@ export default function PropertiesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [showFilters, setShowFilters] = useState(false)
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProperties = async () => {
+    try {
+      // setLoading(true);
+      // setError(null);
+      // const actor = getChatActor();
+      const result = await Property_backend.getAllProperties();
+      setProperties(result);
+    } catch (err) {
+      setError('An error occurred while fetching contacts');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchProperties();
+  }, [searchTerm]);
+
+  const initProperties = async (newProperty: UnregisteredProperty) => {
+    try {
+      // setLoading(true);
+      // setError(null);
+      // const actor = getChatActor();
+      const result = await Property_backend.registerProperty(newProperty);
+    } catch (err) {
+      setError('An error occurred while fetching contacts');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Creating an instance of UnregisteredProperty
+    const newProperty: UnregisteredProperty = {
+      bedCount: 2n,
+      owner: Principal.fromText('aaaaa-aa'),
+      pricePerNight: 1000000n,
+      name: 'Luxury A-Frame Cabin',
+      bedroomCount: 2n,
+      bathroomCount: 1n,
+      description: 'A beautiful cabin by the beach with a wonderful view.',
+      builtInDate: '2020-06-15',
+      guestCapacity: 4n,
+      pictures: [],
+      buildingType: 'cabin',
+      location: 'Tambon Huai Sat Yai, Thailand',
+      coverPicture: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png'
+    };
+    initProperties(newProperty);  // Set the property state with the new object
+  }, []);
+
+  
 
   const filteredProperties = properties.filter((property) => {
     const matchesSearch =
       property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       property.location.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || property.type === selectedCategory
+    const matchesCategory = selectedCategory === "all" || property.buildingType === selectedCategory
     return matchesSearch && matchesCategory
   })
 

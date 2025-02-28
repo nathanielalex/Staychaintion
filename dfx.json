@@ -24,7 +24,7 @@
       "type": "motoko",
       "main": "backend/Storages/User/User.mo"
     },
-    "Property": {
+    "Property_backend": {
       "type": "motoko",
       "main": "backend/Storages/Property/Property.mo"
     },

@@ -6,7 +6,7 @@ import Util "../Util";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Text "mo:base/Text";
-import Property "canister:Property";
+import Property_backend "canister:Property_backend";
 
 actor {
     type Renter = Util.Renter;
@@ -86,7 +86,7 @@ actor {
         switch (renterProfiles.get(renterId)) {
             case null { return 0 };
             case (?renter) {
-                let propId: Text = await Property.registerProperty(property);
+                let propId: Text = await Property_backend.registerProperty(property);
                 var prof: Renter = {
                     id = renter.id;
                     fullName = renter.fullName;
