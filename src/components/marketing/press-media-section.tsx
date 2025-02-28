@@ -5,25 +5,25 @@ import { Card } from "@/components/ui/card"
 
 const pressItems = [
   {
-    logo: "/placeholder.svg?height=60&width=120",
+    logo: "/images/marketing/img7.png",
     name: "TechCrunch",
     title: "Staychaintion Revolutionizes Vacation Rentals",
     link: "#",
   },
   {
-    logo: "/placeholder.svg?height=60&width=120",
+    logo: "/images/marketing/img5.png",
     name: "Forbes",
     title: "The Future of Travel: Staychaintion's Innovative Approach",
     link: "#",
   },
   {
-    logo: "/placeholder.svg?height=60&width=120",
+    logo: "/images/marketing/img4.png",
     name: "The New York Times",
     title: "How Staychaintion is Changing the Hospitality Landscape",
     link: "#",
   },
   {
-    logo: "/placeholder.svg?height=60&width=120",
+    logo: "/images/marketing/img6.png",
     name: "Wall Street Journal",
     title: "Staychaintion Secures $50M in Series B Funding",
     link: "#",

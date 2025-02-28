@@ -50,6 +50,9 @@ import ProtectedRoute from './utility/ProtectedRoute';
 // Marketing Page
 
 import MarketingGrowthPage from './pages/marketing/page';
+import InfluencerAffiliatePage from './pages/influencer/page';
+import BlogPage from './pages/blog/page';
+import BlogDetailPage from './pages/blog/[id]/page'
 
 
 const pageVariants = {
@@ -170,6 +173,9 @@ const AnimatedRoutes = () => {
 
             <Route element={<MainLayout/>}>
               <Route path="/marketing" element={<MarketingGrowthPage />} />
+              <Route path="/marketing/influencer" element={<InfluencerAffiliatePage />} />
+              <Route path="/marketing/blogs" element={<BlogPage />} />
+              <Route path="/blog/:id" element={<BlogDetailPage />} />
             </Route>
 
             {/* ERROR PAGE SECTION */}

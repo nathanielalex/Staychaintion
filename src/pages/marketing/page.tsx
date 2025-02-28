@@ -6,6 +6,7 @@ import PromotionsSection from "@/components/marketing/promotions"
 import InfluencerSection from "@/components/marketing/influencer-section"
 import CaseStudiesSection from "@/components/marketing/case-studies-section"
 import PressMediaSection from "@/components/marketing/press-media-section"
+import BlogSection from "@/components/marketing/blog-section"
 
 export default function MarketingGrowthPage() {
   return (
@@ -22,6 +23,7 @@ export default function MarketingGrowthPage() {
         <InfluencerSection />
         <CaseStudiesSection />
         <PressMediaSection />
+        <BlogSection/>
       </motion.div>
     </div>
   )

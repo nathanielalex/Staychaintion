@@ -31,12 +31,13 @@ const Sidebar: React.FC<SidebarProps> = ({
         currUser={currUser}
         contacts={contacts}
       />
-      <Button
-        onClick={handleSubmit}
-        className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
-      >
-        Back to Home
-      </Button>
+      <a href='/landing'>
+        <Button
+          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+        >
+          Back to Home
+        </Button>
+      </a>
     </div>
   );
 };

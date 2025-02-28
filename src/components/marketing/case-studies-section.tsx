@@ -10,17 +10,17 @@ const caseStudies = [
   {
     title: "Boutique Hotel Boosts Bookings by 200%",
     description: "Learn how a small hotel in Bali used our platform to dramatically increase their occupancy rate.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/marketing/img1.png",
   },
   {
     title: "Vacation Rental Owner Increases Revenue by 150%",
     description: "Discover how a property owner in Costa Rica optimized their listing and pricing strategy.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/marketing/img2.png",
   },
   {
     title: "City Apartment Achieves 95% Occupancy Rate",
     description: "See how a New York City apartment owner maintains near-full occupancy year-round.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/images/marketing/img3.png",
   },
 ]
 
@@ -68,18 +68,18 @@ export default function CaseStudiesSection() {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-1/2 left-4 transform -translate-y-1/2"
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 hover:text-black"
           onClick={prevSlide}
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="h-6 w-6 text-white hover:text-black" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-1/2 right-4 transform -translate-y-1/2"
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 hover:text-black"
           onClick={nextSlide}
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className="h-6 w-6 text-white hover:text-black" />
         </Button>
       </div>
     </section>
