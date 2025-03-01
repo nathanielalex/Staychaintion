@@ -17,7 +17,49 @@ import AnimatedCursor from 'react-animated-cursor';
 import PropertyListPage from './pages/PropertyListPage';
 import MainLayout from './pages/layout/MainLayout';
 import { AnimatePresence, motion } from "framer-motion";
-import Logo from "./assets/motoko.png";
+import Logo from "./assets/house.png";
+import Maps from "@/pages/Maps"
+import { PropertyFilterProvider } from './context/PropertyFilterContext';
+
+import RegisterFinal from './pages/auth/page';
+import LegalPage from './pages/legal/page';
+
+import ContactPage from './pages/contact/page';
+
+import TeamPage from './pages/TeamPage';
+import PropertiesPage from './pages/properties/page';
+import PropertyDetailPage from './pages/properties/[id]/page';
+
+// Admin
+
+import AdminLayout from './pages/admin/Layout';
+import AdminDashboard from './pages/admin/Page';
+
+import AdminAnalytics from './pages/admin/analytics/page';
+import AdminProperties from './pages/admin/properties/page';
+
+
+// AI
+
+import PredictPrice from './pages/ai/PredictPrice';
+import StayAI from './pages/ai/StayAI';
+import RoomClassifier from './pages/ai/RoomClassifier';
+import ProtectedRoute from './utility/ProtectedRoute';
+
+
+// Marketing Page
+
+import MarketingGrowthPage from './pages/marketing/page';
+import InfluencerAffiliatePage from './pages/influencer/page';
+import BlogPage from './pages/blog/page';
+import BlogDetailPage from './pages/blog/[id]/page'
+import CaseStudyPage from './pages/case-studies/[id]/page';
+import InfluencerJoinPage from './pages/influencer/join/page';
+
+
+// Marketplace Page
+
+import MarketplacePage from './pages/marketplace/page';
 
 
 const pageVariants = {
@@ -55,7 +97,7 @@ const AnimatedRoutes = () => {
 
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-
+  const { isAuthenticated } = useAuth();
 
   return (
 
@@ -69,23 +111,89 @@ const AnimatedRoutes = () => {
 
           <Routes location={location} key={location.pathname}>
 
+            {/* DEFAULT PAGES SECTION */}
+
             <Route path="/" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LoggedOut /></motion.div>} />
 
-            <Route path="/home" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><HomePage /></motion.div>} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
 
-            <Route path="/register" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
+            {/* <Route path="/home" element={<HomePage />} /> */}
+
+            <Route path="/register" element={<RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
               throw new Error('Function not implemented.');
-            } } /></motion.div>} />
-
-            <Route path="/list" element={<PropertyListPage/>} />
-
-            <Route path="/landing" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LandingPage /></motion.div>} />
+            } } />} />
 
             <Route path="/register2" element={<RegisterPage2 />} />
+
+            <Route path="/legal" element={<LegalPage />} />
 
             <Route path="/chat" element={<ChatPage />} />
 
             <Route path="/profiles" element={<ProfilePage />} />
+
+            <Route path="/maps" element={<Maps />} />
+
+            {/* MAIN PAGES SECTION */}
+
+            <Route element={<MainLayout/>}>
+              <Route path="/list" element={
+                <PropertyFilterProvider>
+                  <PropertyListPage/>
+                </PropertyFilterProvider>
+              } />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/teams" element={<TeamPage />} />
+              <Route path="/landing" element={<LandingPage />} />
+              <Route path="/properties" element={<PropertiesPage />} />
+              <Route path="/properties/details" element={<PropertyDetailPage />} />
+            </Route>
+
+              {/* ADMIN PAGES SECTION */}
+            
+            <Route path="/admin" element={<AdminLayout children={<AdminDashboard />} />}>
+            </Route>
+
+            <Route path="/admin/analytics" element={<AdminLayout children={<AdminAnalytics />} />}>
+            </Route>
+
+            <Route path="/admin/properties" element={<AdminLayout children={<AdminProperties />} />}>
+            </Route>
+
+            {/* AI PAGES SECTION */}
+
+            <Route path="/predicts" element={<PredictPrice />} />
+
+            <Route path="/chatbot" element={<StayAI />} />
+
+            <Route path="/room-classifier" element={<RoomClassifier />} />
+
+            {/* Other Pages */}
+
+            {/* MARKETING PAGES */}
+
+            <Route element={<MainLayout/>}>
+              <Route path="/marketing" element={<MarketingGrowthPage />} />
+              <Route path="/marketing/influencer" element={<InfluencerAffiliatePage />} />
+              <Route path="/marketing/blogs" element={<BlogPage />} />
+              <Route path="/blog/:id" element={<BlogDetailPage />} />
+              <Route path="/case-studies/:id" element={<CaseStudyPage />} />
+              <Route path="/influencer-affiliate/join" element={<InfluencerJoinPage />} />
+            </Route>
+
+            {/* MARKETPLACE PAGES */}
+
+            <Route element={<MainLayout/>}>
+              <Route path="/marketplace" element={<MarketplacePage />} />
+            </Route>
+
+            {/* ERROR PAGE SECTION */}
 
             <Route path="*" element={<NotFoundPage />} />
 
@@ -115,8 +223,9 @@ function App() {
     const checkIfRegistered = async () => {
       if (isAuthenticated && principal) {
         try {
-          const principalObj = Principal.fromText(principal);
-          const result = await backend.hasProfile(principalObj);
+          // const principalObj = Principal.fromText(principal);
+          // const principalObj = principal;
+          const result = await backend.hasProfile(principal);
           setIsRegistered(result);
         } catch (error) {
           console.error('Error checking registration:', error);

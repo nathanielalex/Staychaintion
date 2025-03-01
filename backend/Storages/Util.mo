@@ -43,6 +43,9 @@ module {
         bathroomCount: Nat;
         bedCount: Nat;
         pictures: [Text];
+        coverPicture: Text;
+        buildingType: Text;
+        rating: Nat;
     };
 
     public type UnregisteredProperty = {
@@ -57,6 +60,8 @@ module {
         bathroomCount: Nat;
         bedCount: Nat;
         pictures: [Text];
+        coverPicture: Text;
+        buildingType: Text;
     };
 
     public func userRoleToText(role: UserRole) : Text {

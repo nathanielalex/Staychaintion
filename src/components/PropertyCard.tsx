@@ -24,7 +24,7 @@ const dummy: Property = {
 
 function PropertyCard({ property }: { property: Property }) {
   return (
-    <Card className="max-w-64 w-full">
+    <Card className="w-full">
 
       <CardHeader className="p-0 w-full h-full">
         <AspectRatio ratio={1/1} className="overflow-hidden rounded-lg flex place-items-center">
@@ -33,9 +33,9 @@ function PropertyCard({ property }: { property: Property }) {
       </CardHeader>
 
       <CardFooter className="px-2 pt-2 flex gap-8 justify-start">
-        <div>
+        <div className='w-3/4'>
           <h2>{property.title}</h2>
-          <h3>{formatPrice(property.price)}</h3>
+          <h3 className='font-semibold'>{formatPrice(property.price)}</h3>
         </div>
         <div className="flex place-items-center gap-1">
           <Star fill="black" className="w-4 h-4"/>

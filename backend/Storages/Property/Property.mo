@@ -12,6 +12,7 @@ import Bool "mo:base/Bool";
 import Util "../Util";
 import { sort } "../Util";
 // import Region "mo:base/Region";
+import Vector "mo:vector/Class";
 
 actor {
 
@@ -23,7 +24,30 @@ actor {
     stable var stablePropertyInfo: [(Text, Property)] = [];
 
 
-    system func preupgrade() {
+
+    // Seeder function that adds initial property data
+    // private func seedProperties(): async () {
+    //     let prop1: Util.UnregisteredProperty = {
+    //         bedCount = 2;
+    //         owner = Principal.fromText("aaaaa-aa");
+    //         pricePerNight= 1000000;
+    //         name= "Luxury A-Frame Cabin";
+    //         bedroomCount= 2;
+    //         bathroomCount= 1;
+    //         description= "A beautiful cabin by the beach with a wonderful view.";
+    //         builtInDate= "2020-06-15";
+    //         guestCapacity= 4;
+    //         pictures= [];
+    //         buildingType= "cabin";
+    //         location= "Tambon Huai Sat Yai, Thailand";
+    //         coverPicture= "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
+    //     };
+    //     // Add properties to the map
+    //     let propertyId = await registerProperty(prop1);
+    // };
+
+    system func preupgrade()  {
+        // seedProperties();
         stablePropertyInfo := Iter.toArray(propertyInfo.entries());
     };
 
@@ -39,15 +63,18 @@ actor {
             id = id;
             owner = unreg.owner;
             name = unreg.name;
-            pricePerNight= unreg.pricePerNight;
+            pricePerNight = unreg.pricePerNight;
             description = unreg.description;
             location = unreg.location;
             builtInDate = unreg.builtInDate;
-            bedroomCount= unreg.bedroomCount;
-            guestCapacity= unreg.guestCapacity;
-            bathroomCount= unreg.bathroomCount;
-            bedCount= unreg.bedCount;
+            bedroomCount = unreg.bedroomCount;
+            guestCapacity = unreg.guestCapacity;
+            bathroomCount = unreg.bathroomCount;
+            bedCount = unreg.bedCount;
             pictures = unreg.pictures;
+            coverPicture = unreg.coverPicture;
+            buildingType = unreg.buildingType;
+            rating = 0;
         };
 
         try {
@@ -57,6 +84,7 @@ actor {
             return "Error registering property: " # Error.message(e);
         };
     };
+
 
     public shared func updateProperty(updatedProp: Property) : async Int {
         try {
@@ -73,6 +101,19 @@ actor {
         return propertyInfo.get(propertyId);
     };
 
+    public query func getAllProperties() : async [Property] {
+        let properties = Vector.Vector<Property>();
+        for (p in propertyInfo.vals()) {
+            properties.add(p);
+        };
+        return (Vector.toArray(properties));
+    };
+
+    // Add this function to seed the properties when canister is initialized
+    // public func initialize() : async () {
+    //     // Call the seeder function
+    //     await seedProperties();
+    // }
     public query func propertyCount(): async Nat {
         return propertyInfo.size();
     };
