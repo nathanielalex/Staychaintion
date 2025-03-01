@@ -176,6 +176,8 @@ const AnimatedRoutes = () => {
 
             {/* Other Pages */}
 
+            {/* MARKETING PAGES */}
+
             <Route element={<MainLayout/>}>
               <Route path="/marketing" element={<MarketingGrowthPage />} />
               <Route path="/marketing/influencer" element={<InfluencerAffiliatePage />} />
@@ -184,6 +186,8 @@ const AnimatedRoutes = () => {
               <Route path="/case-studies/:id" element={<CaseStudyPage />} />
               <Route path="/influencer-affiliate/join" element={<InfluencerJoinPage />} />
             </Route>
+
+            {/* MARKETPLACE PAGES */}
 
             <Route element={<MainLayout/>}>
               <Route path="/marketplace" element={<MarketplacePage />} />

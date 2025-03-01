@@ -16,23 +16,22 @@ const products = [
     name: "Cozy Throw Blanket",
     category: "Merchandise",
     price: 39.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/images/marketplace/img1.png",
   },
   {
     id: 2,
     name: "Modern Coffee Table",
     category: "Furniture",
     price: 199.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/images/marketplace/img2.png",
   },
   {
     id: 3,
     name: "Scented Candle Set",
     category: "Gifts",
     price: 24.99,
-    image: "/placeholder.svg?height=300&width=300",
+    image: "/images/marketplace/img3.png",
   },
-  // Add more products here...
 ]
 
 export default function MarketplacePage() {

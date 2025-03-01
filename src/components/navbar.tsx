@@ -39,7 +39,8 @@ export default function Navbar() {
         <NavLink href="/landing">Home</NavLink>
         <NavLink href="/how-it-works">How it Works</NavLink>
         <NavLink href="/examples">Examples</NavLink>
-        <NavLink href="/pricing">Pricing</NavLink>
+        <NavLink href="/marketing">Marketing</NavLink>
+        <NavLink href="/marketplace">Marketplace</NavLink>
       </div>
 
       {/* Buttons */}
