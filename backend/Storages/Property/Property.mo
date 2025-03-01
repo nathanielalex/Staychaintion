@@ -97,18 +97,17 @@ actor {
             };
             
             let value = switch(attribute){
-                case("owner"){prop.owner};
+                case("owner"){Principal.toText(prop.owner) : Text};
                 case("name"){prop.name};
                 case("location"){prop.location};
                 case("builtInDate"){prop.builtInDate};
+                case (_) { "" };                
             };
 
-            if(Principal.equal(value, Principal.fromText(text_query))){
+            if(Text.contains(value, #text(text_query))){
                 property_array := Array.append<Property>(property_array, [prop]);
             };
-
         };
-
         return property_array;
     };
     

@@ -7,13 +7,17 @@ import Order "mo:base/Order";
 
 module {
     
+    public type UserRole = { #admin; #renter; #user; #guest};
+
     public type UserProfile = {
         id: Principal;
+        role: UserRole;
         fullName: Text;
         email: Text;
         dateOfBirth: Text;
         ballance: Nat;
         profilePictureUrl: Text;
+        propertiesId: ?[Text];
     };
 
     public type Renter = {
@@ -54,6 +58,25 @@ module {
         bedCount: Nat;
         pictures: [Text];
     };
+
+    public func userRoleToText(role: UserRole) : Text {
+        switch (role) {
+            case (#admin) { return "admin" };
+            case (#renter) { return "renter" };
+            case (#user) { return "user" };
+            case (#guest) { return "user" };
+        };
+    };
+
+    public func textToUserRole(role: Text) : UserRole {
+        switch (role) {
+            case ("admin") { return #admin };
+            case ("renter") { return #renter };
+            case ("user") { return #user };
+            case (_) { return #guest };
+        };
+    };
+    
 
     public func generateUUID() : async Text {
         let id = Source.Source();
@@ -127,6 +150,60 @@ module {
                 leftStart += 2 * currSize;
             };
             currSize *= 2;
+        };
+    };
+
+    public func optAppend<X>(array1 : ?[X], array2 : ?[X]) : ?[X] {
+        switch (array1) {
+            case (null) { return array2 };
+            case (?arr1) {
+                switch (array2) {
+                    case (null) { array1 };
+                    case (?arr2) {
+                        let size1 = arr1.size();
+                        let size2 = arr2.size();
+                        ?Array.tabulate<X>(size1 + size2, func i {
+                            if (i < size1) {
+                                arr1[i];
+                            } else {
+                                arr2[i - size1];
+                            };
+                        });
+                    };
+                };
+            };
+        };
+    };
+
+    public func optfilter<X>(array : ?[X], predicate : X -> Bool) : ?[X] {
+        switch(array) {
+            case(null) { return null };
+            case(?arr) { 
+                var count = 0;
+                let keep =
+                Array.tabulate<Bool>(
+                    arr.size(),
+                    func i {
+                        if (predicate(arr[i])) {
+                            count += 1;
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                );
+
+                var nextKeep = 0;
+                ?Array.tabulate<X>(
+                count, func _ {
+                        while (not keep[nextKeep]) {
+                        nextKeep += 1;
+                        };
+                        nextKeep += 1;
+                        arr[nextKeep - 1];
+                    }
+                );
+            };
         };
     };
 };
