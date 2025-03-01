@@ -10,7 +10,7 @@ import Array "mo:base/Array";
 import Order "mo:base/Order";
 // import Option "mo:base/Option";
 import { unwrap } "mo:base/Option";
-import Property "canister:Property";
+import Property "canister:Property_backend";
 import { sort; optfilter; optAppend } = "../Util";
 
 actor {
@@ -185,7 +185,7 @@ actor {
         };
     };
 
-    public query func getUserProperties(userId: Principal) : async [Property.Property] {
+    public shared func getUserProperties(userId: Principal) : async [Property.Property] {
         switch (userProfiles.get(userId)) {
             case null { return [] };
             case (?user) {
@@ -195,7 +195,7 @@ actor {
                         var properties: [Property.Property] = [];
                         for (propId in propIds.vals()) {
                             switch (await Property.getPropertyInfo(propId)) {
-                                case null {};
+                                case (null) {  };
                                 case (?prop) { properties := Array.append<Property.Property>(properties, [prop]) };
                             };
                         };

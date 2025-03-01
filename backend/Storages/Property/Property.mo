@@ -22,9 +22,7 @@ actor {
     // var propertyIdIndexes = Array.init<Text>(propertyInfo.size());
 
     stable var stablePropertyInfo: [(Text, Property)] = [];
-
-
-
+    
     // Seeder function that adds initial property data
     // private func seedProperties(): async () {
     //     let prop1: Util.UnregisteredProperty = {

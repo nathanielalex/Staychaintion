@@ -6,7 +6,7 @@ import Random "mo:base/Random";
 import Array "mo:base/Array";
 import Source "mo:uuid/Source";
 import UUID "mo:uuid/UUID";
-import UserProfile "canister:User";
+import UserProfile "canister:User_backend";
 import Util "../Storages/Util";
 import Vector "mo:vector/Class";
 
