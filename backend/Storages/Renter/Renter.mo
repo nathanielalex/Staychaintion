@@ -67,7 +67,7 @@ actor {
                     email = renter.email;
                     dateOfBirth = renter.dateOfBirth;
                     ballance = newBalance;
-                    profileUrl = renter.profileUrl;
+                    profilePictureUrl = renter.profilePictureUrl;
                     propertiesId = renter.propertiesId;
                 };
 
@@ -94,7 +94,7 @@ actor {
                     email = renter.email;
                     dateOfBirth = renter.dateOfBirth;
                     ballance = renter.ballance;
-                    profileUrl = renter.profileUrl;
+                    profilePictureUrl = renter.profilePictureUrl;
                     propertiesId = Array.append<Text>(renter.propertiesId, [propId]);
                 };
 
@@ -130,6 +130,92 @@ actor {
             };
         };
         return renter_array;
-    }
+    };
+
+    /**
+     * Retrieves a list of renters based on a specified text attribute and query.
+     *
+     * @param {Text} attribute - The attribute of the renter to search by. 
+     * Possible values are "id", "fullName", "email", "dateOfBirth", "profilePictureUrl".
+     * @param {Text} text_query - The text value to search for in the specified attribute.
+     * @param {Nat} count - The maximum number of renters to return.
+     * @return {async [Renter]} - An array of renters that match the search criteria.
+     */
+    public query func getRenterFromTextAttribute(attribute: Text, text_query: Text, count: Nat): async [Renter] {
+        var renterArray: [Renter] = [];
+
+        for (renter in renterProfiles.vals()) {
+            if (renterArray.size() >= count) {
+                return renterArray;
+            };
+
+            let value = switch (attribute) {
+                case ("id") { Principal.toText(renter.id) };
+                case ("fullName") { renter.fullName };
+                case ("email") { renter.email };
+                case ("dateOfBirth") { renter.dateOfBirth };
+                case ("profilePictureUrl") { renter.profilePictureUrl };
+                case (_) { "" };
+            };
+
+            if (Text.contains(value, text_query)) {
+                renterArray := Array.append<Renter>(renterArray, [renter]);
+            };
+        };
+
+        return renterArray;
+    };
+
+    /**
+     * Retrieves a list of renters based on a specified attribute, order, comparison, and query parameters.
+     *
+     * @param {Text} attribute - The attribute of the renter to filter by (e.g., "ballance").
+     * @param {Text} order - The order in which to sort the results ("asc" for ascending, "desc" for descending).
+     * @param {Int8} comparison - The comparison operator to use (1 for greater than or equal, 0 for equal, -1 for less than or equal).
+     * @param {Nat} numQuery - The value to compare the attribute against.
+     * @param {Nat} count - The maximum number of renters to return.
+     * @return {async [Renter]} - A list of renters that match the specified criteria, sorted by the specified order.
+     */
+    public query func getRenterFromNatAttribute(attribute: Text, order: Text, comparison: Int8, numQuery: Nat, count: Nat): async [Renter] {
+        var renterArray: [Renter] = [];
+
+        for (renter in renterProfiles.vals()) {
+            if (renterArray.size() >= count) {
+                return sort<Renter>(renterArray, if (order == "asc") natCompareAsc else natCompareDesc, attribute);
+            };
+
+            let value = switch (attribute) {
+                case ("ballance") { renter.ballance };
+                case (_) { 0 };
+            };
+
+            let shouldAdd: Bool = switch (comparison) {
+                case (1) { value >= numQuery };
+                case (0) { value == numQuery };
+                case (-1) { value <= numQuery };
+                case (_) { value == numQuery };
+            };
+
+            if (shouldAdd) {
+                renterArray := Array.append<Renter>(renterArray, [renter]);
+            };
+        };
+
+        return sort<Renter>(renterArray, if (order == "asc") natCompareAsc else natCompareDesc, attribute);
+    };
+
+    private func natCompareAsc(x_renter: Renter, y_renter: Renter, attribute: Text): Order.Order {
+        switch (attribute) {
+            case ("ballance") { if (x_renter.ballance > y_renter.ballance) #greater else if (x_renter.ballance == y_renter.ballance) #equal else #less };
+            case (_) { #equal };
+        };
+    };
+
+    private func natCompareDesc(x_renter: Renter, y_renter: Renter, attribute: Text): Order.Order {
+        switch (attribute) {
+            case ("ballance") { if (x_renter.ballance < y_renter.ballance) #greater else if (x_renter.ballance == y_renter.ballance) #equal else #less };
+            case (_) { #equal };
+        };
+    };
 
 };

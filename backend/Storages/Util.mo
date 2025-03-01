@@ -21,8 +21,8 @@ module {
         fullName: Text;
         email: Text;
         dateOfBirth: Text;
-        profileUrl: Text;
         ballance: Nat;
+        profilePictureUrl: Text;
         propertiesId: [Text];
     };
     

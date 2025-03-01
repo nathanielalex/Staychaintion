@@ -77,145 +77,40 @@ actor {
         return propertyInfo.size();
     };
 
+
+    /**
+     * Retrieves a list of properties based on a specified text attribute and query.
+     *
+     * @param {Text} attribute - The attribute of the property to search by. 
+     *                           Possible values are "owner", "name", "location", "builtInDate".
+     * @param {Text} text_query - The text value to search for in the specified attribute.
+     * @param {Nat} count - The maximum number of properties to return.
+     * @return {async [Property]} - An array of properties that match the search criteria.
+     */
     public query func getPropertyFromTextAtribute(attribute: Text, text_query:Text, count: Nat): async [Property]{
         var property_array: [Property] = [];
 
-        if(attribute == "owner"){
-            for(prop in propertyInfo.vals()){
-                if(property_array.size() >= count){
-                    return property_array;
-                } else if(Principal.equal(prop.owner, Principal.fromText(text_query))){
-                    property_array := Array.append<Property>(property_array, [prop]);
-                };
-            };
-            return property_array;
-        } else if(attribute == "name"){
-            for(prop in propertyInfo.vals()){
-                if(property_array.size() >= count){
-                    return property_array;
-                } else if(Text.contains(prop.name, #text text_query)){
-                    property_array := Array.append<Property>(property_array, [prop]);
-                };
-            };
-            return property_array;
+        for(prop in propertyInfo.vals()){
 
-        } else if(attribute == "location"){
-            for(prop in propertyInfo.vals()){
-                if(property_array.size() >= count){
-                    return property_array;
-                } else if(Text.contains(prop.location, #text text_query)){
-                    property_array := Array.append<Property>(property_array, [prop]);
-                };
+            if(property_array.size() >= count){
+                return property_array;
             };
-            return property_array;
+            
+            let value = switch(attribute){
+                case("owner"){prop.owner};
+                case("name"){prop.name};
+                case("location"){prop.location};
+                case("builtInDate"){prop.builtInDate};
+            };
 
-        } else if(attribute == "builtInDate"){
-            for(prop in propertyInfo.vals()){
-                if(property_array.size()>= count){
-                    return property_array;
-                } else if(Text.contains(prop.builtInDate, #text text_query)){
-                    property_array := Array.append<Property>(property_array, [prop]);
-                };
+            if(Principal.equal(value, Principal.fromText(text_query))){
+                property_array := Array.append<Property>(property_array, [prop]);
             };
-            return property_array; 
+
         };
 
         return property_array;
-
     };
-
-    // public query func getPropertyFromNatAtribute(attribute: Text, order: Text, bla_bla_then: Int8 , num_query:Nat, count: Nat): async [Property]{
-    //     var property_array: [Property] = [];
-
-    //     if(attribute == "pricePerNight"){
-    //         for(prop in propertyInfo.vals()){
-    //             if(Array.size(property_array) >= count){
-    //                 return if(order == "asc"){Array.sort<Nat>(property_array, natCompareAsc)}else{Array.sort<Nat>(property_array, natCompareDesc)};
-    //             } else {
-    //                 let value = switch(bla_bla_then){
-    //                     case(1){prop.pricePerNight >= num_query};
-    //                     case(0){prop.pricePerNight == num_query};
-    //                     case(-1){prop.pricePerNight <= num_query};
-    //                 };
-
-    //                 if(value){
-    //                     property_array := Array.append<Property>(property_array, [prop]);
-    //                 };
-    //             };
-    //         };
-    //         return property_array;
-    //     } else if(attribute == "bedroomCount"){
-    //         for(prop in propertyInfo.vals()){
-    //             if(Array.size(property_array) >= count){
-    //                 return if(order == "asc"){Array.sort<Nat>(property_array, natCompareAsc)}else{Array.sort<Nat>(property_array, natCompareDesc)};
-    //             } else {
-    //                 let value = switch(bla_bla_then){
-    //                     case(1){prop.bedroomCount >= num_query};
-    //                     case(0){prop.bedroomCount == num_query};
-    //                     case(-1){prop.bedroomCount <= num_query};
-    //                 };
-
-    //                 if(value){
-    //                     property_array := Array.append<Property>(property_array, [prop]);
-    //                 };
-    //             };
-    //         };
-    //         return property_array;
-    //     } else if(attribute == "guestCapacity"){
-    //         for(prop in propertyInfo.vals()){
-    //             if(Array.size(property_array) >= count){
-    //                 return if(order == "asc"){Array.sort<Nat>(property_array, natCompareAsc)}else{Array.sort<Nat>(property_array, natCompareDesc)};
-    //             } else {
-    //                 let value = switch(bla_bla_then){
-    //                     case(1){prop.guestCapacity >= num_query};
-    //                     case(0){prop.guestCapacity == num_query};
-    //                     case(-1){prop.guestCapacity <= num_query};
-    //                 };
-
-    //                 if(value){
-    //                     property_array := Array.append<Property>(property_array, [prop]);
-    //                 };
-    //             };
-    //         };
-    //         return property_array;
-    //     } else if(attribute == "bathroomCount"){
-    //         for(prop in propertyInfo.vals()){
-    //             if(Array.size(property_array) >= count){
-    //                 return if(order == "asc"){Array.sort<Nat>(property_array, natCompareAsc)}else{Array.sort<Nat>(property_array, natCompareDesc)};
-    //             } else {
-    //                 let value = switch(bla_bla_then){
-    //                     case(1){prop.bathroomCount >= num_query};
-    //                     case(0){prop.bathroomCount == num_query};
-    //                     case(-1){prop.bathroomCount <= num_query};
-    //                 };
-
-    //                 if(value){
-    //                     property_array := Array.append<Property>(property_array, [prop]);
-    //                 };
-    //             };
-    //         };
-    //         return property_array;
-    //     } else if(attribute == "bedCount"){
-    //         for(prop in propertyInfo.vals()){
-    //             if(Array.size(property_array) >= count){
-    //                 return if(order == "asc"){Array.sort<Nat>(property_array, natCompareAsc)}else{Array.sort<Nat>(property_array, natCompareDesc)};
-    //             } else {
-    //                 let value = switch(bla_bla_then){
-    //                     case(1){prop.bedCount >= num_query};
-    //                     case(0){prop.bedCount == num_query};
-    //                     case(-1){prop.bedCount <= num_query};
-    //                 };
-    //                 if(value){
-    //                     property_array := Array.append<Property>(property_array, [prop]);
-    //                 };
-    //             };
-    //         };
-    //         return property_array;
-    //     };
-
-    //     return property_array;
-    // };
-
     
     /**
      * Retrieves a list of properties based on a specified attribute, order, comparison, and query parameters.
@@ -280,18 +175,4 @@ actor {
             case (_) { #equal };
         };
     };
-
-
-    // public query func getPropertyAfter(propertyId: Text, count: Nat) : async [Property] {
-    //     if(propertyId == ""){
-
-    //     } else {
-    //         let index = propertyIdIndexes.indexOf(propertyId);
-    //         if (index == -1) {
-    //             return [];
-    //         };
-    //         return Array.take<Property>(propertyIdIndexes, index + 1, count);
-    //     }
-    // };
-
 };
