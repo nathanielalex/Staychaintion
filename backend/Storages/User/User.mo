@@ -239,8 +239,8 @@ actor {
 
         return userArray;
     };
-    
-    public query func getUserIdFromTextAttribute(attribute: Text, text_query: Text): async [UserProfile] {
+
+    public query func getUserIdFromTextAttribute(attribute: Text, text_query: Text): async [Principal] {
         var itertyp = userProfiles.vals();
 
         itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
@@ -254,9 +254,7 @@ actor {
             }, #text(text_query));
         });
 
-        itertyp := Iter.map<UserProfile, Principal>(itertyp, func (user: UserProfile): Principal{ return user.id; });
-
-        return Iter.toArray<Principal>(itertyp);
+        return Iter.toArray<Principal>(Iter.map<UserProfile, Principal>(itertyp, func (user: UserProfile): Principal{ return user.id; }));
     };
 
     /**
@@ -298,7 +296,7 @@ actor {
     };
 
 
-    public query func getUserIdFromNatAttribute(attribute: Text, order: Text, comparison: Int8, numQuery: Nat): async [UserProfile] {
+    public query func getUserIdFromNatAttribute(attribute: Text, order: Text, comparison: Int8, numQuery: Nat): async [Principal] {
         var itertyp = userProfiles.vals();
 
         itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
@@ -315,9 +313,7 @@ actor {
             };
         });
 
-        itertyp := Iter.map<UserProfile, Principal>(itertyp, func (user: UserProfile): Principal{ return user.id; });
-
-        return Iter.toArray<Principal>(itertyp);
+        return Iter.toArray<Principal>(Iter.map<UserProfile, Principal>(itertyp, func (user: UserProfile): Principal{ return user.id; }));
     };
 
 

@@ -149,6 +149,22 @@ actor {
         };
         return property_array;
     };
+
+    public query func getPropertyIdFromTextAttribute(attribute: Text, text_query: Text): async [Text] {
+        var itertyp = propertyInfo.vals();
+
+        itertyp := Iter.filter<Property>(itertyp, func (prop: Property): Bool {
+            return Text.contains( switch(attribute){
+                case("owner"){Principal.toText(prop.owner) : Text};
+                case("name"){prop.name};
+                case("location"){prop.location};
+                case("builtInDate"){prop.builtInDate};
+                case (_) { "" };
+            }, #text(text_query));
+        });
+
+        return Iter.toArray<Text>(Iter.map<Property, Text>(itertyp, func (prop: Property): Text { prop.id; }));
+    };
     
     /**
      * Retrieves a list of properties based on a specified attribute, order, comparison, and query parameters.
@@ -190,6 +206,30 @@ actor {
         };
 
         return sort<Property>(propertyArray, if (order == "asc") natCompareAsc else natCompareDesc , attribute);
+    };
+
+    public query func getPropIdFromNatAttribute(attribute: Text, order: Text, comparison: Int8, numQuery: Nat): async [Text] {
+        var itertyp = propertyInfo.vals();
+
+        itertyp := Iter.filter<Property>(itertyp, func (prop: Property): Bool {
+            let value = switch (attribute) {
+                case ("pricePerNight") { prop.pricePerNight };
+                case ("bedroomCount") { prop.bedroomCount };
+                case ("guestCapacity") { prop.guestCapacity };
+                case ("bathroomCount") { prop.bathroomCount };
+                case ("bedCount") { prop.bedCount };
+                case (_) { 0 };
+            };
+
+            return switch (comparison) {
+                case (1) { value >= numQuery };
+                case (0) { value == numQuery };
+                case (-1) { value <= numQuery };
+                case (_) { value == numQuery };
+            };
+        });
+
+        return Iter.toArray<Text>(Iter.map<Property, Text>(itertyp, func (prop: Property): Text{ return prop.id; }));
     };
 
     private func natCompareAsc(x_prop: Property, y_prop: Property, attribute: Text): Order.Order {
