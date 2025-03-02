@@ -239,6 +239,25 @@ actor {
 
         return userArray;
     };
+    
+    public query func getUserIdFromTextAttribute(attribute: Text, text_query: Text): async [UserProfile] {
+        var itertyp = userProfiles.vals();
+
+        itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
+            return Text.contains( switch (attribute) {
+                case ("id") { Principal.toText(user.id) };
+                case ("fullName") { user.fullName };
+                case ("email") { user.email };
+                case ("dateOfBirth") { user.dateOfBirth };
+                case ("profilePictureUrl") { user.profilePictureUrl };
+                case (_) { "" };
+            }, #text(text_query));
+        });
+
+        itertyp := Iter.map<UserProfile, Principal>(itertyp, func (user: UserProfile): Principal{ return user.id; });
+
+        return Iter.toArray<Principal>(itertyp);
+    };
 
     /**
      * Retrieves a list of users based on a specified attribute, order, comparison, and query parameters.
@@ -277,6 +296,30 @@ actor {
 
         return sort<UserProfile>(userArray, if (order == "asc") natCompareAsc else natCompareDesc, attribute);
     };
+
+
+    public query func getUserIdFromNatAttribute(attribute: Text, order: Text, comparison: Int8, numQuery: Nat): async [UserProfile] {
+        var itertyp = userProfiles.vals();
+
+        itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
+            let value = switch (attribute) {
+                case ("ballance") { user.ballance };
+                case (_) { 0 };
+            };
+
+            return switch (comparison) {
+                case (1) { value >= numQuery };
+                case (0) { value == numQuery };
+                case (-1) { value <= numQuery };
+                case (_) { value == numQuery };
+            };
+        });
+
+        itertyp := Iter.map<UserProfile, Principal>(itertyp, func (user: UserProfile): Principal{ return user.id; });
+
+        return Iter.toArray<Principal>(itertyp);
+    };
+
 
     public query func getUserFromRole(roleQuery: UserRole, count: Nat): async [UserProfile] {
         var userArray: [UserProfile] = [];
