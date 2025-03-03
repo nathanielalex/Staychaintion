@@ -45,10 +45,14 @@ export default function Navbar() {
 
       {/* Buttons */}
       <div className="hidden md:flex items-center space-x-4">
-        <Button variant="ghost" className="text-white hover:text-blue-600">
-          Sign In
-        </Button>
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white">Get Started</Button>
+        <a href="/register2">
+          <Button variant="ghost" className="text-white hover:text-blue-600">
+            Sign In
+          </Button>
+        </a>
+        <a href="/home">
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white">Connect</Button>
+        </a>
       </div>
 
       {/* Mobile Menu Button */}
