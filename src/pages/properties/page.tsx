@@ -127,7 +127,7 @@ export default function PropertiesPage() {
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden">
       {/* Ambient background with moving particles */}
       <div className="absolute inset-0">
         <SparklesCore

@@ -37,8 +37,8 @@ export default function Navbar() {
       {/* Desktop Navigation Links */}
       <div className="hidden md:flex items-center space-x-8">
         <NavLink href="/landing">Home</NavLink>
-        <NavLink href="/how-it-works">How it Works</NavLink>
-        <NavLink href="/examples">Examples</NavLink>
+        <NavLink href="/properties">Properties</NavLink>
+        <NavLink href="/ai">AI Features</NavLink>
         <NavLink href="/marketing">Marketing</NavLink>
         <NavLink href="/marketplace">Marketplace</NavLink>
       </div>

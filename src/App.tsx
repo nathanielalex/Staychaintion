@@ -12,7 +12,7 @@ import { SetStateAction, useEffect, useState } from 'react';
 import LandingPage from './pages/LandingPage';
 import NotFoundPage from "./pages/NotFoundPage";
 import ChatPage from "./pages/Chat";
-import ProfilePage from "./pages/profiles/ProfilePage";
+
 import AnimatedCursor from 'react-animated-cursor';
 import PropertyListPage from './pages/PropertyListPage';
 import MainLayout from './pages/layout/MainLayout';
@@ -39,12 +39,24 @@ import AdminAnalytics from './pages/admin/analytics/page';
 import AdminProperties from './pages/admin/properties/page';
 
 
+// User
+
+import UserLayout from "./pages/profiles/layout";
+import ProfilePage from "./pages/profiles/ProfilePage";
+
+import UserProfileSettings from './pages/profiles/settings/page';
+import UserPropertiesPage from './pages/profiles/properties/page';
+import UserAnalyticsPage from './pages/profiles/analytics/page';
+
+
 // AI
 
 import PredictPrice from './pages/ai/PredictPrice';
 import StayAI from './pages/ai/StayAI';
 import RoomClassifier from './pages/ai/RoomClassifier';
 import ProtectedRoute from './utility/ProtectedRoute';
+
+import AIFeaturesPage from './pages/ai-page/page';
 
 
 // Marketing Page
@@ -60,6 +72,11 @@ import InfluencerJoinPage from './pages/influencer/join/page';
 // Marketplace Page
 
 import MarketplacePage from './pages/marketplace/page';
+
+
+// Other Pages
+
+import ComingSoonPage from './pages/coming-soon/page';
 
 
 const pageVariants = {
@@ -136,8 +153,6 @@ const AnimatedRoutes = () => {
 
             <Route path="/chat" element={<ChatPage />} />
 
-            <Route path="/profiles" element={<ProfilePage />} />
-
             <Route path="/maps" element={<Maps />} />
 
             {/* MAIN PAGES SECTION */}
@@ -166,14 +181,35 @@ const AnimatedRoutes = () => {
             <Route path="/admin/properties" element={<AdminLayout children={<AdminProperties />} />}>
             </Route>
 
+            {/* USER PROFILE PAGES SECTION */}
+
+            <Route path="/user" element={<UserLayout children={<ProfilePage />} />}>
+            </Route>
+
+            <Route path="/user/settings" element={<UserLayout children={<UserProfileSettings />} />}>
+            </Route>
+
+            <Route path="/user/properties" element={<UserLayout children={<UserPropertiesPage />} />}>
+            </Route>
+
+            <Route path="/user/analytics" element={<UserLayout children={<UserAnalyticsPage />} />}>
+            </Route>
+
+
             {/* AI PAGES SECTION */}
 
-            <Route path="/predicts" element={<PredictPrice />} />
+            <Route element={<MainLayout/>}>
+              <Route path="/ai" element={<AIFeaturesPage />} />
 
-            <Route path="/chatbot" element={<StayAI />} />
+              <Route path="/predicts" element={<PredictPrice />} />
 
-            <Route path="/room-classifier" element={<RoomClassifier />} />
+              <Route path="/chatbot" element={<StayAI />} />
 
+              
+            </Route>
+
+            <Route path="/room-classifier" element={<ComingSoonPage />} />
+            
             {/* Other Pages */}
 
             {/* MARKETING PAGES */}
