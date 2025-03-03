@@ -19,16 +19,6 @@ module {
         profilePictureUrl: Text;
         propertiesId: ?[Text];
     };
-
-    public type Renter = {
-        id: Principal;
-        fullName: Text;
-        email: Text;
-        dateOfBirth: Text;
-        ballance: Nat;
-        profilePictureUrl: Text;
-        propertiesId: [Text];
-    };
     
     public type Property = {
         id: Text;

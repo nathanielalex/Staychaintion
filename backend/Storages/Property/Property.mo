@@ -150,6 +150,30 @@ actor {
         return property_array;
     };
 
+    public query func getPropertyFromTextAttributePaginate(attribute: Text, text_query: Text, page: Int, count: Nat): async ([Property], Nat) {
+        var itertyp = propertyInfo.vals();
+        var cursor = 0;
+        var counter = 0;
+        let skip = (page-1)*count;
+
+        itertyp := Iter.filter<Property>(itertyp, func (prop: Property): Bool {
+            if(Text.contains( switch (attribute) {
+                case("owner"){Principal.toText(prop.owner) : Text};
+                case("name"){prop.name};
+                case("location"){prop.location};
+                case("builtInDate"){prop.builtInDate};
+                case (_) { "" };                
+            }, #text(text_query))){
+                cursor += 1;
+                if (cursor > skip and counter <= count) {
+                    counter += 1;
+                    return true;
+                } else false;
+            } else false;
+        });
+        return (Iter.toArray<Property>(itertyp), counter);
+    };
+
     public query func getPropertyIdFromTextAttribute(attribute: Text, text_query: Text): async [Text] {
         var itertyp = propertyInfo.vals();
 
@@ -208,6 +232,39 @@ actor {
         return sort<Property>(propertyArray, if (order == "asc") natCompareAsc else natCompareDesc , attribute);
     };
 
+    public query func getPropertyFromNatAttributePaginate(attribute: Text, num_query: Nat, order: Text, comparison: Int8, page: Int, count: Nat): async ([Property], Nat) {
+        var itertyp = propertyInfo.vals();
+        var cursor = 0;
+        var counter = 0;
+        let skip = (page-1)*count;
+
+        itertyp := Iter.filter<Property>(itertyp, func (prop: Property): Bool {
+            let value = switch (attribute) {
+                case ("pricePerNight") { prop.pricePerNight };
+                case ("bedroomCount") { prop.bedroomCount };
+                case ("guestCapacity") { prop.guestCapacity };
+                case ("bathroomCount") { prop.bathroomCount };
+                case ("bedCount") { prop.bedCount };
+                case (_) { 0 };
+            };
+
+            if (switch (comparison) {
+                case (1) { value >= num_query };
+                case (0) { value == num_query };
+                case (-1) { value <= num_query };
+                case (_) { value == num_query };
+            }) {
+                cursor += 1;
+                if (cursor > skip and counter < count) {
+                    counter += 1;
+                    return true;
+                } else false;
+            } else false;
+        });
+
+        return (sort<Property>(Iter.toArray<Property>(itertyp), if (order == "asc") natCompareAsc else natCompareDesc, attribute), counter);
+    };
+
     public query func getPropIdFromNatAttribute(attribute: Text, order: Text, comparison: Int8, numQuery: Nat): async [Text] {
         var itertyp = propertyInfo.vals();
 
@@ -252,5 +309,16 @@ actor {
             case ("bedCount") { if(x_prop.bedCount < y_prop.bedCount) #greater else if(x_prop.bedCount == y_prop.bedCount) #equal else #less };
             case (_) { #equal };
         };
+    };
+
+    public query func getProperty(propIds: [Text]): async [Property] {
+        let vec = Vector.Vector<Property>();
+        for(propId in propIds.vals()){
+            switch(propertyInfo.get(propId)){
+                case (?prop) { vec.add(prop) };
+                case (null) {};
+            };
+        };
+        return Vector.toArray<Property>(vec);
     };
 };

@@ -9,7 +9,9 @@ import { print } "mo:base/Debug";
 import Array "mo:base/Array";
 import Order "mo:base/Order";
 // import Option "mo:base/Option";
+import Vector "mo:vector/Class";
 import { unwrap } "mo:base/Option";
+import Int "mo:base/Int";
 import Property "canister:Property_backend";
 import { sort; optfilter; optAppend } = "../Util";
 
@@ -119,16 +121,6 @@ actor {
         };
     };
 
-    public query func getUserFromName(name_query:Text): async [UserProfile]{
-        var user_array: [UserProfile] = [];
-        for(user in userProfiles.vals()){
-            if(Text.contains(user.fullName, #text(name_query))){
-                user_array := Array.append<UserProfile>(user_array, [user]);
-            };
-        };
-        return user_array;
-    };
-
     public shared func registerNewPropertyToUser(userId: Principal, property: Util.UnregisteredProperty) : async Nat {
         switch (userProfiles.get(userId)) {
             case null { return 0 };
@@ -226,6 +218,7 @@ actor {
             let value = switch (attribute) {
                 case ("id") { Principal.toText(user.id) };
                 case ("fullName") { user.fullName };
+                case ("role") { Util.userRoleToText(user.role) };
                 case ("email") { user.email };
                 case ("dateOfBirth") { user.dateOfBirth };
                 case ("profilePictureUrl") { user.profilePictureUrl };
@@ -240,6 +233,32 @@ actor {
         return userArray;
     };
 
+    public query func getUserFromTextAttributePaginate(attribute: Text, text_query: Text, page: Int, count: Nat): async ([UserProfile], Nat) {
+        var itertyp = userProfiles.vals();
+        var cursor = 0;
+        var counter = 0;
+        let skip = (page-1)*count;
+
+        itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
+            if(Text.contains( switch (attribute) {
+                case ("id") { Principal.toText(user.id) };
+                case ("fullName") { user.fullName };
+                case ("role") { Util.userRoleToText(user.role) };
+                case ("email") { user.email };
+                case ("dateOfBirth") { user.dateOfBirth };
+                case ("profilePictureUrl") { user.profilePictureUrl };
+                case (_) { "" };
+            }, #text(text_query))){
+                cursor += 1;
+                if (cursor > skip and counter <= count) {
+                    counter += 1;
+                    return true;
+                } else false;
+            } else false;
+        });
+        return (Iter.toArray<UserProfile>(itertyp), counter);
+    };
+
     public query func getUserIdFromTextAttribute(attribute: Text, text_query: Text): async [Principal] {
         var itertyp = userProfiles.vals();
 
@@ -247,6 +266,7 @@ actor {
             return Text.contains( switch (attribute) {
                 case ("id") { Principal.toText(user.id) };
                 case ("fullName") { user.fullName };
+                case ("role") { Util.userRoleToText(user.role) };
                 case ("email") { user.email };
                 case ("dateOfBirth") { user.dateOfBirth };
                 case ("profilePictureUrl") { user.profilePictureUrl };
@@ -295,8 +315,36 @@ actor {
         return sort<UserProfile>(userArray, if (order == "asc") natCompareAsc else natCompareDesc, attribute);
     };
 
+    public query func getUserFromNatAttributePaginate(attribute: Text, num_query: Nat, order: Text, comparison: Int8, page: Int, count: Nat): async ([UserProfile], Nat) {
+        var itertyp = userProfiles.vals();
+        var cursor = 0;
+        var counter = 0;
+        let skip = (page-1)*count;
 
-    public query func getUserIdFromNatAttribute(attribute: Text, order: Text, comparison: Int8, numQuery: Nat): async [Principal] {
+        itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
+            let value = switch (attribute) {
+                case ("ballance") { user.ballance };
+                case (_) { 0 };
+            };
+
+            if (switch (comparison) {
+                case (1) { value >= num_query };
+                case (0) { value == num_query };
+                case (-1) { value <= num_query };
+                case (_) { value == num_query };
+            }) {
+                cursor += 1;
+                if (cursor > skip and counter < count) {
+                    counter += 1;
+                    return true;
+                } else false;
+            } else false;
+        });
+
+        return (sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (order == "asc") natCompareAsc else natCompareDesc, attribute), counter);
+    };
+
+    public query func getUserIdFromNatAttribute(attribute: Text, comparison: Int8, numQuery: Nat): async [Principal] {
         var itertyp = userProfiles.vals();
 
         itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
@@ -346,6 +394,15 @@ actor {
         };
     };
 
-
+    public query func getUsers(userIds: [Principal]): async [UserProfile] {
+        let vec = Vector.Vector<UserProfile>();
+        for(userId in userIds.vals()){
+            switch(userProfiles.get(userId)){
+                case (?user) { vec.add(user) };
+                case (null) {};
+            };
+        };
+        return Vector.toArray<UserProfile>(vec);
+    };
 
 };
