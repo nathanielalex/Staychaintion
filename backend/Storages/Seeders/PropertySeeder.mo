@@ -2,7 +2,6 @@ import Debug "mo:base/Debug";
 import Principal "mo:base/Principal";
 import Property "canister:Property_backend";
 import Util "../Util";
-// Unbound bla bla -> not import
 
 actor {
 
