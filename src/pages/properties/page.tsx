@@ -11,6 +11,7 @@ import { Principal } from "@dfinity/principal"
 import { Property_backend } from "@/declarations/Property_backend"
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
 import { UnregisteredProperty } from "@/declarations/Property_backend/Property_backend.did"
+import { PropertyStatus } from "@/declarations/Property_backend/Property_backend.did"
 
 // Sample data
 
@@ -99,6 +100,7 @@ export default function PropertiesPage() {
     // Creating an instance of UnregisteredProperty
     const newProperty: UnregisteredProperty = {
       bedCount: 2n,
+      status: { available : null },
       owner: Principal.fromText('aaaaa-aa'),
       pricePerNight: 1000000n,
       name: 'Luxury A-Frame Cabin',
