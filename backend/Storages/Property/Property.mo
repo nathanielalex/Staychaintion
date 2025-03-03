@@ -168,7 +168,7 @@ actor {
                 case("location"){prop.location};
                 case("builtInDate"){prop.builtInDate};
                 case("buildingType"){prop.buildingType};
-                case (_) { "" };                
+                case (_) { "" };
             }, #text(text_query))){
                 cursor += 1;
                 if (cursor > skip and counter <= count) {
