@@ -156,11 +156,11 @@ export default function NewsletterSection() {
 
                 <p className="text-sm text-gray-500 text-center">
                   By joining, you agree to our{" "}
-                  <a href="/terms" className="text-blue-600 hover:text-blue-700">
+                  <a href="/legal" className="text-blue-600 hover:text-blue-700">
                     Terms
                   </a>{" "}
                   and{" "}
-                  <a href="/privacy" className="text-blue-600 hover:text-blue-700">
+                  <a href="/legal" className="text-blue-600 hover:text-blue-700">
                     Privacy Policy
                   </a>
                 </p>

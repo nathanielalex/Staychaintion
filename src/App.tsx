@@ -12,7 +12,7 @@ import { SetStateAction, useEffect, useState } from 'react';
 import LandingPage from './pages/LandingPage';
 import NotFoundPage from "./pages/NotFoundPage";
 import ChatPage from "./pages/Chat";
-import ProfilePage from "./pages/profiles/ProfilePage";
+
 import AnimatedCursor from 'react-animated-cursor';
 import PropertyListPage from './pages/PropertyListPage';
 import MainLayout from './pages/layout/MainLayout';
@@ -21,8 +21,14 @@ import Logo from "./assets/house.png";
 import Maps from "@/pages/Maps"
 import { PropertyFilterProvider } from './context/PropertyFilterContext';
 
-import TeamPage from './pages/TeamPage';
+import RegisterFinal from './pages/auth/page';
+import LegalPage from './pages/legal/page';
 
+import ContactPage from './pages/contact/page';
+
+import TeamPage from './pages/TeamPage';
+import PropertiesPage from './pages/properties/page';
+import PropertyDetailPage from './pages/properties/[id]/page';
 
 // Admin
 
@@ -33,11 +39,44 @@ import AdminAnalytics from './pages/admin/analytics/page';
 import AdminProperties from './pages/admin/properties/page';
 
 
+// User
+
+import UserLayout from "./pages/profiles/layout";
+import ProfilePage from "./pages/profiles/ProfilePage";
+
+import UserProfileSettings from './pages/profiles/settings/page';
+import UserPropertiesPage from './pages/profiles/properties/page';
+import UserAnalyticsPage from './pages/profiles/analytics/page';
+
+
 // AI
 
 import PredictPrice from './pages/ai/PredictPrice';
 import StayAI from './pages/ai/StayAI';
 import RoomClassifier from './pages/ai/RoomClassifier';
+import ProtectedRoute from './utility/ProtectedRoute';
+
+import AIFeaturesPage from './pages/ai-page/page';
+
+
+// Marketing Page
+
+import MarketingGrowthPage from './pages/marketing/page';
+import InfluencerAffiliatePage from './pages/influencer/page';
+import BlogPage from './pages/blog/page';
+import BlogDetailPage from './pages/blog/[id]/page'
+import CaseStudyPage from './pages/case-studies/[id]/page';
+import InfluencerJoinPage from './pages/influencer/join/page';
+
+
+// Marketplace Page
+
+import MarketplacePage from './pages/marketplace/page';
+
+
+// Other Pages
+
+import ComingSoonPage from './pages/coming-soon/page';
 
 
 const pageVariants = {
@@ -75,7 +114,7 @@ const AnimatedRoutes = () => {
 
   const location = useLocation();
   const [loading, setLoading] = useState(true);
-
+  const { isAuthenticated } = useAuth();
 
   return (
 
@@ -93,7 +132,16 @@ const AnimatedRoutes = () => {
 
             <Route path="/" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LoggedOut /></motion.div>} />
 
-            <Route path="/home" element={<HomePage />} />
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* <Route path="/home" element={<HomePage />} /> */}
 
             <Route path="/register" element={<RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
               throw new Error('Function not implemented.');
@@ -101,9 +149,13 @@ const AnimatedRoutes = () => {
 
             <Route path="/register2" element={<RegisterPage2 />} />
 
+            <Route path="/legal" element={<LegalPage />} />
+
+            <Route path="/chat" element={<ChatPage />} />
+
+            <Route path="/maps" element={<Maps />} />
 
             {/* MAIN PAGES SECTION */}
-            
 
             <Route element={<MainLayout/>}>
               <Route path="/list" element={
@@ -111,8 +163,11 @@ const AnimatedRoutes = () => {
                   <PropertyListPage/>
                 </PropertyFilterProvider>
               } />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/teams" element={<TeamPage />} />
               <Route path="/landing" element={<LandingPage />} />
+              <Route path="/properties" element={<PropertiesPage />} />
+              <Route path="/properties/details" element={<PropertyDetailPage />} />
             </Route>
 
               {/* ADMIN PAGES SECTION */}
@@ -126,19 +181,53 @@ const AnimatedRoutes = () => {
             <Route path="/admin/properties" element={<AdminLayout children={<AdminProperties />} />}>
             </Route>
 
-            <Route path="/chat" element={<ChatPage />} />
+            {/* USER PROFILE PAGES SECTION */}
 
-            <Route path="/profiles" element={<ProfilePage />} />
+            <Route path="/user" element={<UserLayout children={<ProfilePage />} />}>
+            </Route>
 
-            <Route path="/maps" element={<Maps />} />
+            <Route path="/user/settings" element={<UserLayout children={<UserProfileSettings />} />}>
+            </Route>
+
+            <Route path="/user/properties" element={<UserLayout children={<UserPropertiesPage />} />}>
+            </Route>
+
+            <Route path="/user/analytics" element={<UserLayout children={<UserAnalyticsPage />} />}>
+            </Route>
+
 
             {/* AI PAGES SECTION */}
 
-            <Route path="/predicts" element={<PredictPrice />} />
+            <Route element={<MainLayout/>}>
+              <Route path="/ai" element={<AIFeaturesPage />} />
 
-            <Route path="/chatbot" element={<StayAI />} />
+              <Route path="/predicts" element={<PredictPrice />} />
 
-            <Route path="/room-classifier" element={<RoomClassifier />} />
+              <Route path="/chatbot" element={<StayAI />} />
+
+              
+            </Route>
+
+            <Route path="/room-classifier" element={<ComingSoonPage />} />
+            
+            {/* Other Pages */}
+
+            {/* MARKETING PAGES */}
+
+            <Route element={<MainLayout/>}>
+              <Route path="/marketing" element={<MarketingGrowthPage />} />
+              <Route path="/marketing/influencer" element={<InfluencerAffiliatePage />} />
+              <Route path="/marketing/blogs" element={<BlogPage />} />
+              <Route path="/blog/:id" element={<BlogDetailPage />} />
+              <Route path="/case-studies/:id" element={<CaseStudyPage />} />
+              <Route path="/influencer-affiliate/join" element={<InfluencerJoinPage />} />
+            </Route>
+
+            {/* MARKETPLACE PAGES */}
+
+            <Route element={<MainLayout/>}>
+              <Route path="/marketplace" element={<MarketplacePage />} />
+            </Route>
 
             {/* ERROR PAGE SECTION */}
 
@@ -170,8 +259,9 @@ function App() {
     const checkIfRegistered = async () => {
       if (isAuthenticated && principal) {
         try {
-          const principalObj = Principal.fromText(principal);
-          const result = await backend.hasProfile(principalObj);
+          // const principalObj = Principal.fromText(principal);
+          // const principalObj = principal;
+          const result = await backend.hasProfile(principal);
           setIsRegistered(result);
         } catch (error) {
           console.error('Error checking registration:', error);

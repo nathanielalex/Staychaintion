@@ -1,25 +1,38 @@
-"use client"
+'use client';
 
-import type React from "react"
-import { useState } from "react"
+import type React from 'react';
+import { useState } from 'react';
+import { Principal } from '@dfinity/principal';
+import { Chat_backend } from '@/declarations/Chat_backend';
 
 interface MessageInputProps {
-  onSendMessage: (text: string) => void
+  onSendMessage: (text: string) => void;
+  selectedContact: Principal | null;
+  currUser: Principal | null;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
-  const [message, setMessage] = useState("")
+const MessageInput: React.FC<MessageInputProps> = ({
+  onSendMessage,
+  currUser,
+  selectedContact,
+}) => {
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (message.trim()) {
-      onSendMessage(message)
-      setMessage("")
+      onSendMessage(message);
+      if (currUser != null && selectedContact != null) {
+        await Chat_backend.sendMessage(currUser, selectedContact, message);
+      }
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-gray-300">
+    <form
+      onSubmit={handleSubmit}
+      className="p-4 bg-white border-t border-gray-300"
+    >
       <div className="flex space-x-2">
         <input
           type="text"
@@ -36,8 +49,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
         </button>
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default MessageInput
-
+export default MessageInput;

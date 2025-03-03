@@ -26,7 +26,11 @@ const listings = [
   },
 ];
 
-export default function MapView({ onSelectLocation }) {
+interface MapViewProps {
+  onSelectLocation: (location: { lat: number; lng: number }) => void;
+}
+
+const MapView: React.FC<MapViewProps> = ({ onSelectLocation }) => {
   return (
     <div className="relative w-full h-screen">
       <MapContainer center={center} zoom={13} style={{ width: "100%", height: "100vh" }}>
@@ -54,4 +58,6 @@ export default function MapView({ onSelectLocation }) {
       </MapContainer>
     </div>
   );
-}
+};
+
+export default MapView;

@@ -37,17 +37,22 @@ export default function Navbar() {
       {/* Desktop Navigation Links */}
       <div className="hidden md:flex items-center space-x-8">
         <NavLink href="/landing">Home</NavLink>
-        <NavLink href="/how-it-works">How it Works</NavLink>
-        <NavLink href="/examples">Examples</NavLink>
-        <NavLink href="/pricing">Pricing</NavLink>
+        <NavLink href="/properties">Properties</NavLink>
+        <NavLink href="/ai">AI Features</NavLink>
+        <NavLink href="/marketing">Marketing</NavLink>
+        <NavLink href="/marketplace">Marketplace</NavLink>
       </div>
 
       {/* Buttons */}
       <div className="hidden md:flex items-center space-x-4">
-        <Button variant="ghost" className="text-white hover:text-blue-600">
-          Sign In
-        </Button>
-        <Button className="bg-blue-500 hover:bg-blue-600 text-white">Get Started</Button>
+        <a href="/register2">
+          <Button variant="ghost" className="text-white hover:text-blue-600">
+            Sign In
+          </Button>
+        </a>
+        <a href="/home">
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white">Connect</Button>
+        </a>
       </div>
 
       {/* Mobile Menu Button */}

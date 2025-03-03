@@ -4,9 +4,12 @@ import { useState, useEffect } from "react"
 import { Outlet, Link } from "react-router-dom"
 import { Menu, X, ChevronUp } from "lucide-react"
 import Navbar from "@/components/navbar"
+import { Button } from "react-day-picker"
+import { useNavigate } from "react-router-dom"
 
 function MainLayout() {
 
+  const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
@@ -80,6 +83,7 @@ function MainLayout() {
               <p className="text-gray-400">Kota Tangerang, Banten 15143</p>
               <p className="text-gray-400">Email: chainers@gmail.com</p>
               <p className="text-gray-400">Phone: (62) 123-4567-890</p>
+              <button className="transition duration-500 hover:bg-blue-200 mt-2 ml:0 px-4 py-1 bg-white text-black" onClick={()=>navigate("/contact")}>Contact Us</button>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">

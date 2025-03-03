@@ -12,6 +12,7 @@ import React, {
 } from 'react';
 import { canisterId, createActor } from '../declarations/backend';
 import { ActorSubclass, Identity } from '@dfinity/agent'; // Tambahan untuk memperjelas tipe actor
+import { Principal } from '@dfinity/principal';
 
 // Tipe untuk Opsi Auth
 interface AuthOptions {
@@ -26,7 +27,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   authClient: AuthClient | null;
   identity: Identity | null;
-  principal: string | null;
+  principal: Principal | null;
   whoamiActor: ActorSubclass<any> | null;
 }
 
@@ -73,7 +74,7 @@ export const useAuthClient = (
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [authClient, setAuthClient] = useState<AuthClient | null>(null);
   const [identity, setIdentity] = useState<Identity | null>(null);
-  const [principal, setPrincipal] = useState<string | null>(null);
+  const [principal, setPrincipal] = useState<Principal | null>(null);
   const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<any> | null>(
     null,
   );
@@ -101,7 +102,7 @@ export const useAuthClient = (
     const identity = client.getIdentity();
     setIdentity(identity);
 
-    const principal = identity.getPrincipal().toString();
+    const principal = identity.getPrincipal();
     setPrincipal(principal);
 
     setAuthClient(client);

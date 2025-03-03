@@ -1,8 +1,0 @@
-/*
- * This Property.mo should've return a lot of error but there's a type error
- * That blocks the compilation all together so it's very bad 
- * This is the original script i wrote with vscode not flagging anything red (yes even with the K type error)
- */
-
-Stderr:
-/mnt/c/Users/jason/Documents/Programming Project/Fullstack/Codefess-ICP/Staychaintion/backend/Storages/Property/Property.mo:27.78-27.79: type error [M0029], unbound type K

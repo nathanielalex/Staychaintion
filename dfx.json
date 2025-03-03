@@ -20,21 +20,19 @@
       "type": "motoko",
       "main": "backend/chatbot.mo"
     },
-    "User": {
-      "type": "motoko",
-      "main": "backend/Storages/User/User.mo"
-    },
-    "Property": {
+    "Property_backend": {
       "type": "motoko",
       "main": "backend/Storages/Property/Property.mo"
     },
-    "Renter": {
+    "User_backend": {
       "type": "motoko",
-      "main": "backend/Storages/Renter/Renter.mo"
+      "dependencies": ["Property_backend"],
+      "main": "backend/Storages/User/User.mo"
     },
-    "Chat": {
+    "Chat_backend": {
+      "dependencies": ["User_backend"],
       "type": "motoko",
-      "main": "backend/Chat/Chat.mo"
+      "main": "backend/Chat_backend/Chat.mo"
     }
   },
   "defaults": {
