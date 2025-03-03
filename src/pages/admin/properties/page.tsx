@@ -1,14 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Plus, Pencil, Trash2 } from "lucide-react"
 import PropertyForm from "@/components/admin/properties/property-form"
+import { Property } from "@/declarations/Property_backend/Property_backend.did"
+import { Property_backend } from "@/declarations/Property_backend"
 
-// Sample data
+/*
 const properties = [
   {
     id: 1,
@@ -32,19 +34,48 @@ const properties = [
   },
   // Add more sample properties
 ]
+*/
 
 export default function PropertiesPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingProperty, setEditingProperty] = useState<any>(null)
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleEdit = (property: any) => {
+  const fetchProperties = async () => {
+    try {
+      // setLoading(true);
+      // setError(null);
+      // const actor = getChatActor();
+      const result = await Property_backend.getAllProperties();
+      setProperties(result);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+    
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const handleEdit = async(property: Property) => {
     setEditingProperty(property)
     setShowForm(true)
   }
 
-  const handleDelete = (id: number) => {
-    // Implement delete functionality
-    console.log("Delete property:", id)
+  const handleDelete = async (property: Property) => {
+    try {
+      const result = await Property_backend.removeProperty(property);
+      setProperties(prevProperties => 
+        prevProperties.filter(item => item.id !== property.id)
+      );
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -65,7 +96,7 @@ export default function PropertiesPage() {
 
       {showForm ? (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}>
-          <PropertyForm property={editingProperty} onClose={() => setShowForm(false)} />
+          <PropertyForm property={editingProperty} onClose={() => setShowForm(false)} setProperties={setProperties}/>
         </motion.div>
       ) : (
         <Card>
@@ -86,18 +117,18 @@ export default function PropertiesPage() {
               {properties.map((property) => (
                 <TableRow key={property.id}>
                   <TableCell className="font-medium">{property.name}</TableCell>
-                  <TableCell>{property.type}</TableCell>
-                  <TableCell>${property.price}</TableCell>
+                  <TableCell>{property.buildingType}</TableCell>
+                  <TableCell>${property.pricePerNight.toString()}</TableCell>
                   <TableCell>{property.location}</TableCell>
-                  <TableCell>{property.bedrooms}</TableCell>
-                  <TableCell>{property.bathrooms}</TableCell>
-                  <TableCell>{property.guests}</TableCell>
+                  <TableCell>{property.bedroomCount.toString()}</TableCell>
+                  <TableCell>{property.bathroomCount.toString()}</TableCell>
+                  <TableCell>{property.guestCapacity.toString()}</TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
                       <Button variant="ghost" size="icon" onClick={() => handleEdit(property)}>
                         <Pencil className="w-4 h-4 text-blue-600" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(property.id)}>
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(property)}>
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </Button>
                     </div>

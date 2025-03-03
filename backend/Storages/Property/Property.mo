@@ -97,6 +97,16 @@ actor {
         };
     };
 
+    public shared func removeProperty(property: Property) : async Int {
+        try {
+            propertyInfo.delete(property.id);
+            return 1;
+        } catch (e: Error) {
+            Debug.print("Error removing property: " # Error.message(e));
+            return 0;
+        };
+    };
+
     public query func getPropertyInfo(propertyId: Text) : async ?Property {
         return propertyInfo.get(propertyId);
     };
