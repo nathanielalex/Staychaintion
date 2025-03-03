@@ -87,7 +87,7 @@ module {
         switch (role) {
             case ("available") { return #available };
             case ("booked") { return #booked };
-            case ("unavailable") { return "unavailable"#unavailable };
+            case ("unavailable") { return #unavailable };
             case (_) { return #unavailable };
         };
     };
