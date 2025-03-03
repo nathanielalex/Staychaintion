@@ -8,6 +8,7 @@ import Order "mo:base/Order";
 module {
     
     public type UserRole = { #admin; #renter; #user; #guest};
+    public type PropertyStatus = { #available; #booked; #unavailable};
 
     public type UserProfile = {
         id: Principal;
@@ -24,6 +25,7 @@ module {
         id: Text;
         owner: Principal;
         name : Text;
+        status: PropertyStatus;
         pricePerNight: Nat;
         description: Text;
         location: Text;
@@ -41,6 +43,7 @@ module {
     public type UnregisteredProperty = {
         owner: Principal;
         name : Text;
+        status: PropertyStatus;
         pricePerNight: Nat;
         description: Text;
         location: Text;
@@ -69,6 +72,23 @@ module {
             case ("renter") { return #renter };
             case ("user") { return #user };
             case (_) { return #guest };
+        };
+    };
+
+    public func propStatusToText(role: PropertyStatus) : Text {
+        switch (role) {
+            case (#available) { return "available" };
+            case (#booked) { return "booked" };
+            case (#unavailable) { return "unavailable" };
+        };
+    };
+
+    public func textToPropStatus(role: Text) : PropertyStatus {
+        switch (role) {
+            case ("available") { return #available };
+            case ("booked") { return #booked };
+            case ("unavailable") { return "unavailable"#unavailable };
+            case (_) { return #unavailable };
         };
     };
     

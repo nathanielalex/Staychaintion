@@ -17,6 +17,7 @@ import Vector "mo:vector/Class";
 actor {
 
     type Property = Util.Property;
+    type PropertyStatus = Util.PropertyStatus;
 
     var propertyInfo = TrieMap.TrieMap<Text, Property>(Text.equal, Text.hash);
     // var propertyIdIndexes = Array.init<Text>(propertyInfo.size());
@@ -61,6 +62,7 @@ actor {
             id = id;
             owner = unreg.owner;
             name = unreg.name;
+            status = unreg.status;
             pricePerNight = unreg.pricePerNight;
             description = unreg.description;
             location = unreg.location;
@@ -138,8 +140,10 @@ actor {
             let value = switch(attribute){
                 case("owner"){Principal.toText(prop.owner) : Text};
                 case("name"){prop.name};
+                case("status"){Util.propStatusToText(prop.status)};
                 case("location"){prop.location};
                 case("builtInDate"){prop.builtInDate};
+                case("buildingType"){prop.buildingType};
                 case (_) { "" };                
             };
 
@@ -160,8 +164,10 @@ actor {
             if(Text.contains( switch (attribute) {
                 case("owner"){Principal.toText(prop.owner) : Text};
                 case("name"){prop.name};
+                case("status"){Util.propStatusToText(prop.status)};
                 case("location"){prop.location};
                 case("builtInDate"){prop.builtInDate};
+                case("buildingType"){prop.buildingType};
                 case (_) { "" };                
             }, #text(text_query))){
                 cursor += 1;
@@ -181,8 +187,10 @@ actor {
             return Text.contains( switch(attribute){
                 case("owner"){Principal.toText(prop.owner) : Text};
                 case("name"){prop.name};
+                case("status"){Util.propStatusToText(prop.status)};
                 case("location"){prop.location};
                 case("builtInDate"){prop.builtInDate};
+                case("buildingType"){prop.buildingType};
                 case (_) { "" };
             }, #text(text_query));
         });
@@ -214,6 +222,7 @@ actor {
                 case ("guestCapacity") { prop.guestCapacity };
                 case ("bathroomCount") { prop.bathroomCount };
                 case ("bedCount") { prop.bedCount };
+                case ("rating") { prop.rating };
                 case (_) { 0 };
             };
 
@@ -245,6 +254,7 @@ actor {
                 case ("guestCapacity") { prop.guestCapacity };
                 case ("bathroomCount") { prop.bathroomCount };
                 case ("bedCount") { prop.bedCount };
+                case ("rating") { prop.rating };
                 case (_) { 0 };
             };
 
@@ -275,6 +285,7 @@ actor {
                 case ("guestCapacity") { prop.guestCapacity };
                 case ("bathroomCount") { prop.bathroomCount };
                 case ("bedCount") { prop.bedCount };
+                case ("rating") { prop.rating };
                 case (_) { 0 };
             };
 
@@ -296,6 +307,7 @@ actor {
             case ("guestCapacity") { if(x_prop.guestCapacity > y_prop.guestCapacity) #greater else if(x_prop.guestCapacity == y_prop.guestCapacity) #equal else #less };
             case ("bathroomCount") { if(x_prop.bathroomCount > y_prop.bathroomCount) #greater else if(x_prop.bathroomCount == y_prop.bathroomCount) #equal else #less };
             case ("bedCount") { if(x_prop.bedCount > y_prop.bedCount) #greater else if(x_prop.bedCount == y_prop.bedCount) #equal else #less };
+            case ("rating") { if(x_prop.rating > y_prop.rating) #greater else if(x_prop.rating == y_prop.rating) #equal else #less  };
             case (_) { #equal };
         };
     };
@@ -307,6 +319,7 @@ actor {
             case ("guestCapacity") { if(x_prop.guestCapacity < y_prop.guestCapacity) #greater else if(x_prop.guestCapacity == y_prop.guestCapacity) #equal else #less };
             case ("bathroomCount") { if(x_prop.bathroomCount < y_prop.bathroomCount) #greater else if(x_prop.bathroomCount == y_prop.bathroomCount) #equal else #less };
             case ("bedCount") { if(x_prop.bedCount < y_prop.bedCount) #greater else if(x_prop.bedCount == y_prop.bedCount) #equal else #less };
+            case ("rating") { if(x_prop.rating < y_prop.rating) #greater else if(x_prop.rating == y_prop.rating) #equal else #less  };
             case (_) { #equal };
         };
     };
