@@ -309,7 +309,7 @@ actor {
 
         for (user in userProfiles.vals()) {
             if (userArray.size() >= count) {
-                return sort<UserProfile>(userArray, if (order == "asc") natCompareAsc else natCompareDesc, attribute);
+                return sort<UserProfile>(userArray, if (order == "asc") compareAsc else compareDesc, attribute);
             };
 
             let value = switch (attribute) {
@@ -329,7 +329,7 @@ actor {
             };
         };
 
-        return sort<UserProfile>(userArray, if (order == "asc") natCompareAsc else natCompareDesc, attribute);
+        return sort<UserProfile>(userArray, if (order == "asc") compareAsc else compareDesc, attribute);
     };
 
     public query func getUserFromNatAttributePaginate(attribute: Text, num_query: Text, comparison: Text, order: Text, page: Int, count: Nat): async ([UserProfile], Nat) {
@@ -375,7 +375,7 @@ actor {
                     });
                 };
                 case(null, null, null) { 
-                    return (sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (order == "asc") natCompareAsc else natCompareDesc, Option.unwrap<Text>(lastAttr)), counter);
+                    return (sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (order == "asc") compareAsc else compareDesc, Option.unwrap<Text>(lastAttr)), counter);
                 };
                 case(_) { 
                     return ([], 0);
@@ -420,17 +420,152 @@ actor {
         return userArray;
     };
 
-    private func natCompareAsc(x_user: UserProfile, y_user: UserProfile, attribute: Text): Order.Order {
+    private func compareAsc(x_user: UserProfile, y_user: UserProfile, attribute: Text): Order.Order {
         switch (attribute) {
-            case ("ballance") { if (x_user.ballance > y_user.ballance) #greater else if (x_user.ballance == y_user.ballance) #equal else #less };
+            case ("ballance") { if (x_user.ballance < y_user.ballance) #less else if (x_user.ballance == y_user.ballance) #equal else #greater };
+            case ("id") { if (Text.less(Principal.toText(x_user.id), Principal.toText(y_user.id))) #less else if (Principal.toText(x_user.id) == Principal.toText(y_user.id)) #equal else #greater };
+            case ("fullName") { if (Text.less(x_user.fullName, y_user.fullName)) #less else if (x_user.fullName == y_user.fullName) #equal else #greater };
+            case ("email") { if (Text.less(x_user.email, y_user.email)) #less else if (x_user.email == y_user.email) #equal else #greater };
+            case ("dateOfBirth") { if (Text.less(x_user.dateOfBirth, y_user.dateOfBirth)) #less else if (x_user.dateOfBirth == y_user.dateOfBirth) #equal else #greater };
+            case ("profilePictureUrl") { if (Text.less(x_user.profilePictureUrl, y_user.profilePictureUrl)) #less else if (x_user.profilePictureUrl == y_user.profilePictureUrl) #equal else #greater };
             case (_) { #equal };
         };
     };
 
-    private func natCompareDesc(x_user: UserProfile, y_user: UserProfile, attribute: Text): Order.Order {
+    private func compareDesc(x_user: UserProfile, y_user: UserProfile, attribute: Text): Order.Order {
         switch (attribute) {
-            case ("ballance") { if (x_user.ballance < y_user.ballance) #greater else if (x_user.ballance == y_user.ballance) #equal else #less };
+            case ("ballance") { if (x_user.ballance > y_user.ballance) #less else if (x_user.ballance == y_user.ballance) #equal else #greater };
+            case ("id") { if (Text.greater(Principal.toText(x_user.id), Principal.toText(y_user.id))) #less else if (Principal.toText(x_user.id) == Principal.toText(y_user.id)) #equal else #greater };
+            case ("fullName") { if (Text.greater(x_user.fullName, y_user.fullName)) #less else if (x_user.fullName == y_user.fullName) #equal else #greater };
+            case ("email") { if (Text.greater(x_user.email, y_user.email)) #less else if (x_user.email == y_user.email) #equal else #greater };
+            case ("dateOfBirth") { if (Text.greater(x_user.dateOfBirth, y_user.dateOfBirth)) #less else if (x_user.dateOfBirth == y_user.dateOfBirth) #equal else #greater };
+            case ("profilePictureUrl") { if (Text.greater(x_user.profilePictureUrl, y_user.profilePictureUrl)) #less else if (x_user.profilePictureUrl == y_user.profilePictureUrl) #equal else #greater };
             case (_) { #equal };
+        };
+    };
+
+    /**
+     * Retrieves a paginated list of user profiles based on various filtering and sorting criteria.
+     *
+     * @param {Text} textAttrs - A string containing text attribute names separated by spaces, commas, semicolons, or newlines.
+     * @param {Text} textQueries - A string containing text queries corresponding to the text attributes, separated by spaces, commas, semicolons, or newlines.
+     * @param {Text} numAttrs - A string containing numeric attribute names separated by spaces, commas, semicolons, or newlines.
+     * @param {Text} numQueries - A string containing numeric queries corresponding to the numeric attributes, separated by spaces, commas, semicolons, or newlines.
+     * @param {Text} comparisons - A string containing comparison operators (e.g., "mt" for more than, "eq" for equal, "lt" for less than) separated by spaces, commas, semicolons, or newlines.
+     * @param {Text} orderAttr - The attribute name by which to sort the results.
+     * @param {Text} orderDir - The direction of sorting, either "asc" for ascending or "desc" for descending.
+     * @param {Nat} page - The page number to retrieve.
+     * @param {Nat} count - The number of user profiles to retrieve per page.
+     * @returns {async ([UserProfile], Nat)} - A tuple containing an array of user profiles and the total number of profiles that match the criteria.
+     *
+     * The function performs the following steps:
+     * 1. Parses the input parameters to extract attribute names, queries, and comparison operators.
+     * 2. Filters the user profiles based on the provided text attributes and queries.
+     * 3. Filters the user profiles based on the provided numeric attributes, queries, and comparison operators.
+     * 4. Paginates the filtered user profiles based on the provided page number and count.
+     * 5. Sorts the paginated user profiles based on the provided order attribute and direction.
+     * 6. Returns the sorted and paginated user profiles along with the total count of matching profiles (all pages in total).
+     *
+     * The function uses the following filtering and sorting logic:
+     * - Text attributes and queries are matched using the `Text.contains` function.
+     * - Numeric attributes are compared using the specified comparison operators ("mt", "eq", "lt").
+     * - Sorting is performed based on the specified order attribute and direction.
+     * - Pagination is achieved by skipping the appropriate number of profiles and limiting the results to the specified count.
+     *
+     * Example usage:
+     * ```
+     * let (profiles, totalCount) = await getUserPaginate(
+     *     "fullName,email", "John Doe,johndoe@example.com",
+     *     "ballance", "1000", "mt",
+     *     "fullName", "asc",
+     *     1, 10
+     * );
+     * ```
+     */
+    public query func getUserPaginate(
+        textAttrs: Text, textQueries: Text,
+        numAttrs: Text, numQueries: Text, comparisons: Text,
+        orderAttr: Text, orderDir: Text,
+        page: Nat, count: Nat
+    ): async ([UserProfile], Nat) {
+        // Parse input parameters
+        let textAttrIter = Text.tokens(textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let textQueryIter = Text.tokens(textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        
+        let numAttrIter = Text.tokens(numAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let numQueryIter = Text.tokens(numQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let comparIter = Text.tokens(comparisons, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+
+        var itertyp = userProfiles.vals();
+        var cursor = 0;
+        var counter = 0;
+        let skip = (page-1)*count;
+
+        // Filter by text attributes
+        loop {
+            switch(textAttrIter.next(), textQueryIter.next()) {
+                case(?attr, ?quer) {
+                    itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
+                        Text.contains(
+                            switch (attr) {
+                                case("id"){Principal.toText(user.id) : Text};
+                                case("fullName"){user.fullName};
+                                case("role"){Util.userRoleToText(user.role)};
+                                case("email"){user.email};
+                                case("dateOfBirth"){user.dateOfBirth};
+                                case("profilePictureUrl"){user.profilePictureUrl};
+                                case (_) { "" };                
+                            }, 
+                            #text(quer)
+                        );
+                    });
+                };
+                case(null, null) { 
+                    loop {
+                        switch(numAttrIter.next(), numQueryIter.next(), comparIter.next()) {
+                            case(?attr, ?quer, ?comp) {
+                                itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
+                                    let value = switch (attr) {
+                                        case ("ballance") { user.ballance };
+                                        case (_) { 0 };
+                                    };
+
+                                    switch (comp) {
+                                        case ("mt") { value >= Util.textToInt(quer) };
+                                        case ("eq") { value == Util.textToInt(quer) };
+                                        case ("lt") { value <= Util.textToInt(quer) };
+                                        case (_) { value == Util.textToInt(quer) };
+                                    };
+                                });
+                            };
+                            case(null, null, null) { 
+                                let sorted = if(switch(orderAttr) {
+                                    case ("ballance") { true };
+                                    case ("id"){ true };
+                                    case ("fullName"){ true };
+                                    case ("email"){ true };
+                                    case ("dateOfBirth"){ true };
+                                    case ("profilePictureUrl"){ true };
+                                    case (_){ true };
+                                }) {
+                                    sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (orderDir == "asc") compareAsc else compareDesc, orderAttr)
+                                } else Iter.toArray<UserProfile>(itertyp);
+
+                                let paginated = Iter.filter<UserProfile>(Iter.fromArray(sorted), func (prop: UserProfile): Bool {
+                                    cursor += 1;
+                                    if (cursor > skip and counter < count) {
+                                        counter += 1;
+                                        true;
+                                    } else false;
+                                });
+                                return (Iter.toArray<UserProfile>(paginated), counter);
+                            };
+                            case(_) { return ([], 0); };
+                        };
+                    };
+                }; // want to break here
+                case(_) { return ([], 0); };
+            };
         };
     };
 
