@@ -51,6 +51,7 @@ import UserAnalyticsPage from './pages/profiles/analytics/page';
 // AI
 
 import PredictPrice from './pages/ai/PredictPrice';
+import PredictPriceArchieved from './pages/ai/Archieved-Predict-Price';
 import StayAI from './pages/ai/StayAI';
 import RoomClassifier from './pages/ai/RoomClassifier';
 import ProtectedRoute from './utility/ProtectedRoute';
@@ -194,6 +195,7 @@ const AnimatedRoutes = () => {
 
               <Route path="/chatbot" element={<StayAI />} />
 
+              <Route path="/predicts-old" element={<PredictPriceArchieved />} />
               
             </Route>
 
