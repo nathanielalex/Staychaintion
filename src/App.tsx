@@ -4,7 +4,7 @@ import { backend } from './utility/backend';
 import { Principal } from '@dfinity/principal';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import HomePage from './pages/HomePage';
+import Wallet from './pages/Wallet';
 import RegisterPage from './pages/RegisterPage';
 import RegisterPage2 from './pages/auth/RegisterPage';
 import { SetStateAction, useEffect, useState } from 'react';
@@ -122,21 +122,21 @@ const AnimatedRoutes = () => {
             <Route path="/" element={<OnboardPage />} />
 
             <Route
-              path="/home"
+              path="/wallet"
               element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                  <HomePage />
+                  <Wallet />
                 </ProtectedRoute>
               }
             />
 
             {/* <Route path="/home" element={<HomePage />} /> */}
 
-            <Route path="/register" element={<RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
+            {/* <Route path="/register" element={<RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
               throw new Error('Function not implemented.');
-            } } />} />
+            } } />} /> */}
 
-            <Route path="/register2" element={<RegisterPage2 />} />
+            <Route path="/register" element={<RegisterPage2 />} />
 
             <Route path="/legal" element={<LegalPage />} />
 
