@@ -33,6 +33,16 @@
       "dependencies": ["User_backend"],
       "type": "motoko",
       "main": "backend/Chat_backend/Chat.mo"
+    },
+    "Property_seeder": {
+      "type": "motoko",
+      "dependencies": ["Property_backend"],
+      "main": "backend/Storages/Seeders/PropertySeeder.mo"
+    },
+    "User_seeder": {
+      "type": "motoko",
+      "dependencies": ["User_backend"],
+      "main": "backend/Storages/Seeders/UserSeeder.mo"
     }
   },
   "defaults": {
