@@ -58,12 +58,13 @@ actor {
 
     public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {
         let id = await Util.generateUUID();
-
+        
+        // Create property by extending unreg with additional fields
         let prop : Property = {
-            id = id;
+            id;
             owner = unreg.owner;
             name = unreg.name;
-            status = unreg.status;
+            status = unreg.status; // Default status if not provided
             pricePerNight = unreg.pricePerNight;
             description = unreg.description;
             location = unreg.location;
@@ -75,15 +76,11 @@ actor {
             pictures = unreg.pictures;
             coverPicture = unreg.coverPicture;
             buildingType = unreg.buildingType;
-            rating = 0;
+            rating = 0; // New properties start with 0 rating
         };
 
-        try {
-            propertyInfo.put(prop.id, prop);
-            return id;
-        } catch (e: Error) {
-            return "Error registering property: " # Error.message(e);
-        };
+        propertyInfo.put(id, prop);
+        return id;
     };
 
 
@@ -119,84 +116,6 @@ actor {
         return propertyInfo.size();
     };
 
-
-    /**
-     * Retrieves a list of properties based on a specified text attribute and query.
-     *
-     * @param {Text} attribute - The attribute of the property to search by. 
-     *                           Possible values are "owner", "name", "location", "builtInDate".
-     * @param {Text} text_query - The text value to search for in the specified attribute.
-     * @param {Nat} count - The maximum number of properties to return.
-     * @return {async [Property]} - An array of properties that match the search criteria.
-     */
-    public query func getPropertyFromTextAtribute(attribute: Text, text_query:Text, count: Nat): async [Property]{
-        var property_array: [Property] = [];
-
-        for(prop in propertyInfo.vals()){
-
-            if(property_array.size() >= count){
-                return property_array;
-            };
-            
-            let value = switch(attribute){
-                case("owner"){Principal.toText(prop.owner) : Text};
-                case("name"){prop.name};
-                case("status"){Util.propStatusToText(prop.status)};
-                case("location"){prop.location};
-                case("builtInDate"){prop.builtInDate};
-                case("buildingType"){prop.buildingType};
-                case (_) { "" };                
-            };
-
-            if(Text.contains(value, #text(text_query))){
-                property_array := Array.append<Property>(property_array, [prop]);
-            };
-        };
-        return property_array;
-    };
-
-    public query func getPropertyFromTextAttributePaginate(attribute: Text, text_query: Text, page: Nat, count: Nat): async ([Property], Nat) {
-        let attrIter = Text.tokens(attribute, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
-        let queryIter = Text.tokens(text_query, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
-
-        var itertyp = propertyInfo.vals();
-        var cursor = 0;
-        var counter = 0;
-        let skip = (page-1)*count;
-
-        loop{
-            switch(attrIter.next(), queryIter.next()){
-                case(?attr, ?quer){
-                    cursor := 0;
-                    counter := 0;
-                    itertyp := Iter.filter<Property>(itertyp, func (prop: Property): Bool {
-                        if(Text.contains( switch (attr) {
-                            case("owner"){Principal.toText(prop.owner) : Text};
-                            case("name"){prop.name};
-                            case("status"){Util.propStatusToText(prop.status)};
-                            case("location"){prop.location};
-                            case("builtInDate"){prop.builtInDate};
-                            case("buildingType"){prop.buildingType};
-                            case (_) { "" };                
-                        }, #text(quer))){
-                            cursor += 1;
-                            if (cursor > skip and counter <= count) {
-                                counter += 1;
-                                return true;
-                            } else false;
-                        } else false;
-                    });
-                };
-                case(null, null) { 
-                    return (Iter.toArray<Property>(itertyp), counter);
-                };
-                case(_) { 
-                    return ([], 0);
-                };
-            };
-        };
-    };
-
     public query func getPropertyIdFromTextAttribute(attribute: Text, text_query: Text): async [Text] {
         var itertyp = propertyInfo.vals();
 
@@ -213,120 +132,6 @@ actor {
         });
 
         return Iter.toArray<Text>(Iter.map<Property, Text>(itertyp, func (prop: Property): Text { prop.id; }));
-    };
-    
-    /**
-     * Retrieves a list of properties based on a specified attribute, order, comparison, and query parameters.
-     *
-     * @param {Text} attribute - The attribute of the property to filter by (e.g., "pricePerNight", "bedroomCount").
-     * @param {Text} order - The order in which to sort the results ("asc" for ascending, "desc" for descending).
-     * @param {Int8} comparison - The comparison operator to use (1 for greater than or equal, 0 for equal, -1 for less than or equal).
-     * @param {Nat} numQuery - The value to compare the attribute against.
-     * @param {Nat} count - The maximum number of properties to return.
-     * @return {async [Property]} - A list of properties that match the specified criteria, sorted by the specified order.
-     */
-    public query func getPropertyFromNatAttribute(attribute: Text, order: Text, comparison: Int8, numQuery: Nat, count: Nat): async [Property] {
-        var propertyArray: [Property] = [];
-
-        for (prop in propertyInfo.vals()) {
-            if (propertyArray.size() >= count) {
-                return sort<Property>(propertyArray, if (order == "asc") compareAsc else compareDesc , attribute);
-            };
-
-            let value = switch (attribute) {
-                case ("pricePerNight") { prop.pricePerNight };
-                case ("bedroomCount") { prop.bedroomCount };
-                case ("guestCapacity") { prop.guestCapacity };
-                case ("bathroomCount") { prop.bathroomCount };
-                case ("bedCount") { prop.bedCount };
-                case ("rating") { prop.rating };
-                case (_) { 0 };
-            };
-
-            let shouldAdd: Bool = switch (comparison) {
-                case (1) { value >= numQuery };
-                case (0) { value == numQuery };
-                case (-1) { value <= numQuery };
-                case (_) { value == numQuery };
-            };
-
-            if (shouldAdd) {
-                propertyArray := Array.append<Property>(propertyArray, [prop]);
-            };
-        };
-
-        return sort<Property>(propertyArray, if (order == "asc") compareAsc else compareDesc , attribute);
-    };
-
-
-    /**
-     * Retrieves a paginated list of properties based on a specified attribute, comparison, and order.
-     *
-     * @param {Text} attribute - The attribute to filter properties by (e.g., "pricePerNight,bedroomCount,guestCapacity").
-     * @param {Text} num_query - The value to compare the attribute against. (e.g., "100,2,4"). [has to have the same amount of paramers as the attribute]
-     * @param {Text} comparison - The comparison operator to use ("mt" for greater than or equal, "eq" for equal, "lt" for less than or equal). (e.g., "mt,eq,lt"). [has to have the same amount of paramers as the attribute]
-     * @param {Text} order - The order in which to sort the results ("asc" for ascending, "desc" for descending) based on the first attribute writen in attribute parameter.
-     * @param {Int} page - The page number to retrieve.
-     * @param {Nat} count - The number of properties to retrieve per page.
-     * @return {async ([Property], Nat)} - A tuple containing the list of properties and the total count of properties that match the criteria.
-     */
-    // order by the last attribute from the attribute parameter's text
-    public query func getPropertyFromNatAttributePaginate(attribute: Text, num_query: Text, comparison: Text, order: Text, page: Int, count: Nat): async ([Property], Nat) {
-        let attrIter = Text.tokens(attribute, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
-        let queryIter = Text.tokens(num_query, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
-        let comparIter = Text.tokens(comparison, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
-
-        var itertyp = propertyInfo.vals();
-        var cursor = 0;
-        var counter = 0;
-        var lastAttr: ?Text = null;
-        let skip = (page-1)*count;
-
-        loop{
-            switch(attrIter.next(), queryIter.next(), comparIter.next()){
-                case(?attr, ?quer, ?comp){
-                    cursor := 0;
-                    counter := 0;
-                    itertyp := Iter.filter<Property>(itertyp, func (prop: Property): Bool {
-                        let value = switch (attribute) {
-                            case ("pricePerNight") { prop.pricePerNight };
-                            case ("bedroomCount") { prop.bedroomCount };
-                            case ("guestCapacity") { prop.guestCapacity };
-                            case ("bathroomCount") { prop.bathroomCount };
-                            case ("bedCount") { prop.bedCount };
-                            case ("rating") { prop.rating };
-                            case (_) { 0 };
-                        };
-
-                        if (switch (comp) {
-                            case ("mt") { value >= Util.textToInt(quer) };
-                            case ("eq") { value == Util.textToInt(quer) };
-                            case ("lt") { value <= Util.textToInt(quer) };
-                            case (_) { value == Util.textToInt(quer) };
-                        }) {
-                            cursor += 1;
-                            if (cursor > skip and counter < count) {
-                                // this part of the block iterates the least amount of time, so i put the first attribute catcher here
-                                switch(lastAttr) {
-                                    case(null) { lastAttr := ?attr; };
-                                    case(?atr) {};
-                                };
-                                
-                                counter += 1;
-                                return true;
-                            } else false;
-                        } else false;
-                    });
-                };
-                case(null, null, null) { 
-                    if(lastAttr == null) {return ([],0)};
-                    return (sort<Property>(Iter.toArray<Property>(itertyp), if (order == "asc") compareAsc else compareDesc, Option.unwrap<Text>(lastAttr)), counter);
-                };
-                case(_) { 
-                    return ([], 0);
-                };
-            };
-        };
     };
 
     public query func getPropIdFromNatAttribute(attribute: Text, order: Text, comparison: Text, numQuery: Nat): async [Text] {
@@ -434,6 +239,10 @@ actor {
         orderAttr: Text, orderDir: Text,
         page: Nat, count: Nat
     ): async ([Property], Nat) {
+        if(page <= 0 or count <= 0) {
+            return ([], 0);
+        };
+
         // Parse input parameters
         let textAttrIter = Text.tokens(textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
         let textQueryIter = Text.tokens(textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
