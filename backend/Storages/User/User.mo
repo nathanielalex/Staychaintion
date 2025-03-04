@@ -12,6 +12,7 @@ import Order "mo:base/Order";
 import Vector "mo:vector/Class";
 import { unwrap } "mo:base/Option";
 import Int "mo:base/Int";
+import Option "mo:base/Option";
 import Property "canister:Property_backend";
 import { sort; optfilter; optAppend } = "../Util";
 
@@ -234,29 +235,45 @@ actor {
     };
 
     public query func getUserFromTextAttributePaginate(attribute: Text, text_query: Text, page: Int, count: Nat): async ([UserProfile], Nat) {
+        let attrIter = Text.tokens(attribute, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
+        let queryIter = Text.tokens(text_query, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
+
         var itertyp = userProfiles.vals();
         var cursor = 0;
         var counter = 0;
         let skip = (page-1)*count;
 
-        itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
-            if(Text.contains( switch (attribute) {
-                case ("id") { Principal.toText(user.id) };
-                case ("fullName") { user.fullName };
-                case ("role") { Util.userRoleToText(user.role) };
-                case ("email") { user.email };
-                case ("dateOfBirth") { user.dateOfBirth };
-                case ("profilePictureUrl") { user.profilePictureUrl };
-                case (_) { "" };
-            }, #text(text_query))){
-                cursor += 1;
-                if (cursor > skip and counter <= count) {
-                    counter += 1;
-                    return true;
-                } else false;
-            } else false;
-        });
-        return (Iter.toArray<UserProfile>(itertyp), counter);
+        loop{
+            switch(attrIter.next(), queryIter.next()){
+                case(?attr, ?quer){
+                    cursor := 0;
+                    counter := 0;
+                    itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
+                        if(Text.contains( switch (attr) {
+                            case ("id") { Principal.toText(user.id) };
+                            case ("fullName") { user.fullName };
+                            case ("role") { Util.userRoleToText(user.role) };
+                            case ("email") { user.email };
+                            case ("dateOfBirth") { user.dateOfBirth };
+                            case ("profilePictureUrl") { user.profilePictureUrl };
+                            case (_) { "" };        
+                        }, #text(quer))){
+                            cursor += 1;
+                            if (cursor > skip and counter <= count) {
+                                counter += 1;
+                                return true;
+                            } else false;
+                        } else false;
+                    });
+                };
+                case(null, null) { 
+                    return (Iter.toArray<UserProfile>(itertyp), counter);
+                };
+                case(_) { 
+                    return ([], 0);
+                };
+            };
+        };
     };
 
     public query func getUserIdFromTextAttribute(attribute: Text, text_query: Text): async [Principal] {
@@ -315,33 +332,56 @@ actor {
         return sort<UserProfile>(userArray, if (order == "asc") natCompareAsc else natCompareDesc, attribute);
     };
 
-    public query func getUserFromNatAttributePaginate(attribute: Text, num_query: Nat, order: Text, comparison: Int8, page: Int, count: Nat): async ([UserProfile], Nat) {
+    public query func getUserFromNatAttributePaginate(attribute: Text, num_query: Text, comparison: Text, order: Text, page: Int, count: Nat): async ([UserProfile], Nat) {
+        let attrIter = Text.tokens(attribute, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
+        let queryIter = Text.tokens(num_query, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
+        let comparIter = Text.tokens(comparison, #predicate(func(c):Bool{ c==' ' or c==',' or c==';' or c=='\n' }));
+
         var itertyp = userProfiles.vals();
         var cursor = 0;
         var counter = 0;
+        var lastAttr: ?Text = null;
         let skip = (page-1)*count;
 
-        itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
-            let value = switch (attribute) {
-                case ("ballance") { user.ballance };
-                case (_) { 0 };
+        loop{
+            switch(attrIter.next(), queryIter.next(), comparIter.next()){
+                case(?attr, ?quer, ?comp){
+                    cursor := 0;
+                    counter := 0;
+                    itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
+                        let value = switch (attr) {
+                            case ("ballance") { user.ballance };
+                            case (_) { 0 };
+                        };
+
+                        if (switch (comp) {
+                            case ("mt") { value >= Util.textToInt(quer) };
+                            case ("eq") { value == Util.textToInt(quer) };
+                            case ("lt") { value <= Util.textToInt(quer) };
+                            case (_) { value == Util.textToInt(quer) };
+                        }) {
+                            cursor += 1;
+                            if (cursor > skip and counter < count) {
+                                // this part of the block iterates the least amount of time, so i put the first attribute catcher here
+                                switch(lastAttr) {
+                                    case(null) { lastAttr := ?attr; };
+                                    case(?atr) {};
+                                };
+                                // continue the counter
+                                counter += 1;
+                                return true;
+                            } else false;
+                        } else false;
+                    });
+                };
+                case(null, null, null) { 
+                    return (sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (order == "asc") natCompareAsc else natCompareDesc, Option.unwrap<Text>(lastAttr)), counter);
+                };
+                case(_) { 
+                    return ([], 0);
+                };
             };
-
-            if (switch (comparison) {
-                case (1) { value >= num_query };
-                case (0) { value == num_query };
-                case (-1) { value <= num_query };
-                case (_) { value == num_query };
-            }) {
-                cursor += 1;
-                if (cursor > skip and counter < count) {
-                    counter += 1;
-                    return true;
-                } else false;
-            } else false;
-        });
-
-        return (sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (order == "asc") natCompareAsc else natCompareDesc, attribute), counter);
+        };
     };
 
     public query func getUserIdFromNatAttribute(attribute: Text, comparison: Int8, numQuery: Nat): async [Principal] {
