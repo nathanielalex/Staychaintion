@@ -1,5 +1,4 @@
 import { useAuth, AuthProvider } from './utility/use-auth-client';
-import LoggedOut from './pages/LoggedOut';
 import './App.css';
 import { backend } from './utility/backend';
 import { Principal } from '@dfinity/principal';
@@ -77,17 +76,7 @@ import MarketplacePage from './pages/marketplace/page';
 // Other Pages
 
 import ComingSoonPage from './pages/coming-soon/page';
-
-
-const pageVariants = {
-
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
-  
-};
-
-
+import OnboardPage from './pages/Onboard';
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
@@ -130,7 +119,7 @@ const AnimatedRoutes = () => {
 
             {/* DEFAULT PAGES SECTION */}
 
-            <Route path="/" element={<motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}><LoggedOut /></motion.div>} />
+            <Route path="/" element={<OnboardPage />} />
 
             <Route
               path="/home"

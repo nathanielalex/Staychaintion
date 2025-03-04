@@ -17,5 +17,5 @@ export interface User {
   username: string,
   email: string,
   date_of_birth: Date,
-
+  roles: ("admin" | "renter" | "user" | "guest")[];
 }

@@ -2,19 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { House, Menu, X } from "lucide-react";
+import { House, LucideBaby, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import type React from "react";
+import getBalance from "@/utility/wallet-func";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [balance, setBalance] = useState<number>();
+
+  const _getBalance = async () => {
+    const _balance = await getBalance();
+    setBalance(_balance);
+  };
 
   // Detect scroll position to add background and shadow
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
+    _getBalance();
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -41,9 +49,16 @@ export default function Navbar() {
         <NavLink href="/ai">AI Features</NavLink>
         <NavLink href="/marketing">Marketing</NavLink>
         <NavLink href="/marketplace">Marketplace</NavLink>
+        {window.ic?.plug?.isConnected && (
+          <div className="flex flex-row items-center">
+            <LucideBaby />
+            <div>{balance}</div>
+            <NavLink href="/profile">Profile</NavLink>
+          </div>
+        )}
       </div>
 
-      {/* Buttons */}
+      {/* Buttons
       <div className="hidden md:flex items-center space-x-4">
         <a href="/register2">
           <Button variant="ghost" className="text-white hover:text-blue-600">
@@ -53,7 +68,7 @@ export default function Navbar() {
         <a href="/home">
           <Button className="bg-blue-500 hover:bg-blue-600 text-white">Connect</Button>
         </a>
-      </div>
+      </div> */}
 
       {/* Mobile Menu Button */}
       <button

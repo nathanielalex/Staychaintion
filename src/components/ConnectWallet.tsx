@@ -93,6 +93,7 @@ const ConnectWallet: React.FC = () => {
   const disconnectPlug = async (): Promise<void> => {
     try {
       await window.ic?.plug?.disconnect();
+      
       setConnected(false);
       setPrincipalId(null);
     } catch (e) {
