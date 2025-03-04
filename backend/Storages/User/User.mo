@@ -333,17 +333,18 @@ actor {
                     loop {
                         switch(numAttrIter.next(), numQueryIter.next(), comparIter.next()) {
                             case(?attr, ?quer, ?comp) {
+                                let query_float = Util.textToFloat(quer);
                                 itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
-                                    let value = switch (attr) {
+                                    let value: Float = switch (attr) {
                                         case ("ballance") { user.ballance };
                                         case (_) { 0 };
                                     };
 
                                     switch (comp) {
-                                        case ("mt") { value >= Util.textToInt(quer) };
-                                        case ("eq") { value == Util.textToInt(quer) };
-                                        case ("lt") { value <= Util.textToInt(quer) };
-                                        case (_) { value == Util.textToInt(quer) };
+                                        case ("mt") { Float.greaterOrEqual(value, query_float) };
+                                        case ("eq") { Float.equal(value, query_float) };
+                                        case ("lt") { Float.lessOrEqual(value, query_float) };
+                                        case (_) { Float.equal(value, query_float) };
                                     };
                                 });
                             };
