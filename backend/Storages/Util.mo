@@ -9,11 +9,6 @@ import Nat32 "mo:base/Nat32";
 import Char "mo:base/Char";
 
 module {
-    
-    public type UserRole = { #admin; #renter; #user; #guest };
-    public type PropertyStatus = { #available; #booked; #unavailable };
-    public type PropertyType = { #apartement; #cabin; #camping; #house };
-
     public type UserProfile = {
         id: Principal;
         role: Text;

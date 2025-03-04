@@ -38,6 +38,7 @@ actor {
                 return 0;
             };
         };
+        return 0;
     };
 
     public shared func updateUser(prof : UserProfile) : async Nat {
@@ -50,6 +51,7 @@ actor {
                 return 0;
             };
         };
+        return 0;
     };
 
     public query func getUser(id: Principal) : async ?UserProfile {
@@ -119,7 +121,7 @@ actor {
                 if(propId == "") {
                     return 0;
                 };
-                
+
                 let newPropertiesId = optAppend<Text>(user.propertiesId, ?[propId]);
                 
                 let updatedUser = {
