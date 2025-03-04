@@ -4,6 +4,9 @@ import Text "mo:base/Text";
 import Nat "mo:base/Nat";
 import Array "mo:base/Array";
 import Order "mo:base/Order";
+import Int "mo:base/Int";
+import Nat32 "mo:base/Nat32";
+import Char "mo:base/Char";
 
 module {
     
@@ -222,5 +225,30 @@ module {
                 );
             };
         };
+    };
+
+    public func textToInt(text : Text) : Int {
+        let chars = text.chars();
+        var int : Int = 0;
+        var isNegative = false;
+        
+        for (char in chars) {
+            switch (char) {
+                case '-' { 
+                    if (int == 0 and not isNegative) { isNegative := true }
+                    else { return 0 }  // Invalid format
+                };
+                case digit {
+                    let digitValue = Char.toNat32(digit);
+                    if (digitValue >= 48 and digitValue <= 57) {
+                        int := int * 10 + Nat32.toNat(digitValue - 48);
+                    } else {
+                        return 0;  // Invalid character
+                    };
+                };
+            };
+        };
+        
+        if (isNegative) { -int } else { int }
     };
 };
