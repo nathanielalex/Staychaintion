@@ -7,6 +7,9 @@ import Order "mo:base/Order";
 import Int "mo:base/Int";
 import Nat32 "mo:base/Nat32";
 import Char "mo:base/Char";
+import Float "mo:base/Float";
+import Nat64 "mo:base/Nat64";
+import Int64 "mo:base/Int64";
 
 module {
     public type UserProfile = {
@@ -15,7 +18,7 @@ module {
         fullName: Text;
         email: Text;
         dateOfBirth: Text;
-        ballance: Nat;
+        ballance: Float;
         profilePictureUrl: Text;
         propertiesId: ?[Text];
     };
@@ -26,7 +29,7 @@ module {
         name : Text;
         status: Text;
         propertyType: Text;
-        pricePerNight: Nat;
+        pricePerNight: Float;
         description: Text;
         location: Text;
         builtInDate: Text;
@@ -36,7 +39,7 @@ module {
         bedCount: Nat;
         pictures: [Text];
         coverPicture: Text;
-        rating: Nat;
+        rating: Float;
     };
 
     public type UnregisteredProperty = {
@@ -44,7 +47,7 @@ module {
         name : Text;
         propertyType: Text;
         status: Text;
-        pricePerNight: Nat;
+        pricePerNight: Float;
         description: Text;
         location: Text;
         builtInDate: Text;
@@ -76,10 +79,13 @@ module {
 
     public func propTypeVal(propType: Text) : Bool {
         switch (propType) {
-            case ("apartement") { return true };
+            case ("apartment") { return true };
             case ("cabin") { return true };
             case ("camping") { return true };
             case ("house") { return true };
+            case ("villa") { return true };
+            case ("bungalow") { return true };
+            case ("chalet") { return true };
             case (_) { return false };  // Default case
         };
     };
@@ -236,5 +242,39 @@ module {
         };
         
         if (isNegative) { -int } else { int }
+    };
+
+    public func textToFloat(t : Text) : Float {
+        var i : Float = 1;
+        var f : Float = 0;
+        var isDecimal : Bool = false;
+        let chars = t.chars();
+        var hasChars = false;
+
+        for (c in chars) {
+            hasChars := true;
+            if (Char.isDigit(c)) {
+                let charToNat : Nat64 = Nat64.fromNat(Nat32.toNat(Char.toNat32(c) - 48));
+                let natToFloat : Float = Float.fromInt64(Int64.fromNat64(charToNat));
+                if (isDecimal) {
+                    let n : Float = natToFloat / Float.pow(10, i);
+                    f := f + n;
+                    i := i + 1;
+                } else {
+                    f := f * 10 + natToFloat;
+                };
+            } else if (Char.equal(c, '.') or Char.equal(c, ',')) {
+                isDecimal := true;
+                i := 1;
+            } else {
+                return 0; // Return 0 for invalid input instead of throwing error
+            };
+        };
+
+        if (not hasChars) {
+            return 0;
+        };
+
+        return f;
     };
 };
