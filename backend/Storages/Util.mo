@@ -7,8 +7,9 @@ import Order "mo:base/Order";
 
 module {
     
-    public type UserRole = { #admin; #renter; #user; #guest};
-    public type PropertyStatus = { #available; #booked; #unavailable};
+    public type UserRole = { #admin; #renter; #user; #guest };
+    public type PropertyStatus = { #available; #booked; #unavailable };
+    public type PropertyType = { #apartement; #cabin; #camping; #house };
 
     public type UserProfile = {
         id: Principal;
@@ -26,6 +27,7 @@ module {
         owner: Principal;
         name : Text;
         status: PropertyStatus;
+        propertyType: PropertyType;
         pricePerNight: Nat;
         description: Text;
         location: Text;
@@ -62,7 +64,7 @@ module {
             case (#admin) { return "admin" };
             case (#renter) { return "renter" };
             case (#user) { return "user" };
-            case (#guest) { return "user" };
+            case (#guest) { return "guest" };
         };
     };
 
