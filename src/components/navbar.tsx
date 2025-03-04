@@ -1,20 +1,28 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { House, LucideBaby, Menu, X } from "lucide-react";
+import { House, LucideBaby, LucideChevronDown, LucideChevronUp, LucideIdCard, LucideWallet2, Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import type React from "react";
 import getBalance from "@/utility/wallet-func";
+import clsx from "clsx";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [balance, setBalance] = useState<number>();
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState<boolean>();
+  const [isConnected, setIsConnected] = useState<boolean>();
 
   const _getBalance = async () => {
-    const _balance = await getBalance();
-    setBalance(_balance);
+    const _isConnected = await window.ic?.plug?.isConnected();
+
+    setIsConnected(_isConnected);
+
+    if (_isConnected) {
+      const _balance = await getBalance();
+      setBalance(_balance);
+    }
   };
 
   // Detect scroll position to add background and shadow
@@ -49,14 +57,48 @@ export default function Navbar() {
         <NavLink href="/ai">AI Features</NavLink>
         <NavLink href="/marketing">Marketing</NavLink>
         <NavLink href="/marketplace">Marketplace</NavLink>
-        {window.ic?.plug?.isConnected && (
-          <div className="flex flex-row items-center">
-            <LucideBaby />
-            <div>{balance}</div>
-            <NavLink href="/profile">Profile</NavLink>
-          </div>
-        )}
       </div>
+
+      {window.ic?.plug?.isConnected && (
+        <div className="relative">
+          <div
+            className="flex flex-row items-center cursor-pointer space-x-2"
+            onClick={() => {
+              setIsProfileDropdownOpen(lastState => !lastState);
+            }}
+          >
+            <div>Profile</div>
+            {!isProfileDropdownOpen && <LucideChevronDown />}
+            {isProfileDropdownOpen && <LucideChevronUp />}
+          </div>
+          {isProfileDropdownOpen && (
+            <ul className="absolute top-full bg-white border rounded-md shadow-md right-1/4 w-max">
+              <li className="p-2">
+                <NavLink
+                  href="/profile"
+                >
+                  <div className="flex flex-row space-x-2">
+                    <LucideIdCard />
+                    <div>Profile</div>
+                  </div>
+                </NavLink>
+              </li>
+              <li className="p-2">
+                <NavLink
+                  href={isConnected ? "/history" : "/wallet"}
+                  className="flex flex-col space-y-4"
+                >
+                  <div className="flex flex-row space-x-2">
+                    <LucideWallet2 />
+                    <div>{isConnected ? "Wallet" : "Connect to Wallet"}</div>
+                  </div>
+                  <div>Balance: {balance?.toFixed(2)} ICP</div>
+                </NavLink>
+              </li>
+            </ul>
+          )}
+        </div>
+      )}
 
       {/* Buttons
       <div className="hidden md:flex items-center space-x-4">
@@ -110,15 +152,23 @@ export default function Navbar() {
   );
 }
 
-function NavLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
+function NavLink({ href, children, onClick, className }: { href: string; children: React.ReactNode; onClick?: () => void; className?: string; }) {
+  const location = useLocation();
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       onClick={onClick}
-      className="text-gray-600 hover:text-blue-600 transition-colors relative group block px-4 py-2"
+      className={clsx(
+        "text-gray-600 hover:text-blue-600 transition-colors relative group block px-4 py-2",
+        {"!text-blue-600": location.pathname === href,},
+        className
+      )}
     >
       {children}
-      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 transition-all group-hover:w-full" />
-    </a>
+      <span className={clsx(
+        "absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-500 transition-all group-hover:w-full",
+        {"w-full": location.pathname === href,},
+      )} />
+    </Link>
   );
 }

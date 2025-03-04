@@ -73,17 +73,38 @@ import ConnectWallet from '@/components/ConnectWallet';
 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../utility/use-auth-client';
+import { toast } from "react-toastify"
 
 export default function WhoAmIPage() {
   
   const { whoamiActor, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [result, setResult] = React.useState('');
+  const [result, setResult] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isConnected, setIsConnected] = useState<boolean>();
+
+  const checkConnection = async() => {
+    try {
+      setIsLoading(true);
+
+      const status = await window.ic?.plug?.isConnected();
+      console.log(status);
+      setIsConnected(status);
+    } catch (err) {
+      toast.error("Unable to veriify wallet connection status.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
-    if (window.ic?.plug?.isConnected) navigate('/properties');
-  }, [window.ic?.plug]);
+    checkConnection();
+  }, []);
+
+  useEffect(() => {
+    if (isConnected) navigate('/properties');
+  }, [isConnected]);
 
   // const [isConnecting, setIsConnecting] = useState(false)
   // const [isConnected, setIsConnected] = useState(false)
@@ -94,6 +115,7 @@ export default function WhoAmIPage() {
     if (whoamiActor) {
       try {
         const whoami = await whoamiActor.whoami();
+        checkConnection();
         setResult(whoami);
       } catch (error) {
         console.error('Error calling whoami:', error);
