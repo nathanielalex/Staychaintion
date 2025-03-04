@@ -41,13 +41,13 @@ module {
         bedCount: Nat;
         pictures: [Text];
         coverPicture: Text;
-        buildingType: Text;
         rating: Nat;
     };
 
     public type UnregisteredProperty = {
         owner: Principal;
         name : Text;
+        propertyType: PropertyType;
         status: PropertyStatus;
         pricePerNight: Nat;
         description: Text;
@@ -59,7 +59,6 @@ module {
         bedCount: Nat;
         pictures: [Text];
         coverPicture: Text;
-        buildingType: Text;
     };
 
     public func userRoleToText(role: UserRole) : Text {
@@ -94,6 +93,25 @@ module {
             case ("booked") { return #booked };
             case ("unavailable") { return #unavailable };
             case (_) { return #unavailable };
+        };
+    };
+    
+    public func propTypeToText(propType: PropertyType) : Text {
+        switch (propType) {
+            case (#apartement) { return "apartement" };
+            case (#cabin) { return "cabin" };
+            case (#camping) { return "camping" };
+            case (#house) { return "house" };
+        };
+    };
+
+    public func textToPropType(propType: Text) : PropertyType {
+        switch (propType) {
+            case ("apartement") { return #apartement };
+            case ("cabin") { return #cabin };
+            case ("camping") { return #camping };
+            case ("house") { return #house };
+            case (_) { return #house };  // Default case
         };
     };
     

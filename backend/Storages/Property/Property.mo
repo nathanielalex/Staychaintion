@@ -65,6 +65,7 @@ actor {
             owner = unreg.owner;
             name = unreg.name;
             status = unreg.status; // Default status if not provided
+            propertyType = unreg.propertyType;
             pricePerNight = unreg.pricePerNight;
             description = unreg.description;
             location = unreg.location;
@@ -75,7 +76,6 @@ actor {
             bedCount = unreg.bedCount;
             pictures = unreg.pictures;
             coverPicture = unreg.coverPicture;
-            buildingType = unreg.buildingType;
             rating = 0; // New properties start with 0 rating
         };
 
@@ -86,7 +86,6 @@ actor {
 
     public shared func updateProperty(updatedProp: Property) : async Int {
         try {
-            propertyInfo.delete(updatedProp.id);
             propertyInfo.put(updatedProp.id, updatedProp);
             return 1;
         } catch (e: Error) {
@@ -134,9 +133,9 @@ actor {
                 case("owner"){Principal.toText(prop.owner) : Text};
                 case("name"){prop.name};
                 case("status"){Util.propStatusToText(prop.status)};
+                case("propertyType"){Util.propTypeToText(prop.status)};
                 case("location"){prop.location};
                 case("builtInDate"){prop.builtInDate};
-                case("buildingType"){prop.buildingType};
                 case (_) { "" };
             }, #text(text_query));
         });
@@ -179,7 +178,8 @@ actor {
             case("rating") { if (p1.rating < p2.rating) #less else if (p1.rating == p2.rating) #equal else #greater };
             case("owner") { if (Text.less(Principal.toText(p1.owner), Principal.toText(p2.owner))) #less else if (Principal.toText(p1.owner) == Principal.toText(p2.owner)) #equal else #greater };
             case("name") { if (Text.less(p1.name, p2.name)) #less else if (p1.name == p2.name) #equal else #greater };
-            case("status") { if (Text.less(Util.propStatusToText(p1.status), Util.propStatusToText(p2.status))) #less else if (Util.propStatusToText(p1.status) == Util.propStatusToText(p2.status)) #equal else #greater };
+            case("status") { if (Text.less(Util.propStatusToText(p1.status), Util.propStatusToText(p2.status))) #less else if (p1.status == p2.status) #equal else #greater };
+            case("propertyType") { if (Text.less(Util.propTypeToText(p1.propertyType), Util.propTypeToText(p2.propertyType))) #less else if (p1.propertyType == p2.propertyType) #equal else #greater };
             case("location") { if (Text.less(p1.location, p2.location)) #less else if (p1.location == p2.location) #equal else #greater };
             case("builtInDate") { if (Text.less(p1.builtInDate, p2.builtInDate)) #less else if (p1.builtInDate == p2.builtInDate) #equal else #greater };
             case("buildingType") { if (Text.less(p1.buildingType, p2.buildingType)) #less else if (p1.buildingType == p2.buildingType) #equal else #greater };
@@ -197,7 +197,8 @@ actor {
             case("rating") { if (p1.rating > p2.rating) #less else if (p1.rating == p2.rating) #equal else #greater };
             case("owner") { if (Text.greater(Principal.toText(p1.owner), Principal.toText(p2.owner))) #less else if (Principal.toText(p1.owner) == Principal.toText(p2.owner)) #equal else #greater };
             case("name") { if (Text.greater(p1.name, p2.name)) #less else if (p1.name == p2.name) #equal else #greater };
-            case("status") { if (Text.greater(Util.propStatusToText(p1.status), Util.propStatusToText(p2.status))) #less else if (Util.propStatusToText(p1.status) == Util.propStatusToText(p2.status)) #equal else #greater };
+            case("status") { if (Text.greater(Util.propStatusToText(p1.status), Util.propStatusToText(p2.status))) #less else if (p1.status == p2.status) #equal else #greater };
+            case("propertyType") { if (Text.greater(Util.propTypeToText(p1.propertyType), Util.propTypeToText(p2.propertyType))) #less else if (p1.propertyType == p2.propertyType) #equal else #greater };
             case("location") { if (Text.greater(p1.location, p2.location)) #less else if (p1.location == p2.location) #equal else #greater };
             case("builtInDate") { if (Text.greater(p1.builtInDate, p2.builtInDate)) #less else if (p1.builtInDate == p2.builtInDate) #equal else #greater };
             case("buildingType") { if (Text.greater(p1.buildingType, p2.buildingType)) #less else if (p1.buildingType == p2.buildingType) #equal else #greater };
@@ -276,9 +277,9 @@ actor {
                                 case("owner"){Principal.toText(prop.owner) : Text};
                                 case("name"){prop.name};
                                 case("status"){Util.propStatusToText(prop.status)};
+                                case("propertyType"){Util.propTypeToText(prop.status)};
                                 case("location"){prop.location};
                                 case("builtInDate"){prop.builtInDate};
-                                case("buildingType"){prop.buildingType};
                                 case (_) { "" };                
                             }, 
                             #text(quer)
@@ -319,9 +320,9 @@ actor {
                                     case("owner") { true };
                                     case("name") { true };
                                     case("status") { true };
+                                    case("propertyType") { true };
                                     case("location") { true };
                                     case("builtInDate") { true };
-                                    case("buildingType") { true };
                                     case(_) { false };
                                 }) {
                                     sort<Property>(Iter.toArray<Property>(itertyp), if (orderDir == "asc") compareAsc else compareDesc, orderAttr)
