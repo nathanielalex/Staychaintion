@@ -16,7 +16,7 @@ module {
 
     public type UserProfile = {
         id: Principal;
-        role: UserRole;
+        role: Text;
         fullName: Text;
         email: Text;
         dateOfBirth: Text;
@@ -29,8 +29,8 @@ module {
         id: Text;
         owner: Principal;
         name : Text;
-        status: PropertyStatus;
-        propertyType: PropertyType;
+        status: Text;
+        propertyType: Text;
         pricePerNight: Nat;
         description: Text;
         location: Text;
@@ -47,8 +47,8 @@ module {
     public type UnregisteredProperty = {
         owner: Principal;
         name : Text;
-        propertyType: PropertyType;
-        status: PropertyStatus;
+        propertyType: Text;
+        status: Text;
         pricePerNight: Nat;
         description: Text;
         location: Text;
@@ -61,61 +61,34 @@ module {
         coverPicture: Text;
     };
 
-    public func userRoleToText(role: UserRole) : Text {
+    public func userRoleVal(role: Text) : Bool {
         switch (role) {
-            case (#admin) { return "admin" };
-            case (#renter) { return "renter" };
-            case (#user) { return "user" };
-            case (#guest) { return "guest" };
+            case ("admin") { return true };
+            case ("renter") { return true };
+            case ("user") { return true };
+            case (_) { return false };
         };
     };
 
-    public func textToUserRole(role: Text) : UserRole {
-        switch (role) {
-            case ("admin") { return #admin };
-            case ("renter") { return #renter };
-            case ("user") { return #user };
-            case (_) { return #guest };
+    public func propStatusVal(status: Text) : Bool {
+        switch (status) {
+            case ("available") { return true };
+            case ("booked") { return true };
+            case ("unavailable") { return true };
+            case (_) { return false };
         };
     };
 
-    public func propStatusToText(role: PropertyStatus) : Text {
-        switch (role) {
-            case (#available) { return "available" };
-            case (#booked) { return "booked" };
-            case (#unavailable) { return "unavailable" };
-        };
-    };
-
-    public func textToPropStatus(role: Text) : PropertyStatus {
-        switch (role) {
-            case ("available") { return #available };
-            case ("booked") { return #booked };
-            case ("unavailable") { return #unavailable };
-            case (_) { return #unavailable };
+    public func propTypeVal(propType: Text) : Bool {
+        switch (propType) {
+            case ("apartement") { return true };
+            case ("cabin") { return true };
+            case ("camping") { return true };
+            case ("house") { return true };
+            case (_) { return false };  // Default case
         };
     };
     
-    public func propTypeToText(propType: PropertyType) : Text {
-        switch (propType) {
-            case (#apartement) { return "apartement" };
-            case (#cabin) { return "cabin" };
-            case (#camping) { return "camping" };
-            case (#house) { return "house" };
-        };
-    };
-
-    public func textToPropType(propType: Text) : PropertyType {
-        switch (propType) {
-            case ("apartement") { return #apartement };
-            case ("cabin") { return #cabin };
-            case ("camping") { return #camping };
-            case ("house") { return #house };
-            case (_) { return #house };  // Default case
-        };
-    };
-    
-
     public func generateUUID() : async Text {
         let id = Source.Source();
         return UUID.toText(await id.new());

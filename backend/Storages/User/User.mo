@@ -10,12 +10,11 @@ import Array "mo:base/Array";
 import Order "mo:base/Order";
 import Vector "mo:vector/Class";
 import Property "canister:Property_backend";
-import { sort; optfilter; optAppend } = "../Util";
+import { userRoleVal; sort; optfilter; optAppend } = "../Util";
 
 actor {
 
     type UserProfile = Util.UserProfile;
-    type UserRole = Util.UserRole;
 
     var userProfiles = TrieMap.TrieMap<Principal, UserProfile>(Principal.equal, Principal.hash);
 
@@ -30,26 +29,27 @@ actor {
     };
 
     public shared func registerUser(prof: UserProfile) : async Nat {
-        try {
-            userProfiles.put(prof.id, prof);
-            return 1;
-        } catch (e: Error) {
-            print("Error registering user: " # Error.message(e));
-            return 0;
+        if(userRoleVal(prof.role)){
+            try {
+                userProfiles.put(prof.id, prof);
+                return 1;
+            } catch (e: Error) {
+                print("Error registering user: " # Error.message(e));
+                return 0;
+            };
         };
     };
 
     public shared func updateUser(prof : UserProfile) : async Nat {
-
-        try {
-            userProfiles.delete(prof.id);
-            userProfiles.put(prof.id, prof);
-            return 1;
-        } catch (e: Error) {
-            print("Error updating user: " # Error.message(e));
-            return 0;
+        if(userRoleVal(prof.role)){
+            try {
+                userProfiles.put(prof.id, prof);
+                return 1;
+            } catch (e: Error) {
+                print("Error updating user: " # Error.message(e));
+                return 0;
+            };
         };
-
     };
 
     public query func getUser(id: Principal) : async ?UserProfile {
@@ -66,27 +66,27 @@ actor {
     public query func isAdmin(id: Principal): async Bool {
         switch (userProfiles.get(id)) {
             case null { return false };
-            case (?user) { return user.role == #admin };
+            case (?user) { return user.role == "admin" };
         };
     };
 
     public query func isRenter(id: Principal): async Bool {
         switch (userProfiles.get(id)) {
             case null { return false };
-            case (?user) { return user.role == #renter };
+            case (?user) { return user.role == "renter" };
         };
     };
 
     public query func isUser(id: Principal): async Bool {
         switch (userProfiles.get(id)) {
             case null { return false };
-            case (?user) { return user.role == #user };
+            case (?user) { return user.role == "user" };
         };
     };
 
-    public query func getRole(id: Principal): async UserRole {
+    public query func getRole(id: Principal): async Text {
         switch (userProfiles.get(id)) {
-            case null { return #guest };
+            case null { return "User not found" };
             case (?user) { return user.role };
         };
     };
@@ -116,6 +116,10 @@ actor {
             case null { return 0 };
             case (?user) {
                 let propId: Text = await Property.registerProperty(property);
+                if(propId == "") {
+                    return 0;
+                };
+                
                 let newPropertiesId = optAppend<Text>(user.propertiesId, ?[propId]);
                 
                 let updatedUser = {
@@ -187,7 +191,7 @@ actor {
             return Text.contains( switch (attribute) {
                 case ("id") { Principal.toText(user.id) };
                 case ("fullName") { user.fullName };
-                case ("role") { Util.userRoleToText(user.role) };
+                case ("role") { user.role };
                 case ("email") { user.email };
                 case ("dateOfBirth") { user.dateOfBirth };
                 case ("profilePictureUrl") { user.profilePictureUrl };
@@ -218,7 +222,11 @@ actor {
         return Iter.toArray<Principal>(Iter.map<UserProfile, Principal>(itertyp, func (user: UserProfile): Principal{ return user.id; }));
     };
 
-    public query func getUserFromRole(roleQuery: UserRole, count: Nat): async [UserProfile] {
+    public query func getUserFromRole(roleQuery: Text, count: Nat): async [UserProfile] {
+        if(count <= 0 or not Util.userRoleVal(roleQuery)) {
+            return [];
+        };
+        
         var userArray: [UserProfile] = [];
 
         for (user in userProfiles.vals()) {
@@ -303,7 +311,7 @@ actor {
                             switch (attr) {
                                 case("id"){Principal.toText(user.id) : Text};
                                 case("fullName"){user.fullName};
-                                case("role"){Util.userRoleToText(user.role)};
+                                case("role"){user.role};
                                 case("email"){user.email};
                                 case("dateOfBirth"){user.dateOfBirth};
                                 case("profilePictureUrl"){user.profilePictureUrl};
@@ -335,11 +343,12 @@ actor {
                                 let sorted = if(switch(orderAttr) {
                                     case ("ballance") { true };
                                     case ("id"){ true };
+                                    case ("role"){ true };
                                     case ("fullName"){ true };
                                     case ("email"){ true };
                                     case ("dateOfBirth"){ true };
                                     case ("profilePictureUrl"){ true };
-                                    case (_){ true };
+                                    case (_){ false };
                                 }) {
                                     sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (orderDir == "asc") compareAsc else compareDesc, orderAttr)
                                 } else Iter.toArray<UserProfile>(itertyp);

@@ -56,9 +56,8 @@ actor {
         // propertyIdIndexes := Array.fromIterable<Text>(propertyInfo.keys());
     };
 
-    public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {
+    public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {        
         let id = await Util.generateUUID();
-        
         // Create property by extending unreg with additional fields
         let prop : Property = {
             id;
