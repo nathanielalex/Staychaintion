@@ -8,20 +8,20 @@ import pandas as pd
 app = FastAPI()
 
 # Load the trained model and encoders
-try:
-    model = joblib.load("price_model.pkl")
-    encoder = joblib.load("encoder.pkl")
-    scaler = joblib.load("scaler.pkl")
-except Exception as e:
-    raise RuntimeError(f"Error loading model or encoders: {e}")
-
-
 # try:
-#     model = joblib.load("best_price_model.pkl")
-#     encoder = joblib.load("best_encoder.pkl")
-#     scaler = joblib.load("best_scaler.pkl")
+#     model = joblib.load("price_model.pkl")
+#     encoder = joblib.load("encoder.pkl")
+#     scaler = joblib.load("scaler.pkl")
 # except Exception as e:
 #     raise RuntimeError(f"Error loading model or encoders: {e}")
+
+
+try:
+    model = joblib.load("best_price_model.pkl")
+    encoder = joblib.load("best_encoder.pkl")
+    scaler = joblib.load("best_scaler.pkl")
+except Exception as e:
+    raise RuntimeError(f"Error loading model or encoders: {e}")
 
 
 # Allow CORS for frontend communication

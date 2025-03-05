@@ -13,7 +13,7 @@ export default function AIFeaturesPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-br from-blue-50 to-white"
+      className="min-h-screen"
     >
       <AIHero />
       <FeaturesGrid />

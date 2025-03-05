@@ -90,6 +90,10 @@ import MarketplacePage from './pages/marketplace/page';
 import ComingSoonPage from './pages/coming-soon/page';
 import OnboardPage from './pages/Onboard';
 
+// Dark Mode
+
+import { ThemeProvider } from '@/context/ThemeContext';
+
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -119,7 +123,7 @@ const AnimatedRoutes = () => {
 
   return (
 
-    <>
+    <ThemeProvider>
 
       {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
 
@@ -262,7 +266,7 @@ const AnimatedRoutes = () => {
 
       </AnimatePresence>
 
-    </>
+    </ThemeProvider>
 
   );
 

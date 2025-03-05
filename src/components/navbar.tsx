@@ -6,6 +6,7 @@ import type React from "react";
 import getBalance from "@/utility/wallet-func";
 import clsx from "clsx";
 import { Link, useLocation } from "react-router-dom";
+import ThemeToggleButton from "@/components/ui/toggle";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,6 +61,113 @@ export default function Navbar() {
       </div>
 
       {window.ic?.plug?.isConnected && (
+
+
+        <div className="relative hidden md:flex">
+
+          {/* <ThemeToggleButton/> */}
+
+          <div
+            className="flex flex-row items-center cursor-pointer space-x-2"
+            onClick={() => {
+              setIsProfileDropdownOpen(lastState => !lastState);
+            }}
+          >
+            <div>Profile</div>
+            {!isProfileDropdownOpen && <LucideChevronDown />}
+            {isProfileDropdownOpen && <LucideChevronUp />}
+          </div>
+          {isProfileDropdownOpen && (
+            <ul className="absolute top-full bg-white border rounded-md shadow-md right-1/4 w-max">
+
+              <li className="p-2">
+                <NavLink
+                  href="/profile"
+                >
+                  <div className="flex flex-row space-x-2">
+                    <LucideIdCard />
+                    <div>Profile</div>
+                  </div>
+                </NavLink>
+              </li>
+
+              <li className="p-2">
+                <NavLink
+                  href={isConnected ? "/history" : "/wallet"}
+                  className="flex flex-col space-y-4"
+                >
+                  <div className="flex flex-row space-x-2">
+                    <LucideWallet2 />
+                    <div>{isConnected ? "Wallet" : "Connect to Wallet"}</div>
+                  </div>
+                  <div>Balance: {balance?.toFixed(2)} ICP</div>
+                </NavLink>
+              </li>
+
+              {/* <li className="p-2">
+                  <div className="flex flex-row space-x-1">
+                    <ThemeToggleButton/>
+                  </div>
+              </li> */}
+
+            </ul>
+            
+          )}
+
+          <ThemeToggleButton/>
+
+        </div>
+
+      )}
+
+      {/* <div className="hidden md:flex items-center space-x-4">
+        <a href="/register2">
+          <Button variant="ghost" className="text-white hover:text-blue-600">
+            Sign In
+          </Button>
+        </a>
+        <a href="/home">
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white">Connect</Button>
+        </a>
+      </div> */}
+
+      {/* Mobile Menu Button */}
+
+      <button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        className="md:hidden text-gray-700 focus:outline-none"
+      >
+        {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+      </button>
+
+      {/* Mobile Menu */}
+
+      {isMenuOpen && (
+
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -20, opacity: 0 }}
+          className="absolute top-full left-0 right-0 bg-white shadow-md p-4 flex flex-col space-y-2 md:hidden"
+        >
+
+          <NavLink href="/landing" onClick={() => setIsMenuOpen(false)}>
+            Home
+          </NavLink>
+          <NavLink href="/properties" onClick={() => setIsMenuOpen(false)}>
+            Properties
+          </NavLink>
+          <NavLink href="/ai" onClick={() => setIsMenuOpen(false)}>
+            AI Features
+          </NavLink>
+          <NavLink href="/marketing" onClick={() => setIsMenuOpen(false)}>
+            Marketing
+          </NavLink>
+          <NavLink href="/marketplace" onClick={() => setIsMenuOpen(false)}>
+            Marketplace
+          </NavLink>
+          
+          {window.ic?.plug?.isConnected && (
         <div className="relative">
           <div
             className="flex flex-row items-center cursor-pointer space-x-2"
@@ -100,52 +208,6 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Buttons
-      <div className="hidden md:flex items-center space-x-4">
-        <a href="/register2">
-          <Button variant="ghost" className="text-white hover:text-blue-600">
-            Sign In
-          </Button>
-        </a>
-        <a href="/home">
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white">Connect</Button>
-        </a>
-      </div> */}
-
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="md:hidden text-gray-700 focus:outline-none"
-      >
-        {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <motion.div
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -20, opacity: 0 }}
-          className="absolute top-full left-0 right-0 bg-white shadow-md p-4 flex flex-col space-y-2 md:hidden"
-        >
-          <NavLink href="/landing" onClick={() => setIsMenuOpen(false)}>
-            Home
-          </NavLink>
-          <NavLink href="/how-it-works" onClick={() => setIsMenuOpen(false)}>
-            How it Works
-          </NavLink>
-          <NavLink href="/examples" onClick={() => setIsMenuOpen(false)}>
-            Examples
-          </NavLink>
-          <NavLink href="/pricing" onClick={() => setIsMenuOpen(false)}>
-            Pricing
-          </NavLink>
-          <Button variant="ghost" className="text-white hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>
-            Sign In
-          </Button>
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={() => setIsMenuOpen(false)}>
-            Get Started
-          </Button>
         </motion.div>
       )}
     </motion.nav>
