@@ -36,9 +36,20 @@ import AdminDashboard from './pages/admin/Page';
 
 import AdminAnalytics from './pages/admin/analytics/page';
 import AdminProperties from './pages/admin/properties/page';
+import AdminUsers from './pages/admin/users/page';
 
 
-// User
+// Admin
+
+import OwnerLayout from './pages/owner/layout';
+import OwnerDashboard from './pages/owner/page';
+
+import OwnerAnalytics from './pages/owner/analytics/page';
+import OwnerProperties from './pages/owner/properties/page';
+import OwnerSettings from './pages/owner/settings/page';
+
+
+// User / Renter
 
 import UserLayout from "./pages/profiles/layout";
 import ProfilePage from "./pages/profiles/ProfilePage";
@@ -160,7 +171,7 @@ const AnimatedRoutes = () => {
               <Route path="/properties/details" element={<PropertyDetailPage />} />
             </Route>
 
-              {/* ADMIN PAGES SECTION */}
+            {/* ADMIN PAGES SECTION */}
             
             <Route path="/admin" element={<AdminLayout children={<AdminDashboard />} />}>
             </Route>
@@ -170,6 +181,25 @@ const AnimatedRoutes = () => {
 
             <Route path="/admin/properties" element={<AdminLayout children={<AdminProperties />} />}>
             </Route>
+
+            <Route path="/admin/users" element={<AdminLayout children={<AdminUsers />} />}>
+            </Route>
+
+
+            {/* OWNER PAGES SECTION */}
+            
+            <Route path="/owner" element={<OwnerLayout children={<OwnerDashboard />} />}>
+            </Route>
+
+            <Route path="/owner/analytics" element={<OwnerLayout children={<OwnerAnalytics />} />}>
+            </Route>
+
+            <Route path="/owner/properties" element={<OwnerLayout children={<OwnerProperties />} />}>
+            </Route>
+
+            <Route path="/owner/settings" element={<OwnerLayout children={<OwnerSettings />} />}>
+            </Route>
+
 
             {/* USER PROFILE PAGES SECTION */}
 
@@ -201,7 +231,9 @@ const AnimatedRoutes = () => {
 
             <Route path="/room-classifier" element={<ComingSoonPage />} />
             
+
             {/* Other Pages */}
+            
 
             {/* MARKETING PAGES */}
 

@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { LayoutDashboard, Home, BarChart3, Settings, Menu, X, House } from "lucide-react"
+import { LayoutDashboard, Home, BarChart3, Settings, Menu, X, House, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface AdminLayoutProps {
@@ -26,15 +26,20 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       href: "/admin/properties",
     },
     {
+      title: "Users",
+      icon: Users,
+      href: "/admin/users",
+    },
+    {
       title: "Analytics",
       icon: BarChart3,
       href: "/admin/analytics",
     },
-    {
-      title: "Settings",
-      icon: Settings,
-      href: "/admin/settings",
-    },
+    // {
+    //   title: "Settings",
+    //   icon: Settings,
+    //   href: "/admin/settings",
+    // },
   ]
 
   return (
@@ -84,7 +89,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </button>
           <div className="flex items-center space-x-4">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-blue-600 font-medium">A</span>
+              <span className="text-blue-600 font-medium">R</span>
             </div>
           </div>
         </header>

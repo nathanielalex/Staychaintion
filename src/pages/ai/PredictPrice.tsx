@@ -1,49 +1,78 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Info, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
+import { motion } from "framer-motion"
 
-// Sample data - replace with your actual data
-const neighbourhoodGroups = ["Brooklyn", "Manhattan", "Queens", "Staten Island", "Bronx"]
+// Room types used in the model
 const roomTypes = ["Private Room", "Entire home/apt", "Shared room"]
 
-interface PredictionFormData {
-  neighbourhood_group: string
-  neighbourhood: string
-  room_type: string
-  latitude: number
-  longitude: number
-  minimum_nights: number
-  number_of_reviews: number
-  reviews_per_month: number
-  calculated_host_listings_count: number
-  availability_365: number
-}
-
 export default function PredictPage() {
+  const [formData, setFormData] = useState({
+    latitude: "",
+    longitude: "",
+    minimum_nights: "",
+    room_type: ""
+  })
+  
   const [isLoading, setIsLoading] = useState(false)
   const [predictedPrice, setPredictedPrice] = useState<number | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  // Handle input change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  // Handle select change
+  const handleSelectChange = (name, value) => {
+    setFormData({ ...formData, [name]: value })
+  }
+
+  // Handle form submit
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setPredictedPrice(150) // Replace with actual prediction
+    setPredictedPrice(null)
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/predict", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          latitude: parseFloat(formData.latitude),
+          longitude: parseFloat(formData.longitude),
+          minimum_nights: parseInt(formData.minimum_nights),
+          room_type: formData.room_type
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setPredictedPrice(data.predicted_price)
+      } else {
+        console.error("Prediction failed:", data.detail)
+        setPredictedPrice(null)
+      }
+    } catch (error) {
+      console.error("Error calling API:", error)
+    }
+
     setIsLoading(false)
   }
 
   return (
+
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="max-w-2xl mx-auto p-6 sm:p-8">
+
+      <Card className="max-w-2xl mx-auto p-6 sm:p-8 z-20">
         <div className="space-y-8">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Predict Property Price</h1>
@@ -58,46 +87,30 @@ export default function PredictPage() {
               <h2 className="text-lg font-semibold text-gray-900">Location Details</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="neighbourhood_group">Neighbourhood Group</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select area" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {neighbourhoodGroups.map((group) => (
-                        <SelectItem key={group} value={group.toLowerCase()}>
-                          {group}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="room_type">Room Type</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {roomTypes.map((type) => (
-                        <SelectItem key={type} value={type.toLowerCase()}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
                   <Label htmlFor="latitude">Latitude</Label>
-                  <Input id="latitude" type="number" step="any" placeholder="40.64749" required />
+                  <Input 
+                    id="latitude" 
+                    name="latitude" 
+                    type="number" 
+                    step="any" 
+                    placeholder="40.64749" 
+                    value={formData.latitude}
+                    onChange={handleChange}
+                    required 
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="longitude">Longitude</Label>
-                  <Input id="longitude" type="number" step="any" placeholder="-73.97237" required />
+                  <Input 
+                    id="longitude" 
+                    name="longitude" 
+                    type="number" 
+                    step="any" 
+                    placeholder="-73.97237" 
+                    value={formData.longitude}
+                    onChange={handleChange}
+                    required 
+                  />
                 </div>
               </div>
             </div>
@@ -107,47 +120,38 @@ export default function PredictPage() {
               <h2 className="text-lg font-semibold text-gray-900">Property Details</h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="minimum_nights">Minimum Nights</Label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="h-4 w-4 text-gray-400" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Minimum number of nights required to book</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                  <Input id="minimum_nights" type="number" min="1" placeholder="1" required />
+                  <Label htmlFor="room_type">Room Type</Label>
+                  <Select 
+                    value={formData.room_type} 
+                    onValueChange={(value) => handleSelectChange("room_type", value)}
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {roomTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="availability_365">Availability (days/year)</Label>
-                  <Input id="availability_365" type="number" min="0" max="365" placeholder="365" required />
+                  <Label htmlFor="minimum_nights">Minimum Nights</Label>
+                  <Input 
+                    id="minimum_nights" 
+                    name="minimum_nights" 
+                    type="number" 
+                    min="1" 
+                    placeholder="1" 
+                    value={formData.minimum_nights}
+                    onChange={handleChange}
+                    required 
+                  />
                 </div>
-              </div>
-            </div>
-
-            {/* Review Information */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900">Review Information</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="number_of_reviews">Number of Reviews</Label>
-                  <Input id="number_of_reviews" type="number" min="0" placeholder="0" required />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="reviews_per_month">Reviews per Month</Label>
-                  <Input id="reviews_per_month" type="number" step="0.01" min="0" placeholder="0.00" required />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="calculated_host_listings_count">Host Listings Count</Label>
-                <Input id="calculated_host_listings_count" type="number" min="1" placeholder="1" required />
               </div>
             </div>
 
@@ -172,9 +176,41 @@ export default function PredictPage() {
               </p>
             </div>
           )}
+
+          {/* {predictedPrice === null && (
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-red-400">Predicted Price Error</h3>
+              <p className="text-sm text-gray-600 mt-1">
+                The Backend API is not started
+              </p>
+            </div>
+          )} */}
+
         </div>
       </Card>
+
+      {/* <div className="absolute inset-0 pointer-events-none z-10">
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
+            initial={{
+              x: Math.random() * window.innerWidth,
+              y: Math.random() * window.innerHeight,
+            }}
+            animate={{
+              y: [Math.random() * window.innerHeight, Math.random() * window.innerHeight],
+              x: [Math.random() * window.innerWidth, Math.random() * window.innerWidth],
+            }}
+            transition={{
+              duration: 10 + Math.random() * 10,
+              repeat: Number.POSITIVE_INFINITY,
+              ease: "linear",
+            }}
+          />
+        ))}
+      </div> */}
+
     </div>
   )
 }
-
