@@ -123,6 +123,19 @@ actor {
         return (Vector.toArray(properties));
     };
 
+    public query func getProperties(count: Nat) : async [Property] {
+        var counter = 0;
+        let properties = Vector.Vector<Property>();
+        for (p in propertyInfo.vals()) {
+            if(counter >= count){
+                return Vector.toArray(properties)
+            };
+            properties.add(p);
+            counter += 1;
+        };
+        return (Vector.toArray(properties));
+    };
+
     // Add this function to seed the properties when canister is initialized
     // public func initialize() : async () {
     //     // Call the seeder function
@@ -260,27 +273,24 @@ actor {
      * ```
      */
     public query func getPropertyPaginate(
-        textAttrs: Text, textQueries: Text,
-        numAttrs: Text, numQueries: Text, comparisons: Text,
-        orderAttr: Text, orderDir: Text,
-        page: Nat, count: Nat
+        queries: Util.PaginationQuery
     ): async ([Property], Nat) {
-        if(page <= 0 or count <= 0) {
+        if(queries.page <= 0 or queries.count <= 0) {
             return ([], 0);
         };
 
         // Parse input parameters
-        let textAttrIter = Text.tokens(textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
-        let textQueryIter = Text.tokens(textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let textAttrIter = Text.tokens(queries.textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let textQueryIter = Text.tokens(queries.textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
         
-        let numAttrIter = Text.tokens(numAttrs, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
-        let numQueryIter = Text.tokens(numQueries, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
-        let comparIter = Text.tokens(comparisons, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
+        let numAttrIter = Text.tokens(queries.numAttrs, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
+        let numQueryIter = Text.tokens(queries.numQueries, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
+        let comparIter = Text.tokens(queries.comparisons, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
 
         var itertyp = propertyInfo.vals();
         var cursor = 0;
         var counter = 0;
-        let skip = (page-1)*count;
+        let skip = (queries.page-1)*queries.count;
 
         // Filter by text attributes
         loop {
@@ -292,7 +302,7 @@ actor {
                                 case("owner"){Principal.toText(prop.owner) : Text};
                                 case("name"){prop.name};
                                 case("status"){prop.status};
-                                case("propertyType"){prop.status};
+                                case("propertyType"){prop.propertyType};
                                 case("location"){prop.location};
                                 case("builtInDate"){prop.builtInDate};
                                 case (_) { "" };                
@@ -326,7 +336,7 @@ actor {
                                 });
                             };
                             case(null, null, null) { 
-                                let sorted = if(switch(orderAttr) {
+                                let sorted = if(switch(queries.orderAttr) {
                                     case("pricePerNight") { true };
                                     case("bedroomCount") { true };
                                     case("guestCapacity") { true };
@@ -341,12 +351,12 @@ actor {
                                     case("builtInDate") { true };
                                     case(_) { false };
                                 }) {
-                                    sort<Property>(Iter.toArray<Property>(itertyp), if (orderDir == "asc") compareAsc else compareDesc, orderAttr)
+                                    sort<Property>(Iter.toArray<Property>(itertyp), if (queries.orderDir == "asc") compareAsc else compareDesc, queries.orderAttr)
                                 } else Iter.toArray<Property>(itertyp);
 
                                 let paginated = Iter.filter<Property>(Iter.fromArray(sorted), func (prop: Property): Bool {
                                     cursor += 1;
-                                    if (cursor > skip and counter < count) {
+                                    if (cursor > skip and counter < queries.count) {
                                         counter += 1;
                                         true;
                                     } else false;

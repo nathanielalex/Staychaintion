@@ -11,7 +11,8 @@ import { Principal } from "@dfinity/principal"
 import { Property_backend } from "@/declarations/Property_backend"
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
 import { UnregisteredProperty } from "@/declarations/Property_backend/Property_backend.did"
-import { PropertyStatus } from "@/declarations/Property_backend/Property_backend.did"
+import PropertyFilter from "@/components/properties/property-filter"
+import { PaginationQuery } from "@/declarations/Property_backend/Property_backend.did"
 
 // Sample data
 
@@ -47,62 +48,71 @@ import { PropertyStatus } from "@/declarations/Property_backend/Property_backend
 //   // Add more properties...
 // ]
 
+interface PropertyQuery extends Partial<Property>{
+  [key: string]: any;
+}
+
 const categories = [
   { id: "all", name: "All", icon: Home },
   { id: "apartment", name: "Apartments", icon: Building },
   { id: "cabin", name: "Cabins", icon: Home },
   { id: "camping", name: "Camping", icon: Tent },
   { id: "castle", name: "Castles", icon: Castle },
-  { id: "mountain", name: "Mountain", icon: Mountain },
+  { id: "camping", name: "Camping", icon: Mountain },
   { id: "pool", name: "Amazing Pools", icon: Pool },
 ]
 
 export default function PropertiesPage() {
-  const [searchTerm, setSearchTerm] = useState("")
+  const onePageCount: number = 10;
+  const [searchTerm, setSearchTerm] = useState<string>("")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [showFilters, setShowFilters] = useState(false)
+  const [showFilters, setShowFilters] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<PaginationQuery|null>(null);
+  const [goSearch, setGoSearch] = useState<boolean>(false);
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchProperties = async () => {
     try {
-      // setLoading(true);
-      // setError(null);
-      // const actor = getChatActor();
-      const result = await Property_backend.getAllProperties();
-      setProperties(result);
-    } catch (err) {
-      setError('An error occurred while fetching contacts');
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  useEffect(() => {
-    fetchProperties();
-  }, [searchTerm]);
+      setLoading(true);
+      setError(null);
 
-  const initProperties = async (newProperty: UnregisteredProperty) => {
-    try {
-      // setLoading(true);
-      // setError(null);
-      // const actor = getChatActor();
-      const result = await Property_backend.registerProperty(newProperty);
+      if (query === null) {
+        const [result, size] = await Property_backend.getPropertyPaginate({
+          textAttrs: "",
+          textQueries: "",
+          numAttrs: "",
+          numQueries: "",
+          comparisons: "",
+          page: BigInt(page), 
+          count: BigInt(onePageCount)
+        } as PaginationQuery);
+        console.log("Result (null): ", result);
+        setProperties(result);
+      } else {
+        const [result, size] = await Property_backend.getPropertyPaginate(query);
+        console.log("Result (notnull): ", result);
+        setProperties(result);
+      }
     } catch (err) {
-      setError('An error occurred while fetching contacts');
+      setError('An error occurred while fetching contacts ' + err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    setLoading(true);
     // Creating an instance of UnregisteredProperty
-    const newProperty: UnregisteredProperty = {
+    const newProperty: Property = {
+      id: "asd1SD12J8nds0dnU0em",
       bedCount: 2n,
-      status: { available : null },
+      status: 'available',
+      rating: 0,
       owner: Principal.fromText('aaaaa-aa'),
-      pricePerNight: 1000000n,
+      pricePerNight: 1000000,
       name: 'Luxury A-Frame Cabin',
       bedroomCount: 2n,
       bathroomCount: 1n,
@@ -110,22 +120,24 @@ export default function PropertiesPage() {
       builtInDate: '2020-06-15',
       guestCapacity: 4n,
       pictures: [],
-      buildingType: 'cabin',
+      propertyType: 'cabin',
       location: 'Tambon Huai Sat Yai, Thailand',
-      coverPicture: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png'
+      coverPicture: 'https://www.jonesthegrocer.com/images/orange-1kg-p1440-3590_image.jpg'
     };
-    initProperties(newProperty);  // Set the property state with the new object
+    // initProperties(newProperty);  // Set the property state with the new object
+    // setGoSearch(prev => !prev);
+    let arrayofProperties: Property[] = [];
+    for (let i = 0; i < 10; i++) {
+      // Create a new copy each time with spread operator
+      const propertyClone = { ...newProperty, id: newProperty.id + i.toString() };
+      arrayofProperties.push(propertyClone);
+    }
+    setProperties(arrayofProperties);
   }, []);
 
-  
-
-  const filteredProperties = properties.filter((property) => {
-    const matchesSearch =
-      property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || property.buildingType === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+  useEffect(()=>{
+    fetchProperties();
+  }, [query]);
 
   return (
 
@@ -167,8 +179,20 @@ export default function PropertiesPage() {
             </Button>
           </div>
 
+          <PropertyFilter
+            page = {page}
+            count = {onePageCount}
+            searchTerm= {searchTerm}
+            setSearchTerm= {setSearchTerm}
+            selectedCategory= {selectedCategory}
+            setQuery = {setQuery}
+            goSearch = {goSearch}
+            showFilters = {showFilters}
+            setGoSearch={setGoSearch}
+          />
+
           {/* Categories */}
-          <div className="flex overflow-x-auto pb-4 space-x-4 scrollbar-hide">
+          <div className="flex overflow-x-auto pb-4 pt-2 px-2 space-x-4 scrollbar-hide">
             {categories.map((category) => {
               const Icon = category.icon
               return (
@@ -188,26 +212,44 @@ export default function PropertiesPage() {
           </div>
         </motion.div>
 
-        {/* Property Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProperties.map((property, index) => (
-            <motion.div
-              key={property.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              <PropertyCard property={property} />
-            </motion.div>
-          ))}
-        </div>
+        {
+          error && (
+            <div className="text-center py-3">
+              <p className="text-red-600">{error}</p>
+            </div>
+          )
+        }
 
-        {/* Empty State */}
-        {filteredProperties.length === 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
-            <p className="text-gray-600">No properties found matching your criteria.</p>
-          </motion.div>
-        )}
+        {/* Property Grid */}
+        {
+          loading ? (
+            <div className="h-[50vh] flex items-center justify-center">
+              <div className="w-20 h-20 border-4 border-gray-300 border-t-4 border-t-blue-400 rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {properties.map((property, index) => (
+                  <motion.div
+                    key={property.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <PropertyCard property={property} />
+                  </motion.div>
+                ))}
+              </div>
+    
+              {/* Empty State */}
+              {properties.length === 0 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
+                  <p className="text-gray-600">No properties found matching your criteria.</p>
+                </motion.div>
+              )}
+            </>
+          )
+        }
       </div>
     </div>
   )

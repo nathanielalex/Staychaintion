@@ -23,7 +23,7 @@ interface PropertyFormProps {
 export default function PropertyForm({ property, onClose, setProperties }: PropertyFormProps) {
   const [formData, setFormData] = useState({
     name: property.name,
-    type: property.buildingType,
+    type: property.propertyType,
     price: property.pricePerNight,
     location: property.location,
     bedrooms: property.bedroomCount,
@@ -63,7 +63,7 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
       builtInDate: formData.builtInDate,
       guestCapacity: formData.guests,
       pictures: images,
-      buildingType: formData.type,
+      propertyType: formData.type,
       location: formData.location,
       coverPicture: images[0]
     }
@@ -116,7 +116,7 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
           {/* Property Type */}
           <div className="space-y-2">
             <Label htmlFor="type">Property Type</Label>
-            <Select defaultValue={property.buildingType}>
+            <Select defaultValue={property.propertyType}>
               <SelectTrigger>
                 <SelectValue placeholder="Select property type" />
               </SelectTrigger>
