@@ -40,7 +40,19 @@ module {
         pictures: [Text];
         coverPicture: Text;
         rating: Float;
+        
+        reviewCount: Nat;
     };
+
+    public type PropertyReview = {
+        reviewId: Text;
+        propertyId: Text;
+        reviewer: Principal;
+        rating: Float;
+        reviewText: Text;
+        reviewDate: Text; 
+    };
+
 
     public type UnregisteredProperty = {
         owner: Principal;
