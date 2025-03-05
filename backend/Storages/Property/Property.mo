@@ -10,15 +10,15 @@ import Order "mo:base/Order";
 import Principal "mo:base/Principal";
 import Bool "mo:base/Bool";
 import Option "mo:base/Option";
+import Float "mo:base/Float";
 import Util "../Util";
-import { sort } "../Util";
+import { sort; propStatusVal; propTypeVal } "../Util";
 // import Region "mo:base/Region";
 import Vector "mo:vector/Class";
 
 actor {
 
     type Property = Util.Property;
-    type PropertyStatus = Util.PropertyStatus;
 
     var propertyInfo = TrieMap.TrieMap<Text, Property>(Text.equal, Text.hash);
     // var propertyIdIndexes = Array.init<Text>(propertyInfo.size());
@@ -56,9 +56,12 @@ actor {
         // propertyIdIndexes := Array.fromIterable<Text>(propertyInfo.keys());
     };
 
-    public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {
+    public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {   
+        if(propTypeVal(unreg.propertyType) == false or propStatusVal(unreg.status) == false) {
+            return "";
+        };
+
         let id = await Util.generateUUID();
-        
         // Create property by extending unreg with additional fields
         let prop : Property = {
             id;
@@ -85,6 +88,10 @@ actor {
 
 
     public shared func updateProperty(updatedProp: Property) : async Int {
+        if(propTypeVal(updatedProp.propertyType) == false or propStatusVal(updatedProp.status) == false) {
+            return 0;
+        };
+
         try {
             propertyInfo.put(updatedProp.id, updatedProp);
             return 1;
@@ -132,8 +139,8 @@ actor {
             return Text.contains( switch(attribute){
                 case("owner"){Principal.toText(prop.owner) : Text};
                 case("name"){prop.name};
-                case("status"){Util.propStatusToText(prop.status)};
-                case("propertyType"){Util.propTypeToText(prop.status)};
+                case("status"){prop.status};
+                case("propertyType"){prop.status};
                 case("location"){prop.location};
                 case("builtInDate"){prop.builtInDate};
                 case (_) { "" };
@@ -143,25 +150,24 @@ actor {
         return Iter.toArray<Text>(Iter.map<Property, Text>(itertyp, func (prop: Property): Text { prop.id; }));
     };
 
-    public query func getPropIdFromNatAttribute(attribute: Text, order: Text, comparison: Text, numQuery: Nat): async [Text] {
+    public query func getPropIdFromNatAttribute(attribute: Text, order: Text, comparison: Text, numQuery: Float): async [Text] {
         var itertyp = propertyInfo.vals();
-
         itertyp := Iter.filter<Property>(itertyp, func (prop: Property): Bool {
-            let value = switch (attribute) {
+            let value: Float = switch (attribute) {
                 case ("pricePerNight") { prop.pricePerNight };
-                case ("bedroomCount") { prop.bedroomCount };
-                case ("guestCapacity") { prop.guestCapacity };
-                case ("bathroomCount") { prop.bathroomCount };
-                case ("bedCount") { prop.bedCount };
+                case ("bedroomCount") { Float.fromInt(prop.bedroomCount) };
+                case ("guestCapacity") { Float.fromInt(prop.guestCapacity) };
+                case ("bathroomCount") { Float.fromInt(prop.bathroomCount) };
+                case ("bedCount") { Float.fromInt(prop.bedCount) };
                 case ("rating") { prop.rating };
                 case (_) { 0 };
             };
 
-            return switch (comparison) {
-                case ("mt") { value >= numQuery };
-                case ("eq") { value == numQuery };
-                case ("lt") { value <= numQuery };
-                case (_) { value == numQuery };
+            switch (comparison) {
+                case ("mt") { Float.greaterOrEqual(value, numQuery) };
+                case ("eq") { Float.equal(value, numQuery) };
+                case ("lt") { Float.lessOrEqual(value, numQuery) };
+                case (_) { Float.equal(value, numQuery) };
             };
         });
 
@@ -170,38 +176,36 @@ actor {
 
     private func compareAsc(p1: Property, p2: Property, attr: Text): Order.Order {
         switch(attr) {
-            case("pricePerNight") { if (p1.pricePerNight < p2.pricePerNight) #less else if (p1.pricePerNight == p2.pricePerNight) #equal else #greater };
+            case("pricePerNight") { if (Float.less(p1.pricePerNight, p2.pricePerNight)) #less else if (Float.equal(p1.pricePerNight, p2.pricePerNight)) #equal else #greater };
             case("bedroomCount") { if (p1.bedroomCount < p2.bedroomCount) #less else if (p1.bedroomCount == p2.bedroomCount) #equal else #greater };
             case("guestCapacity") { if (p1.guestCapacity < p2.guestCapacity) #less else if (p1.guestCapacity == p2.guestCapacity) #equal else #greater };
             case("bathroomCount") { if (p1.bathroomCount < p2.bathroomCount) #less else if (p1.bathroomCount == p2.bathroomCount) #equal else #greater };
             case("bedCount") { if (p1.bedCount < p2.bedCount) #less else if (p1.bedCount == p2.bedCount) #equal else #greater };
-            case("rating") { if (p1.rating < p2.rating) #less else if (p1.rating == p2.rating) #equal else #greater };
+            case("rating") { if (Float.less(p1.rating, p2.rating)) #less else if (Float.equal(p1.rating, p2.rating)) #equal else #greater };
             case("owner") { if (Text.less(Principal.toText(p1.owner), Principal.toText(p2.owner))) #less else if (Principal.toText(p1.owner) == Principal.toText(p2.owner)) #equal else #greater };
             case("name") { if (Text.less(p1.name, p2.name)) #less else if (p1.name == p2.name) #equal else #greater };
-            case("status") { if (Text.less(Util.propStatusToText(p1.status), Util.propStatusToText(p2.status))) #less else if (p1.status == p2.status) #equal else #greater };
-            case("propertyType") { if (Text.less(Util.propTypeToText(p1.propertyType), Util.propTypeToText(p2.propertyType))) #less else if (p1.propertyType == p2.propertyType) #equal else #greater };
+            case("status") { if (Text.less(p1.status, p2.status)) #less else if (p1.status == p2.status) #equal else #greater };
+            case("propertyType") { if (Text.less(p1.propertyType, p2.propertyType)) #less else if (p1.propertyType == p2.propertyType) #equal else #greater };
             case("location") { if (Text.less(p1.location, p2.location)) #less else if (p1.location == p2.location) #equal else #greater };
             case("builtInDate") { if (Text.less(p1.builtInDate, p2.builtInDate)) #less else if (p1.builtInDate == p2.builtInDate) #equal else #greater };
-            case("buildingType") { if (Text.less(p1.buildingType, p2.buildingType)) #less else if (p1.buildingType == p2.buildingType) #equal else #greater };
             case(_) { #equal };
         };
     };
 
     private func compareDesc(p1: Property, p2: Property, attr: Text): Order.Order {
         switch(attr) {
-            case("pricePerNight") { if (p1.pricePerNight > p2.pricePerNight) #less else if (p1.pricePerNight == p2.pricePerNight) #equal else #greater };
+            case("pricePerNight") { if (Float.greater(p1.pricePerNight, p2.pricePerNight)) #less else if (Float.equal(p1.pricePerNight, p2.pricePerNight)) #equal else #greater };
             case("bedroomCount") { if (p1.bedroomCount > p2.bedroomCount) #less else if (p1.bedroomCount == p2.bedroomCount) #equal else #greater };
             case("guestCapacity") { if (p1.guestCapacity > p2.guestCapacity) #less else if (p1.guestCapacity == p2.guestCapacity) #equal else #greater };
             case("bathroomCount") { if (p1.bathroomCount > p2.bathroomCount) #less else if (p1.bathroomCount == p2.bathroomCount) #equal else #greater };
             case("bedCount") { if (p1.bedCount > p2.bedCount) #less else if (p1.bedCount == p2.bedCount) #equal else #greater };
-            case("rating") { if (p1.rating > p2.rating) #less else if (p1.rating == p2.rating) #equal else #greater };
+            case("rating") { if (Float.greater(p1.rating, p2.rating)) #less else if (Float.equal(p1.rating, p2.rating)) #equal else #greater };
             case("owner") { if (Text.greater(Principal.toText(p1.owner), Principal.toText(p2.owner))) #less else if (Principal.toText(p1.owner) == Principal.toText(p2.owner)) #equal else #greater };
             case("name") { if (Text.greater(p1.name, p2.name)) #less else if (p1.name == p2.name) #equal else #greater };
-            case("status") { if (Text.greater(Util.propStatusToText(p1.status), Util.propStatusToText(p2.status))) #less else if (p1.status == p2.status) #equal else #greater };
-            case("propertyType") { if (Text.greater(Util.propTypeToText(p1.propertyType), Util.propTypeToText(p2.propertyType))) #less else if (p1.propertyType == p2.propertyType) #equal else #greater };
+            case("status") { if (Text.greater(p1.status, p2.status)) #less else if (p1.status == p2.status) #equal else #greater };
+            case("propertyType") { if (Text.greater(p1.propertyType, p2.propertyType)) #less else if (p1.propertyType == p2.propertyType) #equal else #greater };
             case("location") { if (Text.greater(p1.location, p2.location)) #less else if (p1.location == p2.location) #equal else #greater };
             case("builtInDate") { if (Text.greater(p1.builtInDate, p2.builtInDate)) #less else if (p1.builtInDate == p2.builtInDate) #equal else #greater };
-            case("buildingType") { if (Text.greater(p1.buildingType, p2.buildingType)) #less else if (p1.buildingType == p2.buildingType) #equal else #greater };
             case(_) { #equal };
         };
     };
@@ -209,40 +213,51 @@ actor {
     /**
      * Retrieves a paginated list of properties based on various filtering and sorting criteria.
      *
-    * This function allows you to filter properties by text and numeric attributes, sort them by a specified attribute,
-    * and paginate the results. The filtering criteria are provided as strings of attributes and corresponding queries,
-    * separated by spaces, commas, semicolons, or newlines. The comparison operators for numeric attributes are also
-    * provided as a string.
-    *
-    * @param {Text} textAttrs - A string of text attributes to filter by, separated by spaces, commas, semicolons, or newlines.
-    *                            Example: "owner,name,status"
-    * @param {Text} textQueries - A string of text queries corresponding to the text attributes, separated by spaces, commas, semicolons, or newlines.
-    *                             Example: "af13s-as,Doe,available"
-    * @param {Text} numAttrs - A string of numeric attributes to filter by, separated by spaces, commas, semicolons, or newlines.
-    *                          Example: "pricePerNight,bedroomCount"
-    * @param {Text} numQueries - A string of numeric queries corresponding to the numeric attributes, separated by spaces, commas, semicolons, or newlines.
-    *                            Example: "100,3"
-    * @param {Text} comparisons - A string of comparison operators (e.g., "mt" for greater than, "eq" for equal, "lt" for less than), separated by spaces, commas, semicolons, or newlines.
-    *                             Example: "mt,eq"
-    * @param {Text} orderAttr - The attribute by which to order the results.
-    *                           Example: "pricePerNight"
-    * @param {Text} orderDir - The direction of the order ("asc" for ascending, "desc" for descending).
-    *                          Example: "asc"
-    * @param {Nat} page - The page number to retrieve.
-    *                     Example: 1
-    * @param {Nat} count - The number of properties to retrieve per page.
-    *                      Example: 10
-    * @return {async ([Property], Nat)} - A tuple containing an array of properties and the total number of properties that match the criteria.
-    *
-    * Example usage:
-    * ```
-    * let (properties, total) = await getPropertyPaginate(
-    *     "owner,name,status", "af13s-as,Doe,available",
-    *     "pricePerNight,bedroomCount", "100,3", "mt,eq",
-    *     "pricePerNight", "asc",
-    *     1, 10
-    * );
-    * ```
+     * @param {Text} textAttrs - A string containing text attribute names separated by commas, semicolons, or newlines.
+     * @param {Text} textQueries - A string containing text queries corresponding to the text attributes, separated by commas, semicolons, or newlines.
+     * @param {Text} numAttrs - A string containing numeric attribute names separated by commas, semicolons, or newlines.
+     * @param {Text} numQueries - A string containing numeric queries corresponding to the numeric attributes, separated by commas, semicolons, or newlines.
+     * @param {Text} comparisons - A string containing comparison operators (e.g., "mt" for more than/greater than or equal, "eq" for equal, "lt" for less than or equal) separated by commas, semicolons, or newlines.
+     * @param {Text} orderAttr - The attribute name by which to sort the results.
+     * @param {Text} orderDir - The direction of sorting, either "asc" for ascending or "desc" for descending.
+     * @param {Nat} page - The page number to retrieve (must be greater than 0).
+     * @param {Nat} count - The number of properties to retrieve per page (must be greater than 0).
+     * @returns {async ([Property], Nat)} - A tuple containing an array of properties and the count of properties in the result.
+     *
+     * The function performs the following steps:
+     * 1. Validates that page and count are greater than 0, returning empty results otherwise.
+     * 2. Parses the input parameters to extract attribute names, queries, and comparison operators.
+     * 3. Filters the properties based on the provided text attributes and queries.
+     * 4. Filters the properties based on the provided numeric attributes, queries, and comparison operators.
+     * 5. Sorts the filtered properties based on the provided order attribute and direction.
+     * 6. Paginates the sorted properties based on the provided page number and count.
+     * 7. Returns the paginated properties along with the count of properties in the result.
+     *
+     * The function supports filtering on the following text attributes:
+     * - owner (Principal as Text)
+     * - name
+     * - status
+     * - propertyType
+     * - location
+     * - builtInDate
+     *
+     * And the following numeric attributes:
+     * - pricePerNight (if decimal, use a dot as the decimal separator)
+     * - bedroomCount
+     * - guestCapacity
+     * - bathroomCount
+     * - bedCount
+     * - rating
+     *
+     * Example usage:
+     * ```
+     * let (properties, total) = await getPropertyPaginate(
+     *     "name,location", "Luxury,Thailand",
+     *     "pricePerNight,bedCount", "12.5,2", "mt,eq",
+     *     "pricePerNight", "asc",
+     *     1, 10
+     * );
+     * ```
      */
     public query func getPropertyPaginate(
         textAttrs: Text, textQueries: Text,
@@ -258,9 +273,9 @@ actor {
         let textAttrIter = Text.tokens(textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
         let textQueryIter = Text.tokens(textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
         
-        let numAttrIter = Text.tokens(numAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
-        let numQueryIter = Text.tokens(numQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
-        let comparIter = Text.tokens(comparisons, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let numAttrIter = Text.tokens(numAttrs, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
+        let numQueryIter = Text.tokens(numQueries, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
+        let comparIter = Text.tokens(comparisons, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
 
         var itertyp = propertyInfo.vals();
         var cursor = 0;
@@ -276,8 +291,8 @@ actor {
                             switch (attr) {
                                 case("owner"){Principal.toText(prop.owner) : Text};
                                 case("name"){prop.name};
-                                case("status"){Util.propStatusToText(prop.status)};
-                                case("propertyType"){Util.propTypeToText(prop.status)};
+                                case("status"){prop.status};
+                                case("propertyType"){prop.status};
                                 case("location"){prop.location};
                                 case("builtInDate"){prop.builtInDate};
                                 case (_) { "" };                
@@ -290,22 +305,23 @@ actor {
                     loop {
                         switch(numAttrIter.next(), numQueryIter.next(), comparIter.next()) {
                             case(?attr, ?quer, ?comp) {
+                                let query_float = Util.textToFloat(quer);
                                 itertyp := Iter.filter<Property>(itertyp, func (prop: Property): Bool {
-                                    let value = switch (attr) {
+                                    let value: Float = switch (attr) {
                                         case ("pricePerNight") { prop.pricePerNight };
-                                        case ("bedroomCount") { prop.bedroomCount };
-                                        case ("guestCapacity") { prop.guestCapacity };
-                                        case ("bathroomCount") { prop.bathroomCount };
-                                        case ("bedCount") { prop.bedCount };
+                                        case ("bedroomCount") { Float.fromInt(prop.bedroomCount) };
+                                        case ("guestCapacity") { Float.fromInt(prop.guestCapacity) };
+                                        case ("bathroomCount") { Float.fromInt(prop.bathroomCount) };
+                                        case ("bedCount") { Float.fromInt(prop.bedCount) };
                                         case ("rating") { prop.rating };
                                         case (_) { 0 };
                                     };
 
                                     switch (comp) {
-                                        case ("mt") { value >= Util.textToInt(quer) };
-                                        case ("eq") { value == Util.textToInt(quer) };
-                                        case ("lt") { value <= Util.textToInt(quer) };
-                                        case (_) { value == Util.textToInt(quer) };
+                                        case ("mt") { Float.greaterOrEqual(value, query_float) };
+                                        case ("eq") { Float.equal(value, query_float) };
+                                        case ("lt") { Float.lessOrEqual(value, query_float) };
+                                        case (_) { Float.equal(value, query_float) };
                                     };
                                 });
                             };
@@ -335,7 +351,6 @@ actor {
                                         true;
                                     } else false;
                                 });
-
                                 return (Iter.toArray<Property>(paginated), counter);
                             };
                             case(_) { return ([], 0); };

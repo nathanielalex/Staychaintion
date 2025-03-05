@@ -7,20 +7,18 @@ import Order "mo:base/Order";
 import Int "mo:base/Int";
 import Nat32 "mo:base/Nat32";
 import Char "mo:base/Char";
+import Float "mo:base/Float";
+import Nat64 "mo:base/Nat64";
+import Int64 "mo:base/Int64";
 
 module {
-    
-    public type UserRole = { #admin; #renter; #user; #guest };
-    public type PropertyStatus = { #available; #booked; #unavailable };
-    public type PropertyType = { #apartement; #cabin; #camping; #house };
-
     public type UserProfile = {
         id: Principal;
-        role: UserRole;
+        role: Text;
         fullName: Text;
         email: Text;
         dateOfBirth: Text;
-        ballance: Nat;
+        ballance: Float;
         profilePictureUrl: Text;
         propertiesId: ?[Text];
     };
@@ -29,9 +27,9 @@ module {
         id: Text;
         owner: Principal;
         name : Text;
-        status: PropertyStatus;
-        propertyType: PropertyType;
-        pricePerNight: Nat;
+        status: Text;
+        propertyType: Text;
+        pricePerNight: Float;
         description: Text;
         location: Text;
         builtInDate: Text;
@@ -41,15 +39,15 @@ module {
         bedCount: Nat;
         pictures: [Text];
         coverPicture: Text;
-        rating: Nat;
+        rating: Float;
     };
 
     public type UnregisteredProperty = {
         owner: Principal;
         name : Text;
-        propertyType: PropertyType;
-        status: PropertyStatus;
-        pricePerNight: Nat;
+        propertyType: Text;
+        status: Text;
+        pricePerNight: Float;
         description: Text;
         location: Text;
         builtInDate: Text;
@@ -61,61 +59,37 @@ module {
         coverPicture: Text;
     };
 
-    public func userRoleToText(role: UserRole) : Text {
+    public func userRoleVal(role: Text) : Bool {
         switch (role) {
-            case (#admin) { return "admin" };
-            case (#renter) { return "renter" };
-            case (#user) { return "user" };
-            case (#guest) { return "guest" };
+            case ("admin") { return true };
+            case ("renter") { return true };
+            case ("user") { return true };
+            case (_) { return false };
         };
     };
 
-    public func textToUserRole(role: Text) : UserRole {
-        switch (role) {
-            case ("admin") { return #admin };
-            case ("renter") { return #renter };
-            case ("user") { return #user };
-            case (_) { return #guest };
+    public func propStatusVal(status: Text) : Bool {
+        switch (status) {
+            case ("available") { return true };
+            case ("booked") { return true };
+            case ("unavailable") { return true };
+            case (_) { return false };
         };
     };
 
-    public func propStatusToText(role: PropertyStatus) : Text {
-        switch (role) {
-            case (#available) { return "available" };
-            case (#booked) { return "booked" };
-            case (#unavailable) { return "unavailable" };
-        };
-    };
-
-    public func textToPropStatus(role: Text) : PropertyStatus {
-        switch (role) {
-            case ("available") { return #available };
-            case ("booked") { return #booked };
-            case ("unavailable") { return #unavailable };
-            case (_) { return #unavailable };
+    public func propTypeVal(propType: Text) : Bool {
+        switch (propType) {
+            case ("apartment") { return true };
+            case ("cabin") { return true };
+            case ("camping") { return true };
+            case ("house") { return true };
+            case ("villa") { return true };
+            case ("bungalow") { return true };
+            case ("chalet") { return true };
+            case (_) { return false };  // Default case
         };
     };
     
-    public func propTypeToText(propType: PropertyType) : Text {
-        switch (propType) {
-            case (#apartement) { return "apartement" };
-            case (#cabin) { return "cabin" };
-            case (#camping) { return "camping" };
-            case (#house) { return "house" };
-        };
-    };
-
-    public func textToPropType(propType: Text) : PropertyType {
-        switch (propType) {
-            case ("apartement") { return #apartement };
-            case ("cabin") { return #cabin };
-            case ("camping") { return #camping };
-            case ("house") { return #house };
-            case (_) { return #house };  // Default case
-        };
-    };
-    
-
     public func generateUUID() : async Text {
         let id = Source.Source();
         return UUID.toText(await id.new());
@@ -268,5 +242,39 @@ module {
         };
         
         if (isNegative) { -int } else { int }
+    };
+
+    public func textToFloat(t : Text) : Float {
+        var i : Float = 1;
+        var f : Float = 0;
+        var isDecimal : Bool = false;
+        let chars = t.chars();
+        var hasChars = false;
+
+        for (c in chars) {
+            hasChars := true;
+            if (Char.isDigit(c)) {
+                let charToNat : Nat64 = Nat64.fromNat(Nat32.toNat(Char.toNat32(c) - 48));
+                let natToFloat : Float = Float.fromInt64(Int64.fromNat64(charToNat));
+                if (isDecimal) {
+                    let n : Float = natToFloat / Float.pow(10, i);
+                    f := f + n;
+                    i := i + 1;
+                } else {
+                    f := f * 10 + natToFloat;
+                };
+            } else if (Char.equal(c, '.') or Char.equal(c, ',')) {
+                isDecimal := true;
+                i := 1;
+            } else {
+                return 0; // Return 0 for invalid input instead of throwing error
+            };
+        };
+
+        if (not hasChars) {
+            return 0;
+        };
+
+        return f;
     };
 };
