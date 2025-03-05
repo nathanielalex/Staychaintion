@@ -19,7 +19,7 @@ import Vector "mo:vector/Class";
 actor {
 
     type Property = Util.Property;
-
+5
     var propertyInfo = TrieMap.TrieMap<Text, Property>(Text.equal, Text.hash);
     // var propertyIdIndexes = Array.init<Text>(propertyInfo.size());
 
@@ -72,6 +72,8 @@ actor {
             pricePerNight = unreg.pricePerNight;
             description = unreg.description;
             location = unreg.location;
+            latitude = unreg.latitude;
+            longitude = unreg.longitude;
             builtInDate = unreg.builtInDate;
             bedroomCount = unreg.bedroomCount;
             guestCapacity = unreg.guestCapacity;

@@ -11,7 +11,6 @@ import { Principal } from "@dfinity/principal"
 import { Property_backend } from "@/declarations/Property_backend"
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
 import { UnregisteredProperty } from "@/declarations/Property_backend/Property_backend.did"
-import { PropertyStatus } from "@/declarations/Property_backend/Property_backend.did"
 
 // Sample data
 
@@ -73,6 +72,7 @@ export default function PropertiesPage() {
       const result = await Property_backend.getAllProperties();
       setProperties(result);
     } catch (err) {
+      console.log(err)
       setError('An error occurred while fetching contacts');
     } finally {
       setLoading(false);
@@ -100,9 +100,9 @@ export default function PropertiesPage() {
     // Creating an instance of UnregisteredProperty
     const newProperty: UnregisteredProperty = {
       bedCount: 2n,
-      status: { available : null },
+      status: "available",
       owner: Principal.fromText('aaaaa-aa'),
-      pricePerNight: 1000000n,
+      pricePerNight: 1000000,
       name: 'Luxury A-Frame Cabin',
       bedroomCount: 2n,
       bathroomCount: 1n,
@@ -110,8 +110,10 @@ export default function PropertiesPage() {
       builtInDate: '2020-06-15',
       guestCapacity: 4n,
       pictures: [],
-      buildingType: 'cabin',
+      propertyType: 'cabin',
       location: 'Tambon Huai Sat Yai, Thailand',
+      latitude: 12.521205,
+      longitude: 99.522853,
       coverPicture: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png'
     };
     initProperties(newProperty);  // Set the property state with the new object
@@ -123,7 +125,7 @@ export default function PropertiesPage() {
     const matchesSearch =
       property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       property.location.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || property.buildingType === selectedCategory
+    const matchesCategory = selectedCategory === "all" || property.propertyType === selectedCategory
     return matchesSearch && matchesCategory
   })
 

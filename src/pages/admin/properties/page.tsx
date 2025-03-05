@@ -117,7 +117,7 @@ export default function PropertiesPage() {
               {properties.map((property) => (
                 <TableRow key={property.id}>
                   <TableCell className="font-medium">{property.name}</TableCell>
-                  <TableCell>{property.buildingType}</TableCell>
+                  <TableCell>{property.propertyType}</TableCell>
                   <TableCell>${property.pricePerNight.toString()}</TableCell>
                   <TableCell>{property.location}</TableCell>
                   <TableCell>{property.bedroomCount.toString()}</TableCell>
