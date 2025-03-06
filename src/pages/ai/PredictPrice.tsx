@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -24,12 +24,12 @@ export default function PredictPage() {
   const [predictedPrice, setPredictedPrice] = useState<number | null>(null)
 
   // Handle input change
-  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   // Handle select change
-  const handleSelectChange = (name:string, value:string) => {
+  const handleSelectChange = (name: string, value: string) => {
     setFormData({ ...formData, [name]: value })
   }
 

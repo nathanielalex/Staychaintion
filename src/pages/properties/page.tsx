@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Search, SlidersHorizontal, Home, Building, Tent, Castle, Mountain, PocketIcon as Pool } from "lucide-react"

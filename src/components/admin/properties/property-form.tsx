@@ -24,6 +24,7 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
   const [formData, setFormData] = useState({
     name: property.name,
     type: property.propertyType,
+    type: property.propertyType,
     price: property.pricePerNight,
     location: property.location,
     bedrooms: property.bedroomCount,
@@ -33,7 +34,7 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
     description: property.description,
     builtInDate: property.builtInDate, 
   })
-  const [images, setImages] = useState<string[]>([])
+  const [images, setImages] = useState<string[]>(property.pictures || [])
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -47,7 +48,7 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault() // Prevent page refresh on form submit
-
+    console.log('submit form')
     // Create the property data object from form state
     const propertyData: Property = {
       id: property.id,
@@ -64,19 +65,26 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
       guestCapacity: formData.guests,
       pictures: images,
       propertyType: formData.type,
+      propertyType: formData.type,
       location: formData.location,
-      coverPicture: images[0]
+      coverPicture: images[0] || "/placeholder.jpg",
+      reviewCount: property.reviewCount
     }
 
     try {
+      setLoading(true);
       const result = await Property_backend.updateProperty(propertyData);
+
+      // If the update is successful, update the state with the new property
       setProperties(prevProperties => 
         prevProperties.map(property => 
           property.id === propertyData.id ? { ...property, ...propertyData } : property
         )
       );
+      console.log(property);
     } catch (err) {
-      setError('An error occurred while fetching contacts');
+      console.log(err)
+      setError('An error occurred while updating the property');
     } finally {
       setLoading(false);
     }
@@ -110,13 +118,19 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
           {/* Property Name */}
           <div className="space-y-2">
             <Label htmlFor="name">Property Name</Label>
-            <Input id="name" placeholder="Enter property name" defaultValue={property.name} />
+            <Input
+              id="name"
+              name="name"
+              placeholder="Enter property name"
+              value={formData.name}
+              onChange={handleChange}
+            />
           </div>
 
           {/* Property Type */}
           <div className="space-y-2">
             <Label htmlFor="type">Property Type</Label>
-            <Select defaultValue={property.propertyType}>
+            <Select name="type" value={formData.type} onValueChange={(value) => setFormData((prev) => ({ ...prev, type: value }))}>
               <SelectTrigger>
                 <SelectValue placeholder="Select property type" />
               </SelectTrigger>
@@ -132,42 +146,90 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
           {/* Price */}
           <div className="space-y-2">
             <Label htmlFor="price">Price per night</Label>
-            <Input id="price" type="number" placeholder="Enter price" defaultValue={property.pricePerNight.toString()} />
+            <Input
+              id="price"
+              name="price"
+              type="number"
+              placeholder="Enter price"
+              value={formData.price}
+              onChange={handleChange}
+            />
           </div>
 
           {/* Location */}
           <div className="space-y-2">
             <Label htmlFor="location">Location</Label>
-            <Input id="location" placeholder="Enter location" defaultValue={property.location} />
+            <Input
+              id="location"
+              name="location"
+              placeholder="Enter location"
+              value={formData.location}
+              onChange={handleChange}
+            />
           </div>
 
           {/* Bedrooms */}
           <div className="space-y-2">
             <Label htmlFor="bedrooms">Bedrooms</Label>
-            <Input id="bedrooms" type="number" placeholder="Number of bedrooms" defaultValue={property.bedroomCount.toString()} />
+            <Input
+              id="bedrooms"
+              name="bedrooms"
+              type="number"
+              placeholder="Number of bedrooms"
+              value={formData.bedrooms.toString()}
+              onChange={handleChange}
+            />
           </div>
 
           {/* Bathrooms */}
           <div className="space-y-2">
             <Label htmlFor="bathrooms">Bathrooms</Label>
-            <Input id="bathrooms" type="number" placeholder="Number of bathrooms" defaultValue={property.bathroomCount.toString()} />
+            <Input
+              id="bathrooms"
+              name="bathrooms"
+              type="number"
+              placeholder="Number of bathrooms"
+              value={formData.bathrooms.toString()}
+              onChange={handleChange}
+            />
           </div>
 
           {/* Guests */}
           <div className="space-y-2">
             <Label htmlFor="guests">Guest Capacity</Label>
-            <Input id="guests" type="number" placeholder="Maximum number of guests" defaultValue={property.guestCapacity.toString()} />
+            <Input
+              id="guests"
+              name="guests"
+              type="number"
+              placeholder="Maximum number of guests"
+              value={formData.guests.toString()}
+              onChange={handleChange}
+            />
           </div>
 
           {/* Beds */}
           <div className="space-y-2">
             <Label htmlFor="beds">Beds</Label>
-            <Input id="beds" type="number" placeholder="Number of beds" defaultValue={property.bedCount.toString()} />
+            <Input
+              id="beds"
+              name="beds"
+              type="number"
+              placeholder="Number of beds"
+              value={formData.beds.toString()}
+              onChange={handleChange}
+            />
           </div>
 
+          {/* Built-in Date */}
           <div className="space-y-2">
             <Label htmlFor="date">Built-in Date</Label>
-            <Input id="date" type="date" placeholder="Built-in Date" defaultValue={property.builtInDate} />
+            <Input
+              id="date"
+              name="builtInDate"
+              type="date"
+              value={formData.builtInDate}
+              onChange={handleChange}
+            />
           </div>
         </div>
 
@@ -176,8 +238,10 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
           <Label htmlFor="description">Description</Label>
           <Textarea
             id="description"
+            name="description"
             placeholder="Enter property description"
-            defaultValue={property.description}
+            value={formData.description}
+            onChange={handleChange}
             className="h-32"
           />
         </div>
@@ -222,4 +286,3 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
     </Card>
   )
 }
-

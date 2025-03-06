@@ -1,10 +1,9 @@
-"use client"
-
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { Card } from "@/components/ui/card"
 import { Star, Heart } from "lucide-react"
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
+import { useNavigate } from "react-router-dom"
 
 interface PropertyCardProps {
   // property: {
@@ -25,9 +24,15 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const [isLiked, setIsLiked] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/properties/details/${property.id}`, { state: { property } }); 
+  }
+
   return (
     <motion.div whileHover={{ y: -5 }} onHoverStart={() => setIsHovered(true)} onHoverEnd={() => setIsHovered(false)}>
-      <Card className="overflow-hidden group">
+      <Card className="overflow-hidden group" onClick={handleCardClick}>
         {/* Image Container */}
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
