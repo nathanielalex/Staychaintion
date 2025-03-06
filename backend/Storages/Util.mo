@@ -48,6 +48,8 @@ module {
         reviewId: Text;
         propertyId: Text;
         reviewer: Principal;
+        reviewerName: Text;
+        reviwerPP: Text;
         rating: Float;
         reviewText: Text;
         reviewDate: Text; 

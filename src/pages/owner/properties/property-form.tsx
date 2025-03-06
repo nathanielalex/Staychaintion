@@ -12,14 +12,41 @@ import { Card } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Loader2, X, Upload } from "lucide-react"
 
+import { Property_backend } from "@/declarations/Property_backend"
+import { Property } from "@/declarations/Property_backend/Property_backend.did"
+import { UnregisteredProperty } from "@/declarations/Property_backend/Property_backend.did"
+
 interface PropertyFormProps {
-  property?: any
+  property: Property;
+  setProperties: React.Dispatch<React.SetStateAction<Property[]>>;
   onClose: () => void
 }
 
-export default function PropertyForm({ property, onClose }: PropertyFormProps) {
-  const [images, setImages] = useState<string[]>(property?.images || [])
+
+export default function PropertyForm({ property, onClose, setProperties }: PropertyFormProps) {
+  const [formData, setFormData] = useState({
+      name: property.name,
+      type: property.propertyType,
+      price: property.pricePerNight,
+      location: property.location,
+      bedrooms: property.bedroomCount,
+      bathrooms: property.bathroomCount,
+      guests: property.guestCapacity,
+      beds: property.bedCount,
+      description: property.description,
+      builtInDate: property.builtInDate, 
+    })
+  
+  const [images, setImages] = useState<string[]>(property?.pictures || [])
   const [isLoading, setIsLoading] = useState(false)
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+  }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -37,7 +64,26 @@ export default function PropertyForm({ property, onClose }: PropertyFormProps) {
     e.preventDefault()
     setIsLoading(true)
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    const propertyData: Property = {
+      id: property.id,
+      rating: property.rating,
+      status: property.status,
+      bedCount: formData.beds,
+      owner: property.owner,
+      pricePerNight: formData.price,
+      name: formData.name,
+      bedroomCount: formData.bedrooms,
+      bathroomCount: formData.bathrooms,
+      description: formData.description,
+      builtInDate: formData.builtInDate,
+      guestCapacity: formData.guests,
+      pictures: images,
+      propertyType: formData.type,
+      location: formData.location,
+      coverPicture: images[0],
+      reviewCount: property.reviewCount
+    }
+    
     setIsLoading(false)
     onClose()
   }
@@ -62,7 +108,7 @@ export default function PropertyForm({ property, onClose }: PropertyFormProps) {
           {/* Property Type */}
           <div className="space-y-2">
             <Label htmlFor="type">Property Type</Label>
-            <Select defaultValue={property?.type}>
+            <Select defaultValue={property.propertyType}>
               <SelectTrigger>
                 <SelectValue placeholder="Select property type" />
               </SelectTrigger>
@@ -79,7 +125,7 @@ export default function PropertyForm({ property, onClose }: PropertyFormProps) {
           {/* Price */}
           <div className="space-y-2">
             <Label htmlFor="price">Price per night</Label>
-            <Input id="price" type="number" placeholder="Enter price" defaultValue={property?.price} required />
+            <Input id="price" type="number" placeholder="Enter price" defaultValue={property.pricePerNight} required />
           </div>
 
           {/* Location */}
@@ -95,7 +141,7 @@ export default function PropertyForm({ property, onClose }: PropertyFormProps) {
               id="bedrooms"
               type="number"
               placeholder="Number of bedrooms"
-              defaultValue={property?.bedrooms}
+              defaultValue={property.bedroomCount.toString()}
               required
             />
           </div>
@@ -107,7 +153,7 @@ export default function PropertyForm({ property, onClose }: PropertyFormProps) {
               id="bathrooms"
               type="number"
               placeholder="Number of bathrooms"
-              defaultValue={property?.bathrooms}
+              defaultValue={property.bathroomCount.toString()}
               required
             />
           </div>
@@ -119,7 +165,7 @@ export default function PropertyForm({ property, onClose }: PropertyFormProps) {
               id="guests"
               type="number"
               placeholder="Maximum number of guests"
-              defaultValue={property?.guests}
+              defaultValue={property.guestCapacity.toString()}
               required
             />
           </div>
@@ -153,7 +199,7 @@ export default function PropertyForm({ property, onClose }: PropertyFormProps) {
         </div>
 
         {/* Amenities */}
-        <div className="space-y-4">
+        {/* <div className="space-y-4">
           <Label>Amenities</Label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {["WiFi", "Air Conditioning", "Kitchen", "TV", "Pool", "Parking"].map((amenity) => (
@@ -163,7 +209,7 @@ export default function PropertyForm({ property, onClose }: PropertyFormProps) {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Image Upload */}
         <div className="space-y-4">

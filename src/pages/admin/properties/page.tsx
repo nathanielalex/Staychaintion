@@ -67,7 +67,7 @@ export default function PropertiesPage() {
 
   const handleDelete = async (property: Property) => {
     try {
-      const result = await Property_backend.removeProperty(property);
+      const result = await Property_backend.removeProperty(property.id);
       setProperties(prevProperties => 
         prevProperties.filter(item => item.id !== property.id)
       );
