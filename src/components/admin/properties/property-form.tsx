@@ -24,7 +24,6 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
   const [formData, setFormData] = useState({
     name: property.name,
     type: property.propertyType,
-    type: property.propertyType,
     price: property.pricePerNight,
     location: property.location,
     bedrooms: property.bedroomCount,
@@ -64,7 +63,6 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
       builtInDate: formData.builtInDate,
       guestCapacity: formData.guests,
       pictures: images,
-      propertyType: formData.type,
       propertyType: formData.type,
       location: formData.location,
       coverPicture: images[0] || "/placeholder.jpg",
