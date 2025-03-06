@@ -63,7 +63,7 @@ const categories = [
 ]
 
 export default function PropertiesPage() {
-  const onePageCount: number = 10;
+  const onePageCount: number = 12;
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [showFilters, setShowFilters] = useState(false);
@@ -97,15 +97,14 @@ export default function PropertiesPage() {
         setProperties(result);
       }
     } catch (err) {
-      setError('An error occurred while fetching contacts ' + err);
+      setError('An error occurred while fetching contacts\n' + err);
+      intializeRandomProperty();
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    setLoading(true);
-    // Creating an instance of UnregisteredProperty
+  const intializeRandomProperty = () => {
     const newProperty: Property = {
       id: "asd1SD12J8nds0dnU0em",
       bedCount: 2n,
@@ -127,13 +126,14 @@ export default function PropertiesPage() {
     // initProperties(newProperty);  // Set the property state with the new object
     // setGoSearch(prev => !prev);
     let arrayofProperties: Property[] = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < onePageCount; i++) {
       // Create a new copy each time with spread operator
       const propertyClone = { ...newProperty, id: newProperty.id + i.toString() };
       arrayofProperties.push(propertyClone);
     }
     setProperties(arrayofProperties);
-  }, []);
+  };
+
 
   useEffect(()=>{
     fetchProperties();
