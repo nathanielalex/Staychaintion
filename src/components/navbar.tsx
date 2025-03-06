@@ -137,7 +137,7 @@ export default function Navbar() {
 
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="md:hidden text-gray-700 focus:outline-none"
+        className="md:hidden text-white focus:outline-none"
       >
         {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
