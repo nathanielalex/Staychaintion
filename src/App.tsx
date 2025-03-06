@@ -91,6 +91,7 @@ import ComingSoonPage from './pages/coming-soon/page';
 import OnboardPage from './pages/Onboard';
 import BalancePage from "./pages/wallet/page";
 import CommunityPage from './pages/community/page';
+import DisputesPage from './pages/disputes/page';
 
 
 // Dark Mode
@@ -264,6 +265,7 @@ const AnimatedRoutes = () => {
             <Route element={<MainLayout/>}>
               <Route path="/balance" element={<BalancePage />} />
               <Route path="/community" element={<CommunityPage />} />
+              <Route path="/disputes" element={<DisputesPage />} />
             </Route>
 
             {/* ERROR PAGE SECTION */}
