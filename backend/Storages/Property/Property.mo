@@ -393,13 +393,14 @@ actor {
     var reviews = TrieMap.TrieMap<Text, PropertyReview>(Text.equal, Text.hash);
     var averageRatings = TrieMap.TrieMap<Text, Float>(Text.equal, Text.hash);
 
-    public shared func addReview(newPropertyId: Text, newReviewer: Principal, newRating: Float, newReviewText: Text, newReviewDate: Text) : async Text {   
+    public shared func addReview(newPropertyId: Text, newReviewer: Principal, newReviewerName: Text, newReviewerPP: Text, newRating: Float, newReviewText: Text, newReviewDate: Text) : async Text {         
         let id = await Util.generateUUID();
-        
         let review : PropertyReview = {
             reviewId = id;
             propertyId = newPropertyId;
             reviewer = newReviewer;
+            reviewerName = newReviewerName;
+            reviwerPP = newReviewerPP;
             rating = newRating;
             reviewText = newReviewText;
             reviewDate = newReviewDate; 
@@ -453,7 +454,7 @@ actor {
                 if (updateResult == 1) {
                     // Successfully updated property, now add the review
                     reviews.put(id, review);
-                    return "Review added and property updated successfully!";
+                    return id;
                 } else {
                     // If property update failed
                     return "Failed to update property. Review not added.";

@@ -8,9 +8,12 @@ import { Share2, Heart, Star, Users, Bed, Bath, MapPin, Award, CheckCircle, Aler
 import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { GuestSelector } from "@/components/ui/guest-selector"
 import { useLocation, useParams } from "react-router-dom"
-import { Property } from "@/declarations/Property_backend/Property_backend.did"
-import { UserProfile } from "@/declarations/User/User.did"
-import { User } from "@/declarations/User"
+import { Property, PropertyReview } from "@/declarations/Property_backend/Property_backend.did"
+import { User_backend } from "@/declarations/User_backend"
+import { UserProfile } from "@/declarations/User_backend/User_backend.did"
+import { Property_backend } from "@/declarations/Property_backend"
+import { useAuth } from "@/utility/use-auth-client"
+import { Principal } from "@dfinity/principal"
 // Sample property data
 // const property = {
 //   id: 1,
@@ -51,31 +54,128 @@ export default function PropertyDetailPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [showAllImages, setShowAllImages] = useState(false)
   const [owner, setOwner] = useState<UserProfile | undefined>(undefined);
+  const [user, setUser] = useState<UserProfile | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const location = useLocation();
   const { property } = location.state as LocationState || {};
   const { id } = useParams();
+  const [reviews, setReviews] = useState<PropertyReview[]>([]);
+  const [rating, setRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const fetchUser = async () => {
-      try {
-        // setLoading(true);
-        // setError(null);
-        // const actor = getChatActor();
-        const result = await User.getUser(property.owner);
+  const { principal } = useAuth();
+
+  const handleReviewTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setReviewText(e.target.value);
+  };
+
+  const handleRatingClick = (index: number) => {
+    setRating(index + 1);
+  };
+
+  const fetchOwner = async () => {
+    try {
+      
+      if(property.owner) {
+        // console.log(property.owner)
+        // if (property.owner instanceof Principal) {
+        //   console.error('property.owner is not a valid Principal', property.owner);
+        //   return;
+        // } else if (typeof property.owner === 'string') {
+        //   console.log('is string')
+        // }
+        // let ownerText = property.owner.toText();
+        // let ownerPrincipal = Principal.fromText(ownerText);
+        const result = await User_backend.getUser(property.owner);
         if(result.length > 0) {
           setOwner(result[0]);
         }
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
+      } else {
+        console.log('no owner')
       }
-    };
-    
-    useEffect(() => {
-      fetchUser();
-    }, []);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
   
+  useEffect(() => {
+    fetchOwner();
+  }, []);
+
+  const fetchUser = async () => {
+    try {
+      // setLoading(true);
+      // setError(null);
+      // const actor = getChatActor();
+      if(principal != null) {
+        const result = await User_backend.getUser(principal);
+        setUser(result[0])
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchReviews= async () => {
+    try {
+      // setLoading(true);
+      // setError(null);
+      // const actor = getChatActor();
+      if(id) {
+        const result = await Property_backend.getAllPropertyReviews(id);
+        setReviews(result);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchReviews();
+  }, [id]);
+  
+  const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
+    e.preventDefault();
+
+    if (isSubmitting) return; // Prevent multiple submissions
+    setIsSubmitting(true); // Set loading state
+
+    try {
+      const date = new Date();
+      const formattedDate = date.toISOString().split('T')[0];
+      if(principal != null && user) {
+        const response = await Property_backend.addReview(property.id, principal, user.fullName, user.profilePictureUrl, rating, reviewText, formattedDate);
+        const review: PropertyReview = {
+          reviewId: response,
+          reviewerName: user.fullName,
+          reviewText: reviewText,
+          reviewDate: formattedDate,
+          reviewer: principal,
+          reviwerPP: user.profilePictureUrl,
+          propertyId: property.id,
+          rating: rating
+        }
+        setReviews(prevReviews => [...prevReviews, review]);
+      }
+
+      
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -301,29 +401,7 @@ export default function PropertyDetailPage() {
 
             {/* Review List */}
             <div className="space-y-6">
-              {[
-                {
-                  name: "Sarah Johnson",
-                  avatar: "/placeholder.svg?height=50&width=50",
-                  rating: 5,
-                  date: "March 2023",
-                  text: "This place was absolutely perfect for our family vacation. The location is stunning with breathtaking views. The host was incredibly responsive and helpful throughout our stay. The amenities were top-notch and everything was clean and well-maintained. Would definitely recommend and stay again!",
-                },
-                {
-                  name: "Michael Chen",
-                  avatar: "/placeholder.svg?height=50&width=50",
-                  rating: 4,
-                  date: "February 2023",
-                  text: "Great property in a beautiful location. The house was clean and had all the amenities we needed. The host was very responsive and accommodating. The only minor issue was that the WiFi was a bit slow at times, but overall we had a wonderful stay and would come back again.",
-                },
-                {
-                  name: "Emma Rodriguez",
-                  avatar: "/placeholder.svg?height=50&width=50",
-                  rating: 5,
-                  date: "January 2023",
-                  text: "We had an amazing time at this property! The location is perfect - close to restaurants and attractions but still peaceful and quiet. The house itself is beautifully designed and very comfortable. The kitchen was well-equipped for cooking meals. The host provided excellent recommendations for local activities. Highly recommend!",
-                },
-              ].map((review, index) => (
+              {reviews.map((review, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
@@ -333,8 +411,8 @@ export default function PropertyDetailPage() {
                 >
                   <div className="flex items-start space-x-4">
                     <img
-                      src={review.avatar || "/placeholder.svg"}
-                      alt={review.name}
+                      src={review.reviwerPP || "/placeholder.svg"}
+                      alt={review.reviewerName}
                       width={48}
                       height={48}
                       className="rounded-full"
@@ -342,9 +420,9 @@ export default function PropertyDetailPage() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                          <h4 className="font-medium">{review.name}</h4>
+                          <h4 className="font-medium">{review.reviewerName}</h4>
                           <div className="flex items-center space-x-2 text-sm text-gray-600">
-                            <span>{review.date}</span>
+                            <span>{review.reviewDate}</span>
                           </div>
                         </div>
                         <div className="flex">
@@ -356,7 +434,7 @@ export default function PropertyDetailPage() {
                           ))}
                         </div>
                       </div>
-                      <p className="text-gray-700">{review.text}</p>
+                      <p className="text-gray-700">{review.reviewText}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -379,7 +457,7 @@ export default function PropertyDetailPage() {
                 <label className="block text-sm font-medium mb-2">Rating</label>
                 <div className="flex space-x-1">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <button key={i} className="focus:outline-none">
+                    <button key={i} className="focus:outline-none" onClick={() => handleRatingClick(i)}>
                       <Star className="w-6 h-6 text-gray-300 hover:text-blue-600 hover:fill-blue-600 transition-colors" />
                     </button>
                   ))}
@@ -390,9 +468,17 @@ export default function PropertyDetailPage() {
                 <textarea
                   className="w-full border rounded-md p-3 h-32 focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   placeholder="Share your experience with this property..."
+                  value={reviewText}
+                  onChange={handleReviewTextChange}
                 ></textarea>
               </div>
-              <Button className="bg-blue-600 hover:bg-blue-700">Submit Review</Button>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={handleSubmit}
+                disabled={isSubmitting || !rating || !reviewText}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Review"}
+              </Button>
             </div>
           </Card>
         </div>

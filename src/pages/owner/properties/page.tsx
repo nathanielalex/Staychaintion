@@ -1,6 +1,4 @@
-"use client"
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -9,85 +7,142 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Pencil, Trash2, Search, Filter, Star } from "lucide-react"
 import PropertyForm from "./property-form"
+import { Property } from "@/declarations/Property_backend/Property_backend.did"
+import { Property_backend } from "@/declarations/Property_backend"
+import { useAuth } from "@/utility/use-auth-client"
+import { Principal } from "@dfinity/principal"
 
 // Sample data
-const properties = [
-  {
-    id: 1,
-    name: "Luxury Beach Villa",
-    type: "Villa",
-    location: "Miami, FL",
-    price: 1200,
-    bedrooms: 4,
-    bathrooms: 3,
-    guests: 8,
-    status: "active",
-    rating: 4.9,
-    image: "/placeholder.svg?height=100&width=150",
-    bookings: 24,
-    revenue: 28800,
-  },
-  {
-    id: 2,
-    name: "City Center Apartment",
-    type: "Apartment",
-    location: "New York, NY",
-    price: 800,
-    bedrooms: 2,
-    bathrooms: 2,
-    guests: 4,
-    status: "active",
-    rating: 4.7,
-    image: "/placeholder.svg?height=100&width=150",
-    bookings: 18,
-    revenue: 14400,
-  },
-  {
-    id: 3,
-    name: "Mountain Cabin",
-    type: "Cabin",
-    location: "Aspen, CO",
-    price: 950,
-    bedrooms: 3,
-    bathrooms: 2,
-    guests: 6,
-    status: "maintenance",
-    rating: 4.8,
-    image: "/placeholder.svg?height=100&width=150",
-    bookings: 12,
-    revenue: 11400,
-  },
-  {
-    id: 4,
-    name: "Lakefront Cottage",
-    type: "Cottage",
-    location: "Lake Tahoe, CA",
-    price: 1050,
-    bedrooms: 3,
-    bathrooms: 2,
-    guests: 6,
-    status: "active",
-    rating: 4.6,
-    image: "/placeholder.svg?height=100&width=150",
-    bookings: 15,
-    revenue: 15750,
-  },
-]
+// const properties = [
+//   {
+//     id: 1,
+//     name: "Luxury Beach Villa",
+//     type: "Villa",
+//     location: "Miami, FL",
+//     price: 1200,
+//     bedrooms: 4,
+//     bathrooms: 3,
+//     guests: 8,
+//     status: "active",
+//     rating: 4.9,
+//     image: "/placeholder.svg?height=100&width=150",
+//     bookings: 24,
+//     revenue: 28800,
+//   },
+//   {
+//     id: 2,
+//     name: "City Center Apartment",
+//     type: "Apartment",
+//     location: "New York, NY",
+//     price: 800,
+//     bedrooms: 2,
+//     bathrooms: 2,
+//     guests: 4,
+//     status: "active",
+//     rating: 4.7,
+//     image: "/placeholder.svg?height=100&width=150",
+//     bookings: 18,
+//     revenue: 14400,
+//   },
+//   {
+//     id: 3,
+//     name: "Mountain Cabin",
+//     type: "Cabin",
+//     location: "Aspen, CO",
+//     price: 950,
+//     bedrooms: 3,
+//     bathrooms: 2,
+//     guests: 6,
+//     status: "maintenance",
+//     rating: 4.8,
+//     image: "/placeholder.svg?height=100&width=150",
+//     bookings: 12,
+//     revenue: 11400,
+//   },
+//   {
+//     id: 4,
+//     name: "Lakefront Cottage",
+//     type: "Cottage",
+//     location: "Lake Tahoe, CA",
+//     price: 1050,
+//     bedrooms: 3,
+//     bathrooms: 2,
+//     guests: 6,
+//     status: "active",
+//     rating: 4.6,
+//     image: "/placeholder.svg?height=100&width=150",
+//     bookings: 15,
+//     revenue: 15750,
+//   },
+// ]
+
+const initialProperty: Property = {
+  id: '',
+  rating: 0,
+  status: '',
+  bedCount: 0n,
+  owner: Principal.fromText('aaaaa-aa'),
+  pricePerNight: 0,
+  name: '',
+  bedroomCount: 0n,
+  bathroomCount: 0n,
+  description: '',
+  builtInDate: '',
+  guestCapacity: 0n,
+  pictures: [],
+  propertyType:'',
+  location: '',
+  coverPicture: '',
+  reviewCount: 0n
+};
 
 export default function PropertiesPage() {
   const [showForm, setShowForm] = useState(false)
-  const [editingProperty, setEditingProperty] = useState<any>(null)
+  const [editingProperty, setEditingProperty] = useState<Property>(initialProperty)
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState("all")
+
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  
+  const { principal } = useAuth();
+
+  const fetchProperties = async () => {
+    try {
+      // setLoading(true);
+      // setError(null);
+      // const actor = getChatActor();
+      if(principal != null) {
+        const result = await Property_backend.getOwnerProperties(principal);
+        setProperties(result);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally { 
+      setLoading(false);
+    }
+  };
+    
+  useEffect(() => {
+    fetchProperties();
+  }, []);
 
   const handleEdit = (property: any) => {
     setEditingProperty(property)
     setShowForm(true)
   }
 
-  const handleDelete = (id: number) => {
-    // Implement delete functionality
-    console.log("Delete property:", id)
+  const handleDelete = async (property: Property) => {
+    try {
+      const result = await Property_backend.removeProperty(property.id);
+      setProperties(prevProperties => 
+        prevProperties.filter(item => item.id !== property.id)
+      );
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const filteredProperties = properties.filter((property) => {
@@ -121,10 +176,10 @@ export default function PropertiesPage() {
           <p className="text-gray-500">Manage your rental properties</p>
         </div>
         <Button
-          onClick={() => {
-            setEditingProperty(null)
-            setShowForm(true)
-          }}
+          // onClick={() => {
+          //   setEditingProperty(null)
+          //   setShowForm(true)
+          // }}
           className="bg-blue-600 hover:bg-blue-700"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -134,7 +189,7 @@ export default function PropertiesPage() {
 
       {showForm ? (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}>
-          <PropertyForm property={editingProperty} onClose={() => setShowForm(false)} />
+          <PropertyForm property={editingProperty} setProperties={setProperties} onClose={() => setShowForm(false)} />
         </motion.div>
       ) : (
         <>
@@ -171,7 +226,7 @@ export default function PropertiesPage() {
                   <div className="flex flex-col md:flex-row">
                     <div className="relative w-full md:w-48 h-48 md:h-auto">
                       <img
-                        src={property.image || "/placeholder.svg"}
+                        src={property.coverPicture || "/placeholder.svg"}
                         alt={property.name}
                         className="object-cover"
                       />
@@ -200,30 +255,30 @@ export default function PropertiesPage() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                         <div>
                           <p className="text-sm text-gray-500">Price</p>
-                          <p className="font-semibold">${property.price}/night</p>
+                          <p className="font-semibold">${property.pricePerNight.toString()}/night</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Bedrooms</p>
-                          <p className="font-semibold">{property.bedrooms}</p>
+                          <p className="font-semibold">{property.bedroomCount.toString()}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Bathrooms</p>
-                          <p className="font-semibold">{property.bathrooms}</p>
+                          <p className="font-semibold">{property.bathroomCount.toString()}</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Guests</p>
-                          <p className="font-semibold">{property.guests}</p>
+                          <p className="font-semibold">{property.guestCapacity.toString()}</p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
                           <p className="text-sm text-gray-500">Total Bookings</p>
-                          <p className="font-semibold">{property.bookings}</p>
+                          {/* <p className="font-semibold">{property.bookings}</p> */}
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Total Revenue</p>
-                          <p className="font-semibold text-green-600">${property.revenue.toLocaleString()}</p>
+                          {/* <p className="font-semibold text-green-600">${property.revenue.toLocaleString()}</p> */}
                         </div>
                       </div>
 
@@ -236,7 +291,7 @@ export default function PropertiesPage() {
                           variant="outline"
                           size="sm"
                           className="text-red-600"
-                          onClick={() => handleDelete(property.id)}
+                          onClick={() => handleDelete(property)}
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Delete
