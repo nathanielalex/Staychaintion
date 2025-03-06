@@ -89,6 +89,7 @@ import MarketplacePage from './pages/marketplace/page';
 
 import ComingSoonPage from './pages/coming-soon/page';
 import OnboardPage from './pages/Onboard';
+import BalancePage from "./pages/wallet/page";
 
 // Dark Mode
 
@@ -254,6 +255,12 @@ const AnimatedRoutes = () => {
 
             <Route element={<MainLayout/>}>
               <Route path="/marketplace" element={<MarketplacePage />} />
+            </Route>
+
+            {/* Other */}
+
+            <Route element={<MainLayout/>}>
+              <Route path="/balance" element={<BalancePage />} />
             </Route>
 
             {/* ERROR PAGE SECTION */}
