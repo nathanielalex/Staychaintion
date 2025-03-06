@@ -41,14 +41,18 @@ export default function Hero() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white px-8">
-              <FileText className="mr-2 h-5 w-5" />
-              Explore Listings
-            </Button>
-            <Button size="lg" variant="outline" className="text-blue-500 border-blue-500 hover:bg-blue-500/10">
-              <Sparkles className="mr-2 h-5 w-5" />
-              View More
-            </Button>
+            <a href="/properties">
+              <Button size="lg" className="bg-blue-500 hover:bg-blue-600 text-white px-8">
+                <FileText className="mr-2 h-5 w-5" />
+                  Explore Listings
+              </Button>
+            </a>
+            <a href="#features">
+              <Button size="lg" variant="outline" className="text-blue-500 border-blue-500 hover:bg-blue-500/10">
+                <Sparkles className="mr-2 h-5 w-5" />
+                View More
+              </Button>
+            </a>
           </motion.div>
         </div>
       </div>

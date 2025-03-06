@@ -57,23 +57,33 @@ function MainLayout() {
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/" className="text-gray-400 hover:text-white transition-colors">
+                  <Link to="/landing" className="text-gray-400 hover:text-white transition-colors">
                     Home
                   </Link>
                 </li>
                 <li>
-                  <Link to="/list" className="text-gray-400 hover:text-white transition-colors">
-                    List
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/about" className="text-gray-400 hover:text-white transition-colors">
+                  <Link to="/teams" className="text-gray-400 hover:text-white transition-colors">
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link to="/profile" className="text-gray-400 hover:text-white transition-colors">
-                    Profile
+                  <Link to="/properties" className="text-gray-400 hover:text-white transition-colors">
+                    Properties
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/ai" className="text-gray-400 hover:text-white transition-colors">
+                    AI Features
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/marketing" className="text-gray-400 hover:text-white transition-colors">
+                    Marketing
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/marketplace" className="text-gray-400 hover:text-white transition-colors">
+                    Marketplace
                   </Link>
                 </li>
               </ul>

@@ -68,7 +68,7 @@ const cardVariants = {
 
 export default function Features() {
   return (
-    <section className="py-20 px-4 md:px-6 bg-white relative overflow-hidden">
+    <section className="py-20 px-4 md:px-6 bg-white relative overflow-hidden" id="features">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <motion.h2

@@ -36,9 +36,20 @@ import AdminDashboard from './pages/admin/Page';
 
 import AdminAnalytics from './pages/admin/analytics/page';
 import AdminProperties from './pages/admin/properties/page';
+import AdminUsers from './pages/admin/users/page';
 
 
-// User
+// Admin
+
+import OwnerLayout from './pages/owner/layout';
+import OwnerDashboard from './pages/owner/page';
+
+import OwnerAnalytics from './pages/owner/analytics/page';
+import OwnerProperties from './pages/owner/properties/page';
+import OwnerSettings from './pages/owner/settings/page';
+
+
+// User / Renter
 
 import UserLayout from "./pages/profiles/layout";
 import ProfilePage from "./pages/profiles/ProfilePage";
@@ -51,6 +62,7 @@ import UserAnalyticsPage from './pages/profiles/analytics/page';
 // AI
 
 import PredictPrice from './pages/ai/PredictPrice';
+import PredictPriceArchieved from './pages/ai/Archieved-Predict-Price';
 import StayAI from './pages/ai/StayAI';
 import RoomClassifier from './pages/ai/RoomClassifier';
 import ProtectedRoute from './utility/ProtectedRoute';
@@ -77,6 +89,16 @@ import MarketplacePage from './pages/marketplace/page';
 
 import ComingSoonPage from './pages/coming-soon/page';
 import OnboardPage from './pages/Onboard';
+import BalancePage from "./pages/wallet/page";
+import CommunityPage from './pages/community/page';
+import DisputesPage from './pages/disputes/page';
+
+
+// Dark Mode
+
+import { ThemeProvider } from '@/context/ThemeContext';
+import ScrollToTop from "./utility/ScrollToTop"; 
+
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
@@ -107,7 +129,9 @@ const AnimatedRoutes = () => {
 
   return (
 
-    <>
+    <ThemeProvider>
+
+      <ScrollToTop />
 
       {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
 
@@ -159,7 +183,7 @@ const AnimatedRoutes = () => {
               <Route path="/properties/details" element={<PropertyDetailPage />} />
             </Route>
 
-              {/* ADMIN PAGES SECTION */}
+            {/* ADMIN PAGES SECTION */}
             
             <Route path="/admin" element={<AdminLayout children={<AdminDashboard />} />}>
             </Route>
@@ -169,6 +193,25 @@ const AnimatedRoutes = () => {
 
             <Route path="/admin/properties" element={<AdminLayout children={<AdminProperties />} />}>
             </Route>
+
+            <Route path="/admin/users" element={<AdminLayout children={<AdminUsers />} />}>
+            </Route>
+
+
+            {/* OWNER PAGES SECTION */}
+            
+            <Route path="/owner" element={<OwnerLayout children={<OwnerDashboard />} />}>
+            </Route>
+
+            <Route path="/owner/analytics" element={<OwnerLayout children={<OwnerAnalytics />} />}>
+            </Route>
+
+            <Route path="/owner/properties" element={<OwnerLayout children={<OwnerProperties />} />}>
+            </Route>
+
+            <Route path="/owner/settings" element={<OwnerLayout children={<OwnerSettings />} />}>
+            </Route>
+
 
             {/* USER PROFILE PAGES SECTION */}
 
@@ -194,12 +237,15 @@ const AnimatedRoutes = () => {
 
               <Route path="/chatbot" element={<StayAI />} />
 
+              <Route path="/predicts-old" element={<PredictPriceArchieved />} />
               
             </Route>
 
             <Route path="/room-classifier" element={<ComingSoonPage />} />
             
+
             {/* Other Pages */}
+            
 
             {/* MARKETING PAGES */}
 
@@ -218,6 +264,14 @@ const AnimatedRoutes = () => {
               <Route path="/marketplace" element={<MarketplacePage />} />
             </Route>
 
+            {/* Other */}
+
+            <Route element={<MainLayout/>}>
+              <Route path="/balance" element={<BalancePage />} />
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/disputes" element={<DisputesPage />} />
+            </Route>
+
             {/* ERROR PAGE SECTION */}
 
             <Route path="*" element={<NotFoundPage />} />
@@ -228,7 +282,7 @@ const AnimatedRoutes = () => {
 
       </AnimatePresence>
 
-    </>
+    </ThemeProvider>
 
   );
 

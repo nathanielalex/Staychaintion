@@ -11,6 +11,7 @@ import Principal "mo:base/Principal";
 import Bool "mo:base/Bool";
 import Option "mo:base/Option";
 import Float "mo:base/Float";
+import Time "mo:base/Time";
 import Util "../Util";
 import { sort; propStatusVal; propTypeVal } "../Util";
 // import Region "mo:base/Region";
@@ -24,27 +25,6 @@ actor {
     // var propertyIdIndexes = Array.init<Text>(propertyInfo.size());
 
     stable var stablePropertyInfo: [(Text, Property)] = [];
-    
-    // Seeder function that adds initial property data
-    // private func seedProperties(): async () {
-    //     let prop1: Util.UnregisteredProperty = {
-    //         bedCount = 2;
-    //         owner = Principal.fromText("aaaaa-aa");
-    //         pricePerNight= 1000000;
-    //         name= "Luxury A-Frame Cabin";
-    //         bedroomCount= 2;
-    //         bathroomCount= 1;
-    //         description= "A beautiful cabin by the beach with a wonderful view.";
-    //         builtInDate= "2020-06-15";
-    //         guestCapacity= 4;
-    //         pictures= [];
-    //         buildingType= "cabin";
-    //         location= "Tambon Huai Sat Yai, Thailand";
-    //         coverPicture= "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
-    //     };
-    //     // Add properties to the map
-    //     let propertyId = await registerProperty(prop1);
-    // };
 
     system func preupgrade()  {
         // seedProperties();
@@ -80,6 +60,7 @@ actor {
             pictures = unreg.pictures;
             coverPicture = unreg.coverPicture;
             rating = 0; // New properties start with 0 rating
+            reviewCount = 0;
         };
 
         propertyInfo.put(id, prop);
@@ -382,4 +363,100 @@ actor {
         };
         return Vector.toArray<Property>(vec);
     };
+
+    type PropertyReview = Util.PropertyReview;
+    var reviews = TrieMap.TrieMap<Text, PropertyReview>(Text.equal, Text.hash);
+    var averageRatings = TrieMap.TrieMap<Text, Float>(Text.equal, Text.hash);
+
+    public shared func addReview(newPropertyId: Text, newReviewer: Principal, newRating: Float, newReviewText: Text, newReviewDate: Text) : async Text {   
+        let id = await Util.generateUUID();
+        
+        let review : PropertyReview = {
+            reviewId = id;
+            propertyId = newPropertyId;
+            reviewer = newReviewer;
+            rating = newRating;
+            reviewText = newReviewText;
+            reviewDate = newReviewDate; 
+        };
+        
+        let currProperty = propertyInfo.get(newPropertyId);
+        
+        switch (currProperty) {
+            case (?property) {
+                // If property exists, calculate new average rating
+                let currentRating = property.rating;
+                let currentCount = property.reviewCount; // Assuming property has reviewCount to track the number of reviews
+
+                let newAvgRating = switch (currentRating) {
+                    case (avg) {
+                        // Calculate new average rating with the existing rating and the new one
+                        let totalRatings = avg * Float.fromInt(currentCount) + newRating;
+                        let totalReviews = currentCount + 1;
+                        totalRatings / Float.fromInt(totalReviews);
+                    };
+                    case none {
+                        // If no previous rating, set the new rating directly
+                        newRating
+                    };
+                };
+                
+                // Create a new property object with updated rating
+                let updatedProperty : Property = {
+                    id = property.id;
+                    owner = property.owner;
+                    name = property.name;
+                    status = property.status;
+                    propertyType = property.propertyType;
+                    pricePerNight = property.pricePerNight;
+                    description = property.description;
+                    location = property.location;
+                    builtInDate = property.builtInDate;
+                    bedroomCount = property.bedroomCount;
+                    guestCapacity = property.guestCapacity;
+                    bathroomCount = property.bathroomCount;
+                    bedCount = property.bedCount;
+                    pictures = property.pictures;
+                    coverPicture = property.coverPicture;
+                    rating = newAvgRating;
+                    reviewCount = currentCount + 1; // Increment review count
+                };
+                
+                // Update the property with new average rating
+                let updateResult = await updateProperty(updatedProperty);
+                
+                if (updateResult == 1) {
+                    // Successfully updated property, now add the review
+                    reviews.put(id, review);
+                    return "Review added and property updated successfully!";
+                } else {
+                    // If property update failed
+                    return "Failed to update property. Review not added.";
+                }
+            };
+            case null {
+                // If property doesn't exist
+                Debug.print("Error: Property is null.");
+                return "Property not found.";
+            };
+        };
+    };
+
+    public query func getAllPropertyReviews(propertyId: Text) : async [PropertyReview] {
+        let reviews = Vector.Vector<PropertyReview>();
+        for (r in reviews.vals()) {
+            if(propertyId == r.propertyId) {
+                reviews.add(r);
+            }
+        };
+        return (Vector.toArray(reviews));
+    };
+
+    // public func getAverageRating(propertyId: Text): ?Float {
+    //     return TrieMap.get(propertyRatings, propertyId);
+    // }
+
+    // public query func getPropertyInfo(propertyId: Text) : async ?Property {
+    //     return propertyInfo.get(propertyId);
+    // };
 };
