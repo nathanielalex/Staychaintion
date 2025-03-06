@@ -95,3 +95,73 @@ button {
     background-color: #f9f9f9;
   }
 }
+
+
+
+/* Custom Styles */
+
+
+
+.bg-grid-blue\/\[0\.02\] {
+  background-size: 30px 30px;
+  background-image: linear-gradient(to right, rgba(66, 133, 244, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(66, 133, 244, 0.02) 1px, transparent 1px);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Custom Leaflet Styles */
+.custom-marker-cluster {
+  background-color: rgba(59, 130, 246, 0.8);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.cluster-marker {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0.5rem;
+  padding: 0;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  width: 250px !important;
+}
+
+.leaflet-popup-tip-container {
+  display: none;
+}
+

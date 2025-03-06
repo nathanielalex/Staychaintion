@@ -94,10 +94,11 @@ import CommunityPage from './pages/community/page';
 import DisputesPage from './pages/disputes/page';
 
 
-// Dark Mode
+// Others
 
 import { ThemeProvider } from '@/context/ThemeContext';
 import ScrollToTop from "./utility/ScrollToTop"; 
+import NewMaps from "./pages/maps/page"
 
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -168,14 +169,16 @@ const AnimatedRoutes = () => {
 
             <Route path="/maps" element={<Maps />} />
 
+            <Route path="/map" element={<NewMaps />} />
+
             {/* MAIN PAGES SECTION */}
 
             <Route element={<MainLayout/>}>
-              <Route path="/list" element={
+              {/* <Route path="/list" element={
                 <PropertyFilterProvider>
                   <PropertyListPage/>
                 </PropertyFilterProvider>
-              } />
+              } /> */}
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/teams" element={<TeamPage />} />
               <Route path="/landing" element={<LandingPage />} />
