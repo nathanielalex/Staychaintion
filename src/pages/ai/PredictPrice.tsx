@@ -24,17 +24,17 @@ export default function PredictPage() {
   const [predictedPrice, setPredictedPrice] = useState<number | null>(null)
 
   // Handle input change
-  const handleChange = (e) => {
+  const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   // Handle select change
-  const handleSelectChange = (name, value) => {
+  const handleSelectChange = (name:string, value:string) => {
     setFormData({ ...formData, [name]: value })
   }
 
   // Handle form submit
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     setPredictedPrice(null)
