@@ -20,20 +20,22 @@ import Vector "mo:vector/Class";
 actor {
 
     type Property = Util.Property;
+    type Transaction = Util.Transaction;
 
     var propertyInfo = TrieMap.TrieMap<Text, Property>(Text.equal, Text.hash);
-    // var propertyIdIndexes = Array.init<Text>(propertyInfo.size());
+    var transactionHistory = TrieMap.TrieMap<Text, Transaction>(Text.equal, Text.hash);
 
     stable var stablePropertyInfo: [(Text, Property)] = [];
+    stable var stableTransaction: [(Text, Transaction)] = [];
 
     system func preupgrade()  {
-        // seedProperties();
         stablePropertyInfo := Iter.toArray(propertyInfo.entries());
+        stableTransaction := Iter.toArray(transactionHistory.entries());
     };
 
     system func postupgrade() {
         propertyInfo := TrieMap.fromEntries<Text, Property>(Iter.fromArray(stablePropertyInfo), Text.equal, Text.hash);
-        // propertyIdIndexes := Array.fromIterable<Text>(propertyInfo.keys());
+        transactionHistory := TrieMap.fromEntries<Text, Transaction>(Iter.fromArray(stableTransaction), Text.equal, Text.hash);
     };
 
     public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {   
@@ -475,5 +477,78 @@ actor {
         return (Vector.toArray(reviews));
     };
 
+    // Transaction functions
+    public shared func initiateTransaction(newTransaction: Util.UnregisteredTransaction) : async Text {   
+        let id = await Util.generateUUID();
+        let transaction : Transaction = {
+            newTransaction with
+            id = id;
+        };
+
+        transactionHistory.put(id, transaction);
+        return id;
+    };
+
+    public shared func updateTransaction(updatedTransaction: Transaction) : async Int {
+        try {
+            transactionHistory.put(updatedTransaction.id, updatedTransaction);
+            return 1;
+        } catch (e: Error) {
+            Debug.print("Error updating transaction: " # Error.message(e));
+            return 0;
+        };
+    };
+
+    public shared func changeTransactionStatus(transactionId: Text, newStatus: Text) : async Int {
+        if(Util.transactionStatusVal(newStatus) == false){
+            return 0;
+        };
+
+        switch(transactionHistory.get(transactionId)){
+            case(null) { return 0; };
+            case(?transaction) {
+                let updatedTransaction: Transaction = {
+                    transaction with
+                    status = newStatus;
+                };
+                transactionHistory.put(transactionId, updatedTransaction);
+                return 1;
+            };
+        };
+    };
+
+    public shared func removeTransaction(transactionId: Text) : async Int {
+        try {
+            transactionHistory.delete(transactionId);
+            return 1;
+        } catch (e: Error) {
+            Debug.print("Error removing transaction: " # Error.message(e));
+            return 0;
+        };
+    };
+
+    public query func getUserTransactionHistory(userId: Principal) : async [Transaction] {
+        let transactions = Vector.Vector<Transaction>();
+        for (t in transactionHistory.vals()) {
+            if(userId == t.user) {
+                transactions.add(t);
+            };
+        };
+        return (Vector.toArray(transactions));
+    };
+
+    public query func getPropertyTransactionHistory(propertyId: Text) : async [Transaction] {
+        let transactions = Vector.Vector<Transaction>();
+        for (t in transactionHistory.vals()) {
+            if(propertyId == t.propertyId) {
+                transactions.add(t);
+            };
+        };
+        return (Vector.toArray(transactions));
+    };
+
+    public query func getTransaction(transactionId: Text) : async ?Transaction {
+        return transactionHistory.get(transactionId);
+    };
  
 };

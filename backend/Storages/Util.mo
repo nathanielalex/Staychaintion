@@ -83,10 +83,29 @@ module {
         count: Nat;
     };
 
+    public type Transaction = {
+        id: Text;
+        propertyId: Text;
+        user: Principal;
+        checkInDate: Text;
+        checkOutDate: Text;
+        totalPrice: Float;
+        transactionStatus: Text;
+    };
+
+    public type UnregisteredTransaction = {
+        propertyId: Text;
+        user: Principal;
+        checkInDate: Text;
+        checkOutDate: Text;
+        totalPrice: Float;
+        transactionStatus: Text;
+    };
+
     public func userRoleVal(role: Text) : Bool {
         switch (role) {
             case ("admin") { return true };
-            case ("renter") { return true };
+            case ("renter") { return true }; //renter in this project means the rental provider
             case ("user") { return true };
             case (_) { return false };
         };
@@ -111,6 +130,17 @@ module {
             case ("bungalow") { return true };
             case ("chalet") { return true };
             case (_) { return false };  // Default case
+        };
+    };
+
+    public func transactionStatusVal(status: Text) : Bool {
+        switch (status) {
+            case ("waitingPayment") { return true }; // initiate transaction start payment process
+            case ("pending") { return true }; // payment finishes, waiting untill the date of check-in
+            case ("checkedIn") { return true }; // check-in date has passed, waiting for check-out
+            case ("completed") { return true }; // checked-out, transaction finished and payment transfered to client
+            case ("cancelled") { return true }; // transaction cancelled by the user or the owner
+            case (_) { return false };
         };
     };
     
