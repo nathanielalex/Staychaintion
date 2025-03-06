@@ -1,54 +1,74 @@
-# Vite + React + Motoko
+<h1 align="center">
+  <br>
+  <a href="https://github.com/nathanielalex/Staychaintion"><img src="https://i.ibb.co/c3ZpB0d/Logo-Sunshine-removebg.png" alt="Sunshine" width="200"></a>
+  <br>
+  	Staychaintion
+  <br>
+</h1>
 
-### Get started directly in your browser:
+<h4 align="center">A gaming chat system with transactional cryptocurrency features built on top of <a href="https://internetcomputer.org/docs/current/motoko/tutorial" target="_blank">Internet Computer</a>.</h4>
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/rvanasa/vite-react-motoko)
+Sunshine is a chat application developed on the Internet Computer using the Motoko programming language. It enables user interactions through integrated Internet Identity verification and supports cryptocurrency transactions. Additionally, Sunshine offers interactive gaming features to enhance user engagement and fun.
 
-This template gives you everything you need to build a full-stack Web3 application on the [Internet Computer](https://internetcomputer.org/).
+## 🚩 Features
+- Scalable Real-Time Messaging : Implement a scalable real-time messaging system built on the Internet Computer, benefiting from its high throughput and low latency. This system can handle massive amounts of data and a high number of users without compromising speed or efficiency.
+- Blockchain-Enabled Cryptocurrency Transactions : Enable cryptocurrency transactions through the app using a blockchain-based approach, possibly through a regtest environment for safe testing and demonstrations. This will allow users to perform secure and verifiable transactions within their chats.
+- Distributed Game Logic : Games integrated into the chat can run their backend logic directly on the Internet Computer, ensuring transparent and verifiable game mechanics. This decentralized approach prevents cheating and enhances performance.
 
-For an example of a real-world dapp built using this starter project, check out the [source code](https://github.com/dfinity/feedback) for DFINITY's [Developer Experience Feedback Board](https://dx.internetcomputer.org/).
+You can see the following documentation for Internet Computer online:
+- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
+- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
+- [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
+- [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
 
-## 📦 Create a New Project
+## 📦 Packages
+- Git
+    - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+- WSL
+    - powershell > type in "wsl --install"
+- Visual Studio Code https://code.visualstudio.com/ With the extensions :
+    - Motoko Language
+        - https://marketplace.visualstudio.com/items?itemName=dfinity-foundation.vscode-motoko
+    - Remote WSL
+        - https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
+- Plug Connect
+    - Extension
+        - https://plugwallet.ooo/
+    - Psychedelic packages
+        - https://github.com/Psychedelic/plug-connect?tab=readme-ov-file
 
-Make sure that [Node.js](https://nodejs.org/en/) `>= 16` and [`dfx`](https://internetcomputer.org/docs/current/developer-docs/build/install-upgrade-remove) `>= 0.14` are installed on your system.
+Make sure to have dfx installed, update if needed.
+- DFX Version : 0.19.0
 
-Run the following commands in a new, empty project directory:
+Also, make sure node is installed too.
+- Node Version : 20
 
-```sh
-npx degit rvanasa/vite-react-motoko # Download this starter project
-dfx start --clean --background # Run dfx in the background
-npm run setup # Install packages, deploy canisters, and generate type bindings
+For more details, you can check the installation docs here :
+https://docs.google.com/document/d/e/2PACX-1vTNicu-xuf4EiLAehHIqgfpjAnPjzqMGT-xpZVvYaAWNyvzYK_Ceve_me4PVRIxpzH7ea5PAX9NxGwY/pub
 
-npm start # Start the development server
+## 📜 Getting Started
+Finally, to get it running, you can follow these instructions :
+Go to visual studio code, create a new folder, and view terminal.
+
+```
+git clone https://github.com/TheoJustin/sunshine.git
+cd sunshine
+npm install
+npm i -g ic-mops
+
+wsl
+mops install
+dfx start
+
+// make a new wsl terminal
+dfx deploy
+npm start
 ```
 
-When ready, run `dfx deploy --network ic` to deploy your application to the Internet Computer.
 
-## 🛠️ Technology Stack
-
-- [Vite](https://vitejs.dev/): high-performance tooling for front-end web development
-- [React](https://reactjs.org/): a component-based UI library
-- [TypeScript](https://www.typescriptlang.org/): JavaScript extended with syntax for types
-- [Sass](https://sass-lang.com/): an extended syntax for CSS stylesheets
-- [Prettier](https://prettier.io/): code formatting for a wide range of supported languages
-- [Motoko](https://github.com/dfinity/motoko#readme): a safe and simple programming language for the Internet Computer
-- [Mops](https://mops.one): an on-chain community package manager for Motoko
-- [mo-dev](https://github.com/dfinity/motoko-dev-server#readme): a live reload development server for Motoko
-- [@ic-reactor](https://github.com/B3Pay/ic-reactor): A suite of JavaScript libraries for seamless frontend development on the Internet Computer
-
-## 📚 Documentation
-
-- [Vite developer docs](https://vitejs.dev/guide/)
-- [React quick start guide](https://react.dev/learn)
-- [Internet Computer docs](https://internetcomputer.org/docs/current/developer-docs/ic-overview)
-- [`dfx.json` reference schema](https://internetcomputer.org/docs/current/references/dfx-json-reference/)
-- [Motoko developer docs](https://internetcomputer.org/docs/current/developer-docs/build/cdks/motoko-dfinity/motoko/)
-- [Mops usage instructions](https://j4mwm-bqaaa-aaaam-qajbq-cai.ic0.app/#/docs/install)
-- [@ic-reactor/react](https://b3pay.github.io/ic-reactor/modules/react.html)
-
-## 💡 Tips and Tricks
-
-- Customize your project's code style by editing the `.prettierrc` file and then running `npm run format`.
-- Reduce the latency of update calls by passing the `--emulator` flag to `dfx start`.
-- Install a Motoko package by running `npx ic-mops add <package-name>`. Here is a [list of available packages](https://mops.one/).
-- Split your frontend and backend console output by running `npm run frontend` and `npm run backend` in separate terminals.
+## 📧 Contact Information
+If any questions occured, or in the need of any discussion or details,
+please contact us :
+- Email : theojustinx@gmail.com
+- Telegram : https://t.me/theojustin
+- Discord : tj_7
