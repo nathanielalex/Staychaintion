@@ -180,7 +180,9 @@ const AnimatedRoutes = () => {
               <Route path="/teams" element={<TeamPage />} />
               <Route path="/landing" element={<LandingPage />} />
               <Route path="/properties" element={<PropertiesPage />} />
-              <Route path="/properties/details" element={<PropertyDetailPage />} />
+              {/* <Route path="/properties/details" element={<PropertyDetailPage />} /> */}
+              <Route path="/properties/details/:id" element={<PropertyDetailPage />} />
+
             </Route>
 
             {/* ADMIN PAGES SECTION */}

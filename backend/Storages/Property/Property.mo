@@ -104,11 +104,16 @@ actor {
         return (Vector.toArray(properties));
     };
 
-    // Add this function to seed the properties when canister is initialized
-    // public func initialize() : async () {
-    //     // Call the seeder function
-    //     await seedProperties();
-    // }
+    public query func getOwnerProperties(ownerId: Principal) : async [Property] {
+        let properties = Vector.Vector<Property>();
+        for (p in propertyInfo.vals()) {
+            if(ownerId == p.owner) {
+                properties.add(p);
+            }
+        };
+        return (Vector.toArray(properties));
+    };
+
     public query func propertyCount(): async Nat {
         return propertyInfo.size();
     };
@@ -442,11 +447,5 @@ actor {
         return (Vector.toArray(reviews));
     };
 
-    // public func getAverageRating(propertyId: Text): ?Float {
-    //     return TrieMap.get(propertyRatings, propertyId);
-    // }
-
-    // public query func getPropertyInfo(propertyId: Text) : async ?Property {
-    //     return propertyInfo.get(propertyId);
-    // };
+ 
 };

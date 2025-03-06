@@ -1,55 +1,88 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Share2, Heart, Star, Users, Bed, Bath, MapPin, Award, CheckCircle, AlertCircle } from "lucide-react"
 import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { GuestSelector } from "@/components/ui/guest-selector"
-
+import { useLocation, useParams } from "react-router-dom"
+import { Property } from "@/declarations/Property_backend/Property_backend.did"
+import { UserProfile } from "@/declarations/User/User.did"
+import { User } from "@/declarations/User"
 // Sample property data
-const property = {
-  id: 1,
-  title: "Emotional healing accommodation in Icheon City, Seoul",
-  location: "Sindun-myeon, Icheon-si, South Korea",
-  images: [
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hsMpfGk2cZ4bepjI9ieY48eHQrNym8.png",
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hsMpfGk2cZ4bepjI9ieY48eHQrNym8.png",
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hsMpfGk2cZ4bepjI9ieY48eHQrNym8.png",
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hsMpfGk2cZ4bepjI9ieY48eHQrNym8.png",
-  ],
-  price: 1026383,
-  rating: 4.84,
-  reviews: 177,
-  guests: 2,
-  bedrooms: 1,
-  beds: 1,
-  baths: 1,
-  host: {
-    name: "Snow Lee",
-    image: "/placeholder.svg?height=50&width=50",
-    isSuperhost: true,
-    hostingSince: "11 years",
-  },
-  highlights: [
-    "50-min drive to Bukhansan National Park",
-    "Exceptional check-in experience",
-    "Free cancellation before Mar 18",
-  ],
+// const property = {
+//   id: 1,
+//   title: "Emotional healing accommodation in Icheon City, Seoul",
+//   location: "Sindun-myeon, Icheon-si, South Korea",
+//   images: [
+//     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hsMpfGk2cZ4bepjI9ieY48eHQrNym8.png",
+//     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hsMpfGk2cZ4bepjI9ieY48eHQrNym8.png",
+//     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hsMpfGk2cZ4bepjI9ieY48eHQrNym8.png",
+//     "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-hsMpfGk2cZ4bepjI9ieY48eHQrNym8.png",
+//   ],
+//   price: 1026383,
+//   rating: 4.84,
+//   reviews: 177,
+//   guests: 2,
+//   bedrooms: 1,
+//   beds: 1,
+//   baths: 1,
+//   host: {
+//     name: "Snow Lee",
+//     image: "/placeholder.svg?height=50&width=50",
+//     isSuperhost: true,
+//     hostingSince: "11 years",
+//   },
+//   highlights: [
+//     "50-min drive to Bukhansan National Park",
+//     "Exceptional check-in experience",
+//     "Free cancellation before Mar 18",
+//   ],
+// }
+
+interface LocationState {
+  property: Property; 
 }
 
 export default function PropertyDetailPage() {
   const [isLiked, setIsLiked] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [showAllImages, setShowAllImages] = useState(false)
+  const [owner, setOwner] = useState<UserProfile | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
+  const location = useLocation();
+  const { property } = location.state as LocationState || {};
+  const { id } = useParams();
+
+  const fetchUser = async () => {
+      try {
+        // setLoading(true);
+        // setError(null);
+        // const actor = getChatActor();
+        const result = await User.getUser(property.owner);
+        if(result.length > 0) {
+          setOwner(result[0]);
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    useEffect(() => {
+      fetchUser();
+    }, []);
+  
 
   return (
     <div className="min-h-screen bg-white">
       {/* Image Gallery */}
       <div className="relative">
         <div className="grid grid-cols-4 gap-2 h-[60vh]">
-          {property.images.slice(0, 4).map((image, index) => (
+          {property.pictures.slice(0, 4).map((image, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0 }}
@@ -82,7 +115,7 @@ export default function PropertyDetailPage() {
             {/* Header */}
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h1 className="text-2xl font-semibold mb-2">{property.title}</h1>
+                <h1 className="text-2xl font-semibold mb-2">{property.name}</h1>
                 <div className="flex items-center space-x-2 text-gray-600">
                   <MapPin className="w-4 h-4" />
                   <span>{property.location}</span>
@@ -103,19 +136,19 @@ export default function PropertyDetailPage() {
               <div className="flex flex-wrap gap-6 mb-6">
                 <div className="flex items-center space-x-2">
                   <Users className="w-5 h-5 text-gray-500" />
-                  <span>{property.guests} guests</span>
+                  <span>{property.guestCapacity.toString()} guests</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Bed className="w-5 h-5 text-gray-500" />
-                  <span>{property.bedrooms} bedroom</span>
+                  <span>{property.bedroomCount.toString()} bedroom</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Bed className="w-5 h-5 text-gray-500" />
-                  <span>{property.beds} bed</span>
+                  <span>{property.bedCount.toString()} bed</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Bath className="w-5 h-5 text-gray-500" />
-                  <span>{property.baths} bath</span>
+                  <span>{property.bathroomCount.toString()} bath</span>
                 </div>
               </div>
 
@@ -130,22 +163,22 @@ export default function PropertyDetailPage() {
               <div className="border-t pt-6">
                 <div className="flex items-center space-x-4">
                   <img
-                    src={property.host.image || "/placeholder.svg"}
-                    alt={property.host.name}
+                    src={owner?.profilePictureUrl || "/placeholder.svg"}
+                    alt={owner?.fullName}
                     width={56}
                     height={56}
                     className="rounded-full"
                   />
                   <div>
-                    <p className="font-medium">Hosted by {property.host.name}</p>
-                    <p className="text-sm text-gray-600">Superhost · {property.host.hostingSince} hosting</p>
+                    <p className="font-medium">Hosted by {owner?.fullName}</p>
+                    {/* <p className="text-sm text-gray-600">Superhost · {property.host.hostingSince} hosting</p> */}
                   </div>
                 </div>
               </div>
             </Card>
 
             {/* Highlights */}
-            <Card className="p-6 mb-8">
+            {/* <Card className="p-6 mb-8">
               <h2 className="text-xl font-semibold mb-4">Property Highlights</h2>
               <div className="space-y-4">
                 {property.highlights.map((highlight, index) => (
@@ -155,7 +188,7 @@ export default function PropertyDetailPage() {
                   </div>
                 ))}
               </div>
-            </Card>
+            </Card> */}
           </div>
 
           {/* Booking Card */}
@@ -163,26 +196,26 @@ export default function PropertyDetailPage() {
             <Card className="p-6 sticky top-8">
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <span className="text-2xl font-semibold">Rp {property.price.toLocaleString()}</span>
+                  <span className="text-2xl font-semibold">Rp {property.pricePerNight.toLocaleString()}</span>
                   <span className="text-gray-600"> / night</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Star className="w-4 h-4 text-blue-600 fill-blue-600" />
-                  <span className="font-medium">{property.rating}</span>
-                  <span className="text-gray-600">({property.reviews} reviews)</span>
+                  <span className="font-medium">{property.rating.toString()}</span>
+                  {/* <span className="text-gray-600">({property.reviews} reviews)</span> */}
                 </div>
               </div>
 
               <div className="space-y-4">
                 <DatePickerWithRange />
-                <GuestSelector maxGuests={property.guests} />
+                <GuestSelector maxGuests={Number(property.guestCapacity)} />
                 <Button className="w-full bg-blue-600 hover:bg-blue-700 text-lg">Reserve</Button>
               </div>
 
               <div className="mt-6 space-y-4 text-sm">
                 <div className="flex justify-between">
-                  <span>Rp {property.price.toLocaleString()} × 5 nights</span>
-                  <span>Rp {(property.price * 5).toLocaleString()}</span>
+                  <span>Rp {property.pricePerNight.toLocaleString()} × 5 nights</span>
+                  <span>Rp {(Number(property.pricePerNight) * 5).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Cleaning fee</span>

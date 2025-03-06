@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Search, SlidersHorizontal, Home, Building, Tent, Castle, Mountain, PocketIcon as Pool } from "lucide-react"
@@ -11,8 +9,6 @@ import { Principal } from "@dfinity/principal"
 import { Property_backend } from "@/declarations/Property_backend"
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
 import { UnregisteredProperty } from "@/declarations/Property_backend/Property_backend.did"
-import { PropertyStatus } from "@/declarations/Property_backend/Property_backend.did"
-
 // Sample data
 
 // interface Property {
@@ -96,26 +92,26 @@ export default function PropertiesPage() {
     }
   };
 
-  useEffect(() => {
-    // Creating an instance of UnregisteredProperty
-    const newProperty: UnregisteredProperty = {
-      bedCount: 2n,
-      status: { available : null },
-      owner: Principal.fromText('aaaaa-aa'),
-      pricePerNight: 1000000n,
-      name: 'Luxury A-Frame Cabin',
-      bedroomCount: 2n,
-      bathroomCount: 1n,
-      description: 'A beautiful cabin by the beach with a wonderful view.',
-      builtInDate: '2020-06-15',
-      guestCapacity: 4n,
-      pictures: [],
-      buildingType: 'cabin',
-      location: 'Tambon Huai Sat Yai, Thailand',
-      coverPicture: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png'
-    };
-    initProperties(newProperty);  // Set the property state with the new object
-  }, []);
+  // useEffect(() => {
+  //   // Creating an instance of UnregisteredProperty
+  //   const newProperty: UnregisteredProperty = {
+  //     bedCount: 2n,
+  //     status: { available : null },
+  //     owner: Principal.fromText('aaaaa-aa'),
+  //     pricePerNight: 1000000n,
+  //     name: 'Luxury A-Frame Cabin',
+  //     bedroomCount: 2n,
+  //     bathroomCount: 1n,
+  //     description: 'A beautiful cabin by the beach with a wonderful view.',
+  //     builtInDate: '2020-06-15',
+  //     guestCapacity: 4n,
+  //     pictures: [],
+  //     buildingType: 'cabin',
+  //     location: 'Tambon Huai Sat Yai, Thailand',
+  //     coverPicture: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png'
+  //   };
+  //   initProperties(newProperty);  // Set the property state with the new object
+  // }, []);
 
   
 
@@ -123,7 +119,7 @@ export default function PropertiesPage() {
     const matchesSearch =
       property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       property.location.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || property.buildingType === selectedCategory
+    const matchesCategory = selectedCategory === "all" || property.propertyType === selectedCategory
     return matchesSearch && matchesCategory
   })
 
