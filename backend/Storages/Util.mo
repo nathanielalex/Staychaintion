@@ -71,6 +71,18 @@ module {
         coverPicture: Text;
     };
 
+    public type PaginationQuery = {
+        textAttrs: Text;
+        textQueries: Text;
+        numAttrs: Text; 
+        numQueries: Text; 
+        comparisons: Text;
+        orderAttr: Text; 
+        orderDir: Text;
+        page: Nat; 
+        count: Nat;
+    };
+
     public func userRoleVal(role: Text) : Bool {
         switch (role) {
             case ("admin") { return true };

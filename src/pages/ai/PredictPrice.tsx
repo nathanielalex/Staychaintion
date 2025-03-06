@@ -34,7 +34,7 @@ export default function PredictPage() {
   }
 
   // Handle form submit
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     setPredictedPrice(null)
