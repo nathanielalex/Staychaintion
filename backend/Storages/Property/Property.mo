@@ -82,9 +82,9 @@ actor {
         };
     };
 
-    public shared func removeProperty(property: Property) : async Int {
+    public shared func removeProperty(propId: Text) : async Int {
         try {
-            propertyInfo.delete(property.id);
+            propertyInfo.delete(propId);
             return 1;
         } catch (e: Error) {
             Debug.print("Error removing property: " # Error.message(e));
@@ -129,6 +129,24 @@ actor {
 
     public query func propertyCount(): async Nat {
         return propertyInfo.size();
+    };
+
+    public shared func updatePropertyStatus(propId:Text, status: Text): async Nat{
+        if(Util.propStatusVal(status) == false){
+            return 0;
+        };
+
+        switch(propertyInfo.get(propId)){
+            case(null) { return 0; };
+            case(?prop) {
+                let updatedProp: Property = {
+                    prop with
+                    status = status;
+                };
+                propertyInfo.put(propId, updatedProp);
+                return 1;
+            };
+        };
     };
 
     public query func getPropertyIdFromTextAttribute(attribute: Text, text_query: Text): async [Text] {

@@ -141,7 +141,83 @@ actor {
         };
     };
 
+    public shared func transferPropertyToUser(userId:Principal, propertyId: Text): async Nat{
+        switch (userProfiles.get(userId)) {
+            case null { return 0 };
+            case (?user) {
+                let newPropertiesId = optAppend<Text>(user.propertiesId, ?[propertyId]);
+                
+                let updatedUser = {
+                    user with
+                    propertiesId = newPropertiesId;
+                };
+
+                switch(await Property.getPropertyInfo(propertyId)){
+                    case null { return 0 };
+                    case (?prop) { 
+                        let updatedProp: Property.Property = {
+                            prop with
+                            owner = userId;
+                        };
+                        let resultStatus: Int = await Property.updateProperty(updatedProp);
+                        if(resultStatus == 0){
+                            return 0;
+                        };
+                    };
+                };
+
+                try {
+                    userProfiles.put(userId, updatedUser);
+                    return 1;
+                } catch (e: Error) {
+                    print("Error adding property to user: " # Error.message(e));
+                    return 0;
+                };
+            };
+        };
+    };
+
     public shared func removePropertyFromUser(userId: Principal, propertyId: Text) : async Nat {
+        switch (userProfiles.get(userId)) {
+            case null { return 0 };
+            case (?user) {
+                let filteredPropertiesId = optfilter<Text>(
+                    user.propertiesId, 
+                    func (propId: Text) { propId != propertyId }
+                );
+                
+                let updatedUser = {
+                    user with
+                    propertiesId = filteredPropertiesId;
+                };
+
+                switch(await Property.getPropertyInfo(propertyId)){
+                    case null { return 0 };
+                    case (?prop) { 
+                        let updatedProp: Property.Property = {
+                            prop with
+                            owner = Principal.fromText("aaaaa-aa");
+                            status = "unavailable";
+                        };
+                        let resultStatus: Int = await Property.updateProperty(updatedProp);
+                        if(resultStatus == 0){
+                            return 0;
+                        };
+                    };
+                };
+
+                try {
+                    userProfiles.put(userId, updatedUser);
+                    return 1;
+                } catch (e: Error) {
+                    print("Error removing property from user: " # Error.message(e));
+                    return 0;
+                };
+            };
+        };
+    };
+
+    public shared func deleterPropertyFromUser(userId: Principal, propertyId: Text) : async Nat {
         switch (userProfiles.get(userId)) {
             case null { return 0 };
             case (?user) {
@@ -157,6 +233,10 @@ actor {
 
                 try {
                     userProfiles.put(userId, updatedUser);
+                    let resultStatus: Int = await Property.removeProperty(propertyId);
+                    if(resultStatus == 0){
+                        return 0;
+                    };
                     return 1;
                 } catch (e: Error) {
                     print("Error removing property from user: " # Error.message(e));

@@ -122,7 +122,8 @@ export default function PropertiesPage() {
       pictures: [],
       propertyType: 'cabin',
       location: 'Tambon Huai Sat Yai, Thailand',
-      coverPicture: 'https://www.jonesthegrocer.com/images/orange-1kg-p1440-3590_image.jpg'
+      coverPicture: 'https://www.jonesthegrocer.com/images/orange-1kg-p1440-3590_image.jpg',
+      reviewCount: 0n,
     };
     // initProperties(newProperty);  // Set the property state with the new object
     // setGoSearch(prev => !prev);
