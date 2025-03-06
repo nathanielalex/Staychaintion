@@ -97,6 +97,8 @@ import DisputesPage from './pages/disputes/page';
 // Dark Mode
 
 import { ThemeProvider } from '@/context/ThemeContext';
+import ScrollToTop from "./utility/ScrollToTop"; 
+
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
@@ -128,6 +130,8 @@ const AnimatedRoutes = () => {
   return (
 
     <ThemeProvider>
+
+      <ScrollToTop />
 
       {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
 

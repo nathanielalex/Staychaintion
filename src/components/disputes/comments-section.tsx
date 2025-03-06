@@ -30,7 +30,7 @@ const mockComments: Comment[] = [
     id: "comment-1",
     author: {
       name: "Alex Morgan",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "/images/placeholder/user.png",
       role: "Property Law Expert",
       isExpert: true,
     },
@@ -44,7 +44,7 @@ const mockComments: Comment[] = [
         id: "reply-1",
         author: {
           name: "Sarah Chen",
-          avatar: "/placeholder.svg?height=40&width=40",
+          avatar: "/images/placeholder/user.png",
           role: "Property Manager",
         },
         content:
@@ -57,7 +57,7 @@ const mockComments: Comment[] = [
         id: "reply-2",
         author: {
           name: "Michael Rodriguez",
-          avatar: "/placeholder.svg?height=40&width=40",
+          avatar: "/images/placeholder/user.png",
           role: "Community Member",
         },
         content:
@@ -72,7 +72,7 @@ const mockComments: Comment[] = [
     id: "comment-2",
     author: {
       name: "Jordan Smith",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "/images/placeholder/user.png",
       role: "Tenant (Plaintiff)",
     },
     content:
@@ -85,7 +85,7 @@ const mockComments: Comment[] = [
     id: "comment-3",
     author: {
       name: "Taylor Williams",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "/images/placeholder/user.png",
       role: "Legal Advisor",
       isExpert: true,
     },
@@ -110,7 +110,7 @@ export function CommentsSection({ caseId }: CommentsProps) {
       id: `comment-${Date.now()}`,
       author: {
         name: "You",
-        avatar: "/placeholder.svg?height=40&width=40",
+        avatar: "/images/placeholder/user.png",
         role: "Community Member",
       },
       content: newComment,
@@ -130,7 +130,7 @@ export function CommentsSection({ caseId }: CommentsProps) {
       id: `reply-${Date.now()}`,
       author: {
         name: "You",
-        avatar: "/placeholder.svg?height=40&width=40",
+        avatar: "/images/placeholder/user.png",
         role: "Community Member",
       },
       content: replyContent,
