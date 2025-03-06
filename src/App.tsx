@@ -16,7 +16,7 @@ import AnimatedCursor from 'react-animated-cursor';
 import PropertyListPage from './pages/PropertyListPage';
 import MainLayout from './pages/layout/MainLayout';
 import { AnimatePresence, motion } from "framer-motion";
-import Logo from "./assets/house.png";
+import Logo from "/images/Staychaintion_Logo_Final.png";
 import Maps from "@/pages/Maps"
 import { PropertyFilterProvider } from './context/PropertyFilterContext';
 
