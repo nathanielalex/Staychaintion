@@ -14,6 +14,8 @@ import { UserProfile } from "@/declarations/User_backend/User_backend.did";
 import { useAuth } from "@/utility/use-auth-client";
 export default function SignUpForm() {
 
+  const [selectedRole, setSelectedRole] = useState("");
+
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -62,6 +64,7 @@ export default function SignUpForm() {
       ...prev,
       role
     }));
+    setSelectedRole(role);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -152,23 +155,53 @@ export default function SignUpForm() {
       </div>
 
       {/* Role */}
+      
       <div>
-        <Label>Role</Label>
-        <RadioGroup
-          value={formData.role}
-          onValueChange={handleRoleChange}
-          className="flex space-x-4"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="owner" id="owner" className="bg-white border-gray-300 text-blue-600" />
-            <Label htmlFor="owner" className="text-gray-700">Owner</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="renter" id="renter" className="bg-white border-gray-300 text-blue-600" />
-            <Label htmlFor="renter" className="text-gray-700">Renter</Label>
-          </div>
-        </RadioGroup>
-      </div>
+      <Label>Role</Label>
+      <RadioGroup
+        value={selectedRole}
+        onValueChange={handleRoleChange}
+        className="flex space-x-4"
+      >
+        {/* Owner */}
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem
+            value="owner"
+            id="owner"
+            className={`border-gray-300 text-gray-700 ${
+              selectedRole === "owner" ? "border-blue-600 text-blue-600 bg-blue-400" : ""
+            }`}
+          />
+          <Label
+            htmlFor="owner"
+            className={`cursor-pointer ${
+              selectedRole === "owner" ? "text-blue-600 font-semibold" : "text-gray-700"
+            }`}
+          >
+            Owner
+          </Label>
+        </div>
+
+        {/* Renter */}
+        <div className="flex items-center space-x-2">
+          <RadioGroupItem
+            value="renter"
+            id="renter"
+            className={`border-gray-300 text-gray-700 ${
+              selectedRole === "renter" ? "border-blue-600 text-blue-600 bg-blue-400" : ""
+            }`}
+          />
+          <Label
+            htmlFor="renter"
+            className={`cursor-pointer ${
+              selectedRole === "renter" ? "text-blue-600 font-semibold" : "text-gray-700"
+            }`}
+          >
+            Renter
+          </Label>
+        </div>
+      </RadioGroup>
+    </div>
 
       {/* Profile Picture */}
       <div>
