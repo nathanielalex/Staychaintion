@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useEffect } from "react"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import type { DateRange } from "react-day-picker"
@@ -9,11 +10,15 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
-export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivElement>) {
+export function DatePickerWithRange({ className, onDateChange }: React.HTMLAttributes<HTMLDivElement> & { onDateChange?: (range: DateRange) => void; }) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(),
     to: new Date(),
   })
+
+  useEffect(() => {
+    if (onDateChange) onDateChange(date!);
+  }, [date]);
 
   return (
     <div className={cn("grid gap-2", className)}>

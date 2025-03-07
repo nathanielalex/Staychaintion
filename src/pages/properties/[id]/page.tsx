@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
@@ -7,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { Share2, Heart, Star, Users, Bed, Bath, MapPin, Award, CheckCircle, AlertCircle } from "lucide-react"
 import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { GuestSelector } from "@/components/ui/guest-selector"
-import { useLocation, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { Property, PropertyReview } from "@/declarations/Property_backend/Property_backend.did"
 import { User_backend } from "@/declarations/User_backend"
 import { UserProfile } from "@/declarations/User_backend/User_backend.did"
@@ -63,6 +61,7 @@ export default function PropertyDetailPage() {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const [selectedRatings, setSelectedRatings] = useState(
     reviews.map((review) => review.rating) // Initial ratings
@@ -331,7 +330,12 @@ export default function PropertyDetailPage() {
               <div className="space-y-4">
                 <DatePickerWithRange />
                 <GuestSelector maxGuests={Number(property.guestCapacity)} />
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-lg">Reserve</Button>
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-lg"
+                  onClick={() => navigate(`/properties/reserve/${property.id}`)}
+                >
+                  Reserve
+                </Button>
               </div>
 
               <div className="mt-6 space-y-4 text-sm">

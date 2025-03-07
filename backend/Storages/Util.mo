@@ -10,8 +10,15 @@ import Char "mo:base/Char";
 import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
+import Voucher "Voucher/Voucher";
 
 module {
+    public type VoucherType = {
+        #fixed;
+        #percentage;
+        #unknown;
+    };
+    
     public type UserProfile = {
         id: Principal;
         role: Text;
@@ -112,6 +119,31 @@ module {
         propLocation: Text;
         propCoverPicture: Text;
         transactionStatus: Text;
+    };
+
+    public type Voucher = {
+        id: Text;
+        code: Text;
+        discount: Nat;
+        voucherType: Text;
+        start_date: Nat;
+        expired_date: Nat;
+    };
+
+    public func voucherTypeToVar(voucherType: Text): VoucherType {
+        switch (voucherType) {
+            case ("fixed") return #fixed;
+            case ("percentage") return #percentage;
+            case (_) return #unknown;
+        }
+    };
+
+    public func voucherTypeToText(voucherType: VoucherType) {
+        switch (voucherType) {
+            case (#fixed) return "fixed";
+            case (#percentage) return "percentage";
+            case (#unknown) return "unknown";
+        }
     };
 
     public func userRoleVal(role: Text) : Bool {
