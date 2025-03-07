@@ -98,6 +98,8 @@ import DisputesPage from './pages/disputes/page';
 import { ThemeProvider } from '@/context/ThemeContext';
 import ScrollToTop from "./utility/ScrollToTop"; 
 import NewMaps from "./pages/maps/page"
+import TransactionPage from './components/payment/page';
+import { RegistrationProvider } from './utility/RegistrationContext';
 
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -196,6 +198,7 @@ const AnimatedRoutes = () => {
               <Route path="/properties" element={<PropertiesPage />} />
               {/* <Route path="/properties/details" element={<PropertyDetailPage />} /> */}
               <Route path="/properties/details/:id" element={<PropertyDetailPage />} />
+              <Route path="/properties/reserve/:id" element={<TransactionPage />} />
 
             </Route>
 
@@ -359,6 +362,8 @@ function App() {
 
 export default () => (
   <AuthProvider>
-    <App />
+    <RegistrationProvider>
+      <App />
+    </RegistrationProvider>
   </AuthProvider>
 );

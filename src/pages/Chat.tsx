@@ -7,31 +7,52 @@ import { Principal } from '@dfinity/principal';
 
 import { Chat_backend } from '@/declarations/Chat_backend';
 import { UserProfile } from '@/declarations/Chat_backend/Chat_backend.did';
+import { useLocation } from 'react-router-dom';
 // ganti export name jadi Chat_backend
 const Chat: React.FC = () => {
   const { principal } = useAuth();
   const [selectedContact, setSelectedContact] = useState<Principal | null>(
     null,
   );
+  const [selectedName, setSelectedName] = useState('');
   const [contacts, setContacts] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  //iya nanti pass ke lain-lain
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.owner) {
+      setSelectedContact(location.state.owner);
+    }
+  }, [location.state]);
+
+  const findUserProfile = () => {
+    if (!selectedContact) {
+      console.log('No selected contact');
+      return null;
+    }
+    const userProfile = contacts.find(contact => contact.id.toText() === selectedContact.toText());
+    if (userProfile) {
+      console.log('Found user profile:', userProfile);
+      setSelectedName(userProfile.fullName)
+    } else {
+      console.log('User profile not found');
+    }
+  };
+
   const fetchContacts = async (currUser: Principal) => {
     try {
       setLoading(true);
       setError(null);
-      // const actor = getChatActor();
       if (currUser != null) {
         const result = await Chat_backend.getAllChats(currUser);
         if ('ok' in result) {
-          setContacts(result.ok); // Set the list of contacts if 'ok' is present
+          setContacts(result.ok); 
         } else if ('err' in result) {
-          setError('Failed to load contacts'); // Handle the error if 'err' is present
+          setError('Failed to load contacts');
         }
       }
-      // const result = await actor.getAllChats('current-user-principal-id'); // Replace with actual user principal
     } catch (err) {
       setError('An error occurred while fetching contacts');
     } finally {
@@ -41,8 +62,8 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     if (principal) {
-      // Check if principal is not null
       fetchContacts(principal);
+      findUserProfile();
     }
   }, [principal]);
 
@@ -53,7 +74,7 @@ const Chat: React.FC = () => {
         currUser={principal}
         contacts={contacts}
       />
-      <ChatWindow selectedContact={selectedContact} currUser={principal} />
+      <ChatWindow selectedContact={selectedContact} currUser={principal} selectedName={selectedName}/>
     </div>
   );
 };

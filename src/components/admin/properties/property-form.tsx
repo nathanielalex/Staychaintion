@@ -28,6 +28,8 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
     type: property.propertyType,
     price: property.pricePerNight,
     location: property.location,
+    latitude: property.latitude,
+    longitude: property.longitude,
     bedrooms: property.bedroomCount,
     bathrooms: property.bathroomCount,
     guests: property.guestCapacity,
@@ -70,7 +72,9 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
         pictures: images,
         propertyType: formData.type,
         location: formData.location,
-        coverPicture: images[0],
+        latitude: formData.latitude,
+      longitude: formData.longitude,
+      coverPicture: images[0],
         reviewCount: property.reviewCount
       }
       try {
@@ -105,6 +109,8 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
         pictures: images,
         propertyType: formData.type,
         location: formData.location,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
         coverPicture: images[0]
       }
       try {
@@ -127,6 +133,8 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
             pictures: images,
             propertyType: formData.type,
             location: formData.location,
+            latitude: formData.latitude,
+            longitude: formData.longitude,
             coverPicture: images[0],
             reviewCount: 0n
           }

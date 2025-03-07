@@ -11,8 +11,15 @@ import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
 import Principal "mo:base/Principal";
+import Voucher "Voucher/Voucher";
 
 module {
+    public type VoucherType = {
+        #fixed;
+        #percentage;
+        #unknown;
+    };
+    
     public type UserProfile = {
         id: Principal;
         walletId: ?Principal;
@@ -33,7 +40,11 @@ module {
         propertyType: Text;
         pricePerNight: Float;
         description: Text;
+
         location: Text;
+        latitude: Float;
+        longitude: Float;
+
         builtInDate: Text;
         bedroomCount: Nat;
         guestCapacity: Nat;
@@ -65,7 +76,11 @@ module {
         status: Text;
         pricePerNight: Float;
         description: Text;
+
         location: Text;
+        latitude: Float;
+        longitude: Float;
+        
         builtInDate: Text;
         bedroomCount: Nat;
         guestCapacity: Nat;
@@ -114,6 +129,31 @@ module {
         propLocation: Text;
         propCoverPicture: Text;
         transactionStatus: Text;
+    };
+
+    public type Voucher = {
+        id: Text;
+        code: Text;
+        discount: Nat;
+        voucherType: Text;
+        start_date: Nat;
+        expired_date: Nat;
+    };
+
+    public func voucherTypeToVar(voucherType: Text): VoucherType {
+        switch (voucherType) {
+            case ("fixed") return #fixed;
+            case ("percentage") return #percentage;
+            case (_) return #unknown;
+        }
+    };
+
+    public func voucherTypeToText(voucherType: VoucherType) {
+        switch (voucherType) {
+            case (#fixed) return "fixed";
+            case (#percentage) return "percentage";
+            case (#unknown) return "unknown";
+        }
     };
 
     public func userRoleVal(role: Text) : Bool {

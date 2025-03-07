@@ -1,77 +1,94 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Card } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-import { Loader2, X, Upload } from "lucide-react"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Card } from '@/components/ui/card';
+import { Switch } from '@/components/ui/switch';
+import { Loader2, X, Upload } from 'lucide-react';
 
-import { Property_backend } from "@/declarations/Property_backend"
-import { Property } from "@/declarations/Property_backend/Property_backend.did"
-import { UnregisteredProperty } from "@/declarations/Property_backend/Property_backend.did"
-import { useAuth } from "@/utility/use-auth-client"
+import { Property_backend } from '@/declarations/Property_backend';
+import { Property } from '@/declarations/Property_backend/Property_backend.did';
+import { UnregisteredProperty } from '@/declarations/Property_backend/Property_backend.did';
+import { useAuth } from '@/utility/use-auth-client';
 
 interface PropertyFormProps {
   property: Property;
   setProperties: React.Dispatch<React.SetStateAction<Property[]>>;
-  onClose: () => void
+  onClose: () => void;
   isUpdating: boolean;
 }
 
-
-export default function PropertyForm({ property, onClose, setProperties, isUpdating }: PropertyFormProps) {
-  const [loading, setLoading] = useState<boolean>(false)
+export default function PropertyForm({
+  property,
+  onClose,
+  setProperties,
+  isUpdating,
+}: PropertyFormProps) {
+  const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState({
-      name: property.name,
-      status: property.status,
-      type: property.propertyType,
-      price: property.pricePerNight,
-      location: property.location,
-      bedrooms: property.bedroomCount,
-      bathrooms: property.bathroomCount,
-      guests: property.guestCapacity,
-      beds: property.bedCount,
-      description: property.description,
-      builtInDate: property.builtInDate, 
-    })
-  
-  const [images, setImages] = useState<string[]>(property?.pictures || [])
-  const [isLoading, setIsLoading] = useState(false)
+    name: property.name,
+    status: property.status,
+    type: property.propertyType,
+    price: property.pricePerNight,
+    location: property.location,
+    latitude: property.latitude,
+    longitude: property.longitude,
+    bedrooms: property.bedroomCount,
+    bathrooms: property.bathroomCount,
+    guests: property.guestCapacity,
+    beds: property.bedCount,
+    description: property.description,
+    builtInDate: property.builtInDate,
+  });
+
+  const [images, setImages] = useState<string[]>(property?.pictures || []);
+  const [isLoading, setIsLoading] = useState(false);
   const { principal } = useAuth();
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
+    const files = e.target.files;
     if (files) {
-      const newImages = Array.from(files).map((file) => URL.createObjectURL(file))
-      setImages((prev) => [...prev, ...newImages])
+      const newImages = Array.from(files).map((file) =>
+        URL.createObjectURL(file),
+      );
+      setImages((prev) => [...prev, ...newImages]);
     }
-  }
+  };
 
   const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index))
-  }
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
     // Simulate API call
-    
-    
-    if(isUpdating) {
+
+    if (isUpdating) {
       const propertyData: Property = {
         id: property.id,
         rating: property.rating,
@@ -88,27 +105,31 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
         pictures: images,
         propertyType: formData.type,
         location: formData.location,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
         coverPicture: images[0],
-        reviewCount: property.reviewCount
-      }
+        reviewCount: property.reviewCount,
+      };
       try {
         setLoading(true);
         const result = await Property_backend.updateProperty(propertyData);
-  
+
         // If the update is successful, update the state with the new property
-        setProperties(prevProperties => 
-          prevProperties.map(property => 
-            property.id === propertyData.id ? { ...property, ...propertyData } : property
-          )
+        setProperties((prevProperties) =>
+          prevProperties.map((property) =>
+            property.id === propertyData.id
+              ? { ...property, ...propertyData }
+              : property,
+          ),
         );
         console.log(property);
       } catch (err) {
-        console.log(err)
+        console.log(err);
       } finally {
         setLoading(false);
       }
-      onClose()
-    } else if(!isUpdating) {
+      onClose();
+    } else if (!isUpdating) {
       const unregisteredProperty: UnregisteredProperty = {
         status: formData.status,
         bedCount: formData.beds,
@@ -123,12 +144,15 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
         pictures: images,
         propertyType: formData.type,
         location: formData.location,
-        coverPicture: images[0]
-      }
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        coverPicture: images[0],
+      };
       try {
         setLoading(true);
-        const result = await Property_backend.registerProperty(unregisteredProperty);
-        if(principal != null) {
+        const result =
+          await Property_backend.registerProperty(unregisteredProperty);
+        if (principal != null) {
           const newProperty: Property = {
             id: result,
             rating: 0,
@@ -145,28 +169,29 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
             pictures: images,
             propertyType: formData.type,
             location: formData.location,
+            latitude: formData.latitude,
+            longitude: formData.longitude,
             coverPicture: images[0],
-            reviewCount: 0n
-          }
+            reviewCount: 0n,
+          };
           // If the update is successful, update the state with the new property
-          setProperties(prevProperties => 
-            [...prevProperties, newProperty]
-          );
+          setProperties((prevProperties) => [...prevProperties, newProperty]);
         }
       } catch (err) {
-        console.log(err)
+        console.log(err);
       } finally {
         setLoading(false);
       }
-      onClose()
+      onClose();
     }
-
-  }
+  };
 
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">{isUpdating ? "Edit Property" : "Add New Property"}</h2>
+        <h2 className="text-2xl font-semibold">
+          {isUpdating ? 'Edit Property' : 'Add New Property'}
+        </h2>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="w-5 h-5" />
         </Button>
@@ -189,7 +214,13 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
           {/* Property Type */}
           <div className="space-y-2">
             <Label htmlFor="type">Property Type</Label>
-            <Select name="type" value={formData.type} onValueChange={(value) => setFormData((prev) => ({ ...prev, type: value }))}>
+            <Select
+              name="type"
+              value={formData.type}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, type: value }))
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select property type" />
               </SelectTrigger>
@@ -270,7 +301,12 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
           {/* Status */}
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <Select value={formData.status || "active"} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+            <Select
+              value={formData.status || 'active'}
+              onValueChange={(value) =>
+                setFormData({ ...formData, status: value })
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
@@ -316,7 +352,7 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
             {images.map((image, index) => (
               <div key={index} className="relative group">
                 <img
-                  src={image || "/placeholder.svg"}
+                  src={image || '/placeholder.svg'}
                   alt={`Property ${index + 1}`}
                   width={150}
                   height={100}
@@ -334,7 +370,13 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
             <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition-colors">
               <Upload className="w-6 h-6 text-gray-400" />
               <span className="mt-2 text-sm text-gray-500">Upload Images</span>
-              <input type="file" multiple accept="image/*" className="hidden" onChange={handleImageUpload} />
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
             </label>
           </div>
         </div>
@@ -343,19 +385,22 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700"
+            disabled={isLoading}
+          >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Saving...
               </>
             ) : (
-              `${isUpdating ? "Update" : "Add"} Property`
+              `${isUpdating ? 'Update' : 'Add'} Property`
             )}
           </Button>
         </div>
       </form>
     </Card>
-  )
+  );
 }
-

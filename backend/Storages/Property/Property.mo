@@ -53,7 +53,11 @@ actor {
             propertyType = unreg.propertyType;
             pricePerNight = unreg.pricePerNight;
             description = unreg.description;
+
             location = unreg.location;
+            latitude = unreg.latitude;
+            longitude = unreg.longitude;
+
             builtInDate = unreg.builtInDate;
             bedroomCount = unreg.bedroomCount;
             guestCapacity = unreg.guestCapacity;
@@ -437,6 +441,8 @@ actor {
                     pricePerNight = property.pricePerNight;
                     description = property.description;
                     location = property.location;
+                    latitude = property.latitude;
+                    longitude = property.longitude;
                     builtInDate = property.builtInDate;
                     bedroomCount = property.bedroomCount;
                     guestCapacity = property.guestCapacity;

@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card"
 import { Star, Heart } from "lucide-react"
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
 import { useNavigate } from "react-router-dom"
+import { Principal } from "@dfinity/principal"
 
 interface PropertyCardProps {
   // property: {
@@ -27,7 +28,19 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    navigate(`/properties/details/${property.id}`, { state: { property } }); 
+    console.log(property);
+    
+    if (property.owner instanceof Uint8Array) {
+      property.owner = Principal.fromUint8Array(property.owner);
+      console.log('Converted to Principal:', property.owner);
+    } else if (property.owner instanceof Principal) {
+      console.log('Already a valid Principal:', property.owner);
+    } else {
+      console.error('Unknown format for property.owner:', property.owner);
+    }
+    const serializedProperty = { ...property, owner: property.owner.toString() }; // Convert to string if required
+
+    navigate(`/properties/details/${property.id}`, { state: { property: serializedProperty } });
   }
 
   return (

@@ -34,6 +34,10 @@
       "type": "motoko",
       "main": "backend/Chat_backend/Chat.mo"
     },
+    "Voucher_backend": {
+      "type": "motoko",
+      "main": "backend/Voucher_backend/Voucher.mo"
+    },
     "Property_seeder": {
       "type": "motoko",
       "dependencies": ["Property_backend"],
@@ -43,6 +47,11 @@
       "type": "motoko",
       "dependencies": ["User_backend"],
       "main": "backend/Storages/Seeders/UserSeeder.mo"
+    },
+    "User_property_seeder" : {
+      "type": "motoko",
+      "dependencies": ["Property_backend", "User_backend"],
+      "main": "backend/Storages/Seeders/UserPropertySeeder.mo"
     }
   },
   "defaults": {

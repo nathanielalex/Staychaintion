@@ -7,6 +7,7 @@ import "leaflet/dist/leaflet.css"
 import "leaflet.markercluster/dist/MarkerCluster.css"
 import "leaflet.markercluster/dist/MarkerCluster.Default.css"
 import MarkerClusterGroup from "react-leaflet-cluster"
+import { Property } from "@/declarations/Property_backend/Property_backend.did"
 
 // Fix Leaflet icon issues
 const createCustomIcon = (selected: boolean) => {
@@ -19,22 +20,22 @@ const createCustomIcon = (selected: boolean) => {
 }
 
 // Define property type
-interface Property {
-  id: number
-  title: string
-  location: {
-    lat: number
-    lng: number
-    address: string
-  }
-  price: number
-  image: string
-}
+// interface Property {
+//   id: number
+//   title: string
+//   location: {
+//     lat: number
+//     lng: number
+//     address: string
+//   }
+//   price: number
+//   image: string
+// }
 
 interface PropertyMapProps {
   properties: Property[]
-  selectedProperty: number | null
-  setSelectedProperty: (id: number | null) => void
+  selectedProperty: string | null
+  setSelectedProperty: (id: string | null) => void
   center: [number, number]
   zoom: number
   setCenter: (center: [number, number]) => void
@@ -49,9 +50,9 @@ function MapController({
   setCenter,
   setZoom,
 }: {
-  selectedProperty: number | null
+  selectedProperty: string | null
   properties: Property[]
-  setSelectedProperty: (id: number | null) => void
+  setSelectedProperty: (id: string | null) => void
   setCenter: (center: [number, number]) => void
   setZoom: (zoom: number) => void
 }) {
@@ -62,12 +63,24 @@ function MapController({
     if (selectedProperty) {
       const property = properties.find((p) => p.id === selectedProperty)
       if (property) {
-        map.setView([property.location.lat, property.location.lng], 14, {
+        map.setView([property.latitude, property.longitude], 14, {
           animate: true,
           duration: 1,
         })
       }
     }
+
+    // Fit map to show all properties
+    if (properties.length > 0) {
+      const bounds = L.latLngBounds(properties.map((p) => [p.latitude, p.longitude]))
+      map.fitBounds(bounds, {
+      padding: [50, 50],
+      maxZoom: 14,
+      animate: true,
+      duration: 1,
+      })
+    }
+
   }, [selectedProperty, properties, map])
 
   // Track map movements
@@ -95,10 +108,10 @@ export default function PropertyMap({
   setZoom,
 }: PropertyMapProps) {
   // Create marker refs to access them later
-  const markerRefs = useRef<Record<number, L.Marker>>({})
+  const markerRefs = useRef<Record<string, L.Marker>>({})
 
   return (
-    <MapContainer center={center} zoom={zoom} style={{ height: "100%", width: "100%" }} zoomControl={false}>
+    <MapContainer center={center} zoom={zoom} style={{ height: "100%", width: "100%" }} zoomControl={false} className="z-0">
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -125,7 +138,7 @@ export default function PropertyMap({
         {properties.map((property) => (
           <Marker
             key={property.id}
-            position={[property.location.lat, property.location.lng]}
+            position={[property.latitude, property.longitude]}
             icon={createCustomIcon(selectedProperty === property.id)}
             eventHandlers={{
               click: () => {
