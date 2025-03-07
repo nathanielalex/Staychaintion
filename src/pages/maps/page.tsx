@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Search, Filter, X, Star, List, Layers, Heart } from "lucide-react"
 import React, { lazy, Suspense } from "react";
+import { Property } from "@/declarations/Property_backend/Property_backend.did"
 
 // Dynamically import the Map component to avoid SSR issues with Leaflet
 
@@ -47,160 +48,160 @@ const PropertyMap = lazy(() => import("@/components/maps/property-map"));
 
 
 // Sample property data
-const properties = [
-  {
-    id: 1,
-    title: "Luxury Beachfront Villa",
-    type: "villa",
-    price: 2500000,
-    pricePerNight: 2500000,
-    rating: 4.9,
-    reviews: 124,
-    bedrooms: 4,
-    bathrooms: 3,
-    guests: 8,
-    amenities: ["pool", "wifi", "parking", "ac", "kitchen", "workspace"],
-    image: "/placeholder.svg?height=300&width=400",
-    location: {
-      address: "Jl. Pantai Indah, Bali",
-      lat: -8.6478,
-      lng: 115.1385,
-    },
-  },
-  {
-    id: 2,
-    title: "Modern City Apartment",
-    type: "apartment",
-    price: 1200000,
-    pricePerNight: 1200000,
-    rating: 4.7,
-    reviews: 89,
-    bedrooms: 2,
-    bathrooms: 2,
-    guests: 4,
-    amenities: ["wifi", "parking", "ac", "kitchen", "gym"],
-    image: "/placeholder.svg?height=300&width=400",
-    location: {
-      address: "Jl. Sudirman, Jakarta",
-      lat: -6.2088,
-      lng: 106.8456,
-    },
-  },
-  {
-    id: 3,
-    title: "Traditional Javanese House",
-    type: "house",
-    price: 850000,
-    pricePerNight: 850000,
-    rating: 4.8,
-    reviews: 56,
-    bedrooms: 3,
-    bathrooms: 2,
-    guests: 6,
-    amenities: ["wifi", "parking", "garden", "kitchen"],
-    image: "/placeholder.svg?height=300&width=400",
-    location: {
-      address: "Jl. Malioboro, Yogyakarta",
-      lat: -7.7956,
-      lng: 110.3695,
-    },
-  },
-  {
-    id: 4,
-    title: "Mountain View Cabin",
-    type: "cabin",
-    price: 1500000,
-    pricePerNight: 1500000,
-    rating: 4.9,
-    reviews: 42,
-    bedrooms: 2,
-    bathrooms: 1,
-    guests: 4,
-    amenities: ["wifi", "fireplace", "kitchen", "hiking"],
-    image: "/placeholder.svg?height=300&width=400",
-    location: {
-      address: "Jl. Raya Puncak, Bogor",
-      lat: -6.7063,
-      lng: 106.9965,
-    },
-  },
-  {
-    id: 5,
-    title: "Riverside Eco Resort",
-    type: "resort",
-    price: 1800000,
-    pricePerNight: 1800000,
-    rating: 4.6,
-    reviews: 78,
-    bedrooms: 1,
-    bathrooms: 1,
-    guests: 2,
-    amenities: ["wifi", "nature", "restaurant", "spa"],
-    image: "/placeholder.svg?height=300&width=400",
-    location: {
-      address: "Jl. Sungai Ayung, Ubud",
-      lat: -8.5069,
-      lng: 115.2624,
-    },
-  },
-  {
-    id: 6,
-    title: "Minimalist Studio Loft",
-    type: "apartment",
-    price: 950000,
-    pricePerNight: 950000,
-    rating: 4.5,
-    reviews: 63,
-    bedrooms: 1,
-    bathrooms: 1,
-    guests: 2,
-    amenities: ["wifi", "ac", "kitchen", "workspace"],
-    image: "/placeholder.svg?height=300&width=400",
-    location: {
-      address: "Jl. Cihampelas, Bandung",
-      lat: -6.8915,
-      lng: 107.6107,
-    },
-  },
-  {
-    id: 7,
-    title: "Oceanfront Luxury Resort",
-    type: "resort",
-    price: 3200000,
-    pricePerNight: 3200000,
-    rating: 5.0,
-    reviews: 112,
-    bedrooms: 3,
-    bathrooms: 3,
-    guests: 6,
-    amenities: ["pool", "wifi", "beach", "restaurant", "spa", "gym"],
-    image: "/placeholder.svg?height=300&width=400",
-    location: {
-      address: "Jl. Raya Uluwatu, Bali",
-      lat: -8.8291,
-      lng: 115.12,
-    },
-  },
-  {
-    id: 8,
-    title: "Historic Colonial Villa",
-    type: "villa",
-    price: 1750000,
-    pricePerNight: 1750000,
-    rating: 4.8,
-    reviews: 94,
-    bedrooms: 4,
-    bathrooms: 3,
-    guests: 8,
-    amenities: ["pool", "wifi", "garden", "kitchen", "parking"],
-    image: "/placeholder.svg?height=300&width=400",
-    location: {
-      address: "Jl. Diponegoro, Semarang",
-      lat: -6.9932,
-      lng: 110.4203,
-    },
-  },
-]
+// const properties = [
+//   {
+//     id: 1,
+//     title: "Luxury Beachfront Villa",
+//     type: "villa",
+//     price: 2500000,
+//     pricePerNight: 2500000,
+//     rating: 4.9,
+//     reviews: 124,
+//     bedrooms: 4,
+//     bathrooms: 3,
+//     guests: 8,
+//     amenities: ["pool", "wifi", "parking", "ac", "kitchen", "workspace"],
+//     image: "/placeholder.svg?height=300&width=400",
+//     location: {
+//       address: "Jl. Pantai Indah, Bali",
+//       lat: -8.6478,
+//       lng: 115.1385,
+//     },
+//   },
+//   {
+//     id: 2,
+//     title: "Modern City Apartment",
+//     type: "apartment",
+//     price: 1200000,
+//     pricePerNight: 1200000,
+//     rating: 4.7,
+//     reviews: 89,
+//     bedrooms: 2,
+//     bathrooms: 2,
+//     guests: 4,
+//     amenities: ["wifi", "parking", "ac", "kitchen", "gym"],
+//     image: "/placeholder.svg?height=300&width=400",
+//     location: {
+//       address: "Jl. Sudirman, Jakarta",
+//       lat: -6.2088,
+//       lng: 106.8456,
+//     },
+//   },
+//   {
+//     id: 3,
+//     title: "Traditional Javanese House",
+//     type: "house",
+//     price: 850000,
+//     pricePerNight: 850000,
+//     rating: 4.8,
+//     reviews: 56,
+//     bedrooms: 3,
+//     bathrooms: 2,
+//     guests: 6,
+//     amenities: ["wifi", "parking", "garden", "kitchen"],
+//     image: "/placeholder.svg?height=300&width=400",
+//     location: {
+//       address: "Jl. Malioboro, Yogyakarta",
+//       lat: -7.7956,
+//       lng: 110.3695,
+//     },
+//   },
+//   {
+//     id: 4,
+//     title: "Mountain View Cabin",
+//     type: "cabin",
+//     price: 1500000,
+//     pricePerNight: 1500000,
+//     rating: 4.9,
+//     reviews: 42,
+//     bedrooms: 2,
+//     bathrooms: 1,
+//     guests: 4,
+//     amenities: ["wifi", "fireplace", "kitchen", "hiking"],
+//     image: "/placeholder.svg?height=300&width=400",
+//     location: {
+//       address: "Jl. Raya Puncak, Bogor",
+//       lat: -6.7063,
+//       lng: 106.9965,
+//     },
+//   },
+//   {
+//     id: 5,
+//     title: "Riverside Eco Resort",
+//     type: "resort",
+//     price: 1800000,
+//     pricePerNight: 1800000,
+//     rating: 4.6,
+//     reviews: 78,
+//     bedrooms: 1,
+//     bathrooms: 1,
+//     guests: 2,
+//     amenities: ["wifi", "nature", "restaurant", "spa"],
+//     image: "/placeholder.svg?height=300&width=400",
+//     location: {
+//       address: "Jl. Sungai Ayung, Ubud",
+//       lat: -8.5069,
+//       lng: 115.2624,
+//     },
+//   },
+//   {
+//     id: 6,
+//     title: "Minimalist Studio Loft",
+//     type: "apartment",
+//     price: 950000,
+//     pricePerNight: 950000,
+//     rating: 4.5,
+//     reviews: 63,
+//     bedrooms: 1,
+//     bathrooms: 1,
+//     guests: 2,
+//     amenities: ["wifi", "ac", "kitchen", "workspace"],
+//     image: "/placeholder.svg?height=300&width=400",
+//     location: {
+//       address: "Jl. Cihampelas, Bandung",
+//       lat: -6.8915,
+//       lng: 107.6107,
+//     },
+//   },
+//   {
+//     id: 7,
+//     title: "Oceanfront Luxury Resort",
+//     type: "resort",
+//     price: 3200000,
+//     pricePerNight: 3200000,
+//     rating: 5.0,
+//     reviews: 112,
+//     bedrooms: 3,
+//     bathrooms: 3,
+//     guests: 6,
+//     amenities: ["pool", "wifi", "beach", "restaurant", "spa", "gym"],
+//     image: "/placeholder.svg?height=300&width=400",
+//     location: {
+//       address: "Jl. Raya Uluwatu, Bali",
+//       lat: -8.8291,
+//       lng: 115.12,
+//     },
+//   },
+//   {
+//     id: 8,
+//     title: "Historic Colonial Villa",
+//     type: "villa",
+//     price: 1750000,
+//     pricePerNight: 1750000,
+//     rating: 4.8,
+//     reviews: 94,
+//     bedrooms: 4,
+//     bathrooms: 3,
+//     guests: 8,
+//     amenities: ["pool", "wifi", "garden", "kitchen", "parking"],
+//     image: "/placeholder.svg?height=300&width=400",
+//     location: {
+//       address: "Jl. Diponegoro, Semarang",
+//       lat: -6.9932,
+//       lng: 110.4203,
+//     },
+//   },
+// ]
 
 // Property types for filtering
 const propertyTypes = [
@@ -227,50 +228,50 @@ const amenitiesOptions = [
 ]
 
 export default function PropertiesMapPage() {
-  const [selectedProperty, setSelectedProperty] = useState<number | null>(null)
+  const [selectedProperty, setSelectedProperty] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
   const [viewMode, setViewMode] = useState<"map" | "list">("map")
   const [priceRange, setPriceRange] = useState([500000, 3500000])
   const [selectedPropertyTypes, setSelectedPropertyTypes] = useState<string[]>(["all"])
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
   const [bedroomsFilter, setBedroomsFilter] = useState<number | null>(null)
-  const [filteredProperties, setFilteredProperties] = useState(properties)
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [mapCenter, setMapCenter] = useState<[number, number]>([-8.4095, 115.1889]) // Bali center
   const [mapZoom, setMapZoom] = useState(9)
-  const [isLiked, setIsLiked] = useState<Record<number, boolean>>({})
+  const [isLiked, setIsLiked] = useState<Record<string, boolean>>({})
 
   // Filter properties based on selected filters
   useEffect(() => {
-    let filtered = properties
+    let filtered = filteredProperties;
 
     // Filter by search query
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       filtered = filtered.filter(
         (property) =>
-          property.title.toLowerCase().includes(query) || property.location.address.toLowerCase().includes(query),
+          property.name.toLowerCase().includes(query) || property.location.toLowerCase().includes(query),
       )
     }
 
     // Filter by price range
-    filtered = filtered.filter((property) => property.price >= priceRange[0] && property.price <= priceRange[1])
+    filtered = filtered.filter((property) => property.pricePerNight >= priceRange[0] && property.pricePerNight <= priceRange[1])
 
     // Filter by property type
     if (!selectedPropertyTypes.includes("all")) {
-      filtered = filtered.filter((property) => selectedPropertyTypes.includes(property.type))
+      filtered = filtered.filter((property) => selectedPropertyTypes.includes(property.propertyType))
     }
 
     // Filter by amenities
-    if (selectedAmenities.length > 0) {
-      filtered = filtered.filter((property) =>
-        selectedAmenities.every((amenity) => property.amenities.includes(amenity)),
-      )
-    }
+    // if (selectedAmenities.length > 0) {
+    //   filtered = filtered.filter((property) =>
+    //     selectedAmenities.every((amenity) => property.amenities.includes(amenity)),
+    //   )
+    // }
 
     // Filter by bedrooms
     if (bedroomsFilter !== null) {
-      filtered = filtered.filter((property) => property.bedrooms >= bedroomsFilter)
+      filtered = filtered.filter((property) => property.bedroomCount >= bedroomsFilter)
     }
 
     setFilteredProperties(filtered)
@@ -315,7 +316,7 @@ export default function PropertiesMapPage() {
   }
 
   // Toggle like status for a property
-  const toggleLike = (id: number) => {
+  const toggleLike = (id: string) => {
     setIsLiked((prev) => ({
       ...prev,
       [id]: !prev[id],
@@ -516,8 +517,8 @@ export default function PropertiesMapPage() {
 
                           <div className="relative h-48">
                             <img
-                              src={property.image || "/placeholder.svg"}
-                              alt={property.title}
+                              src={property.coverPicture || "/placeholder.svg"}
+                              alt={property.name}
                               
                               className="object-cover"
                             />
@@ -533,21 +534,21 @@ export default function PropertiesMapPage() {
 
                           <div className="p-4">
                             <div className="flex items-start justify-between mb-2">
-                              <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
+                              <h3 className="font-semibold text-lg line-clamp-1">{property.name}</h3>
                               <div className="flex items-center space-x-1 text-sm">
                                 <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                                 <span>{property.rating}</span>
                               </div>
                             </div>
 
-                            <p className="text-gray-600 text-sm mb-2">{property.location.address}</p>
+                            <p className="text-gray-600 text-sm mb-2">{property.location}</p>
 
                             <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                              <span>{property.guests} guests</span>
+                              <span>{Number(property.guestCapacity)} guests</span>
                               <span>•</span>
-                              <span>{property.bedrooms} bedrooms</span>
+                              <span>{Number(property.bedroomCount)} bedrooms</span>
                               <span>•</span>
-                              <span>{property.bathrooms} bathrooms</span>
+                              <span>{Number(property.bathroomCount)} bathrooms</span>
                             </div>
 
                             <div className="flex items-baseline space-x-1 mb-4">
@@ -602,8 +603,8 @@ export default function PropertiesMapPage() {
                 >
                   <div className="relative h-48">
                     <img
-                      src={property.image || "/placeholder.svg"}
-                      alt={property.title}
+                      src={property.coverPicture || "/placeholder.svg"}
+                      alt={property.name}
                       
                       className="object-cover"
                     />
@@ -619,21 +620,21 @@ export default function PropertiesMapPage() {
 
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
+                      <h3 className="font-semibold text-lg line-clamp-1">{property.name}</h3>
                       <div className="flex items-center space-x-1 text-sm">
                         <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                         <span>{property.rating}</span>
                       </div>
                     </div>
 
-                    <p className="text-gray-600 text-sm mb-2">{property.location.address}</p>
+                    <p className="text-gray-600 text-sm mb-2">{property.location}</p>
 
                     <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                      <span>{property.guests} guests</span>
+                      <span>{Number(property.guestCapacity)} guests</span>
                       <span>•</span>
-                      <span>{property.bedrooms} bedrooms</span>
+                      <span>{Number(property.bedroomCount)} bedrooms</span>
                       <span>•</span>
-                      <span>{property.bathrooms} bathrooms</span>
+                      <span>{Number(property.bathroomCount)} bathrooms</span>
                     </div>
 
                     <div className="flex items-baseline space-x-1 mb-4">

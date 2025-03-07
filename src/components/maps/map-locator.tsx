@@ -42,7 +42,7 @@ export default function MapLocator() {
 
   const location = useGeoLocation();
   const [searchParams] = useSearchParams();
-  const searchQuery = decodeURIComponent(searchParams.get('search') ?? "");
+  const searchQuery = decodeURIComponent(searchParams.get('search') ?? '');
 
   useEffect(() => {
     if (location) {
@@ -57,17 +57,17 @@ export default function MapLocator() {
   }, [location]);
 
   useEffect(() => {
-    if(!searchQuery) return;
+    if (!searchQuery) return;
 
     const geocoder = (L.Control as any).Geocoder.nominatim();
     geocoder.geocode(searchQuery, (results: any) => {
       if (results.length > 0) {
-          const { center, name, bbox } = results[0];
-          map.fitBounds(bbox);
+        const { center, name, bbox } = results[0];
+        map.fitBounds(bbox);
       } else {
-          alert('Location not found');
+        alert('Location not found');
       }
-  });
+    });
   }, [searchQuery]);
 
   // useEffect(() => {
