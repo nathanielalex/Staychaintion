@@ -503,7 +503,7 @@ export default function PropertiesMapPage() {
                   </div>
 
                   {/* Amenities */}
-                  <div className="mt-4">
+                  {/* <div className="mt-4">
                     <h4 className="text-sm font-medium mb-2">Amenities</h4>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                       {amenitiesOptions.map((amenity) => (
@@ -527,7 +527,7 @@ export default function PropertiesMapPage() {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="mt-4 flex justify-end">
                     <Button
