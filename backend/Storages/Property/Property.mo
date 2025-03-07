@@ -540,8 +540,11 @@ actor {
         };
     };
 
-    public query func getTransactionStatus(transactionId: Text) : async ?Text {
-        return transactionHistory.get(transactionId).transactionStatus;
+    public query func getTransactionStatus(transactionId: Text) : async Text {
+        switch(transactionHistory.get(transactionId)){
+            case(?transaction) { return transaction.transactionStatus; };
+            case(null) { return ""; };
+        };
     };
 
     public query func getTransactionByStatus(status: Text) : async [Transaction] {
