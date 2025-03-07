@@ -124,36 +124,38 @@ const PropertyFilter: React.FC<FilterProps> = ({count, page, searchTerm, setSear
 
     return(
           <div className={`absolute ${showFilters ? "block" : "hidden"} z-50 right-0 bg-white p-4 rounded-lg shadow-md border border-gray-200`}>
-              <h3 className="text-lg font-medium mb-3">Filter Properties</h3>
+              <h3 className="text-lg font-medium mb-3 flex justify-between items-center select-none">Filter Properties <span className="font-light text-sm cursor-pointer">Sort <span className="text-blue-600" onClick={()=>setOrderBy(prev => prev==="asc" ? "desc" : "asc")}>{orderBy==="asc" ? "ascending" : "descending"}</span> by {sortBy}</span></h3>
               <div className="space-y-3">
 
             <div className="flex items-center gap-2">
                 <button 
-                onClick={() => setCurrSearch("name")}
+                onClick={() => {setCurrSearch("name"); setSortBy("name")}}
                 className={`px-3 py-1.5 bg-white border rounded-md shadow-sm transition-all duration-200 hover:shadow-md ${prop.name.length > 0 ? 'border-blue-500 text-blue-600 font-medium' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}>
                 Name
                 </button>
                 <button 
-                onClick={() => setCurrSearch("location")}
+                onClick={() => {setCurrSearch("location"); setSortBy("location")}}
                 className={`px-3 py-1.5 bg-white border rounded-md shadow-sm transition-all duration-200 hover:shadow-md ${prop.location.length > 0 ? 'border-blue-500 text-blue-600 font-medium' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}>
                 Location
                 </button>
                 <button 
-                onClick={() => setCurrSearch("description")}
+                onClick={() => {setCurrSearch("description"); setSortBy("description")}}
                 className={`px-3 py-1.5 bg-white border rounded-md shadow-sm transition-all duration-200 hover:shadow-md ${prop.description.length > 0 ? 'border-blue-500 text-blue-600 font-medium' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}>
                 Description
                 </button>
                 <button 
-                onClick={() => setCurrSearch("owner")}
+                onClick={() => {setCurrSearch("owner"); setSortBy("owner")}}
                 className={`px-3 py-1.5 bg-white border rounded-md shadow-sm transition-all duration-200 hover:shadow-md ${prop.owner.length > 0? 'border-blue-500 text-blue-600 font-medium' : 'border-gray-300 text-gray-700 hover:border-gray-400'}`}>
                 Owner Principal
                 </button>
             </div>
             <div className="">
-              <label htmlFor="" className="block text-lg font-bold mb-3">Minimal Amenities</label>
+              <label htmlFor="" className="block text-lg mb-3 select-none">Minimal Amenities</label>
               <div className="flex flex-col flex-wrap pl-5 gap-2">
-                <div className="border border-gray-300 rounded-md px-2 py-1 w-full flex justify-between items-center">
-                  <label htmlFor="guestCapacity" className="text-sm font-bold">Guest Capacity</label>
+                <div className="border border-gray-300 rounded-md px-2 py-1 w-full flex justify-between items-center"
+                  onClick={()=>setSortBy("guestCapacity")}
+                >
+                  <label htmlFor="guestCapacity" className="text-sm select-none">Guest Capacity</label>
                   <input
                   type="number"
                   id="guestCapacity"
@@ -162,8 +164,10 @@ const PropertyFilter: React.FC<FilterProps> = ({count, page, searchTerm, setSear
                   className="w-10 px-2 py-1 text-center bg-white border border-gray-300 rounded-md appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
-                <div className="border border-gray-300 rounded-md px-2 py-1 w-full flex justify-between items-center">
-                  <label htmlFor="bedroomCount" className="text-sm font-bold">Bedroom Count</label>
+                <div className="border border-gray-300 rounded-md px-2 py-1 w-full flex justify-between items-center"
+                  onClick={()=>setSortBy("bedroomCount")}
+                >
+                  <label htmlFor="bedroomCount" className="text-sm select-none">Bedroom Count</label>
                   <input
                   type="number"
                   id="bedroomCount"
@@ -172,8 +176,10 @@ const PropertyFilter: React.FC<FilterProps> = ({count, page, searchTerm, setSear
                   className="w-10 px-2 py-1 text-center bg-white border border-gray-300 rounded-md appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
-                <div className="border border-gray-300 rounded-md px-2 py-1 w-full flex justify-between items-center">
-                  <label htmlFor="bedCount" className="text-sm font-bold">Bed Count</label>
+                <div className="border border-gray-300 rounded-md px-2 py-1 w-full flex justify-between items-center"
+                  onClick={()=>setSortBy("bedCount")}
+                >
+                  <label htmlFor="bedCount" className="text-sm select-none">Bed Count</label>
                   <input
                   type="number"
                   id="bedCount"
@@ -182,8 +188,10 @@ const PropertyFilter: React.FC<FilterProps> = ({count, page, searchTerm, setSear
                   className="w-10 px-2 py-1 text-center bg-white border border-gray-300 rounded-md appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
-                <div className="border border-gray-300 rounded-md px-2 py-1 w-full flex justify-between items-center">
-                  <label htmlFor="bathroomCount" className="text-sm font-bold">Bathroom Count</label>
+                <div className="border border-gray-300 rounded-md px-2 py-1 w-full flex justify-between items-center"
+                  onClick={()=>setSortBy("bathroomCount")}
+                >
+                  <label htmlFor="bathroomCount" className="text-sm select-none">Bathroom Count</label>
                   <input
                   type="number"
                   id="bathroomCount"
