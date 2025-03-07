@@ -8,6 +8,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Property } from '@/declarations/Property_backend/Property_backend.did';
 import { Property_backend } from '@/declarations/Property_backend';
+import MapLocator from '@/components/maps/map-locator';
 
 // Custom marker icon for Leaflet
 const customIcon = new L.Icon({
@@ -132,22 +133,7 @@ export default function MapPage() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
 
-          {/* Render markers for locations */}
-          {/* {locations.map((location) => (
-            <Marker
-              key={location.id}
-              position={location.position}
-              icon={customIcon}
-              eventHandlers={{ click: () => setSelectedLocation(location.id) }}
-            >
-              <Popup>
-                <div className="text-center">
-                  <p className="font-semibold">{location.title}</p>
-                  <p>${location.price}/mo</p>
-                </div>
-              </Popup>
-            </Marker>
-          ))} */}
+          <MapLocator/>
 
           {properties.map((property) => (
             <Marker
