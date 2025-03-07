@@ -14,6 +14,7 @@ const Chat: React.FC = () => {
   const [selectedContact, setSelectedContact] = useState<Principal | null>(
     null,
   );
+  const [selectedName, setSelectedName] = useState('');
   const [contacts, setContacts] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,20 @@ const Chat: React.FC = () => {
     }
   }, [location.state]);
 
-  //iya nanti pass ke lain-lain
+  const findUserProfile = () => {
+    if (!selectedContact) {
+      console.log('No selected contact');
+      return null;
+    }
+    const userProfile = contacts.find(contact => contact.id.toText() === selectedContact.toText());
+    if (userProfile) {
+      console.log('Found user profile:', userProfile);
+      setSelectedName(userProfile.fullName)
+    } else {
+      console.log('User profile not found');
+    }
+  };
+
   const fetchContacts = async (currUser: Principal) => {
     try {
       setLoading(true);
@@ -48,8 +62,8 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     if (principal) {
-      // Check if principal is not null
       fetchContacts(principal);
+      findUserProfile();
     }
   }, [principal]);
 
@@ -60,7 +74,7 @@ const Chat: React.FC = () => {
         currUser={principal}
         contacts={contacts}
       />
-      <ChatWindow selectedContact={selectedContact} currUser={principal} />
+      <ChatWindow selectedContact={selectedContact} currUser={principal} selectedName={selectedName}/>
     </div>
   );
 };
