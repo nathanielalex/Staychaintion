@@ -100,6 +100,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import ScrollToTop from "./utility/ScrollToTop"; 
 import NewMaps from "./pages/maps/page"
 import TransactionPage from './components/payment/page';
+import { RegistrationProvider } from './utility/RegistrationContext';
 
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -359,6 +360,8 @@ function App() {
 
 export default () => (
   <AuthProvider>
-    <App />
+    <RegistrationProvider>
+      <App />
+    </RegistrationProvider>
   </AuthProvider>
 );

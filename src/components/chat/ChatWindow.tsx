@@ -8,11 +8,13 @@ import { Principal } from '@dfinity/principal';
 interface ChatWindowProps {
   selectedContact: Principal | null;
   currUser: Principal | null;
+  selectedName: string;
 }
 //so add to state and put in backend
 const ChatWindow: React.FC<ChatWindowProps> = ({
   selectedContact,
   currUser,
+  selectedName
 }) => {
   // const { principal } = useAuth();
   const [messages, setMessages] = useState<
@@ -44,7 +46,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
       <div className="p-4 bg-gray-200 border-b border-gray-300">
         {/* ini seharusnya nama usernya huhu */}
         {/* seharusnya fetch contact list di Chat */}
-        <h2 className="text-xl font-semibold">{selectedContact.toString()}</h2>
+        <h2 className="text-xl font-semibold">{selectedName}</h2>
       </div>
       <MessageList messages={messages} />
       <MessageInput

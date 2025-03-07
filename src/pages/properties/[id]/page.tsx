@@ -12,6 +12,7 @@ import { UserProfile } from "@/declarations/User_backend/User_backend.did"
 import { Property_backend } from "@/declarations/Property_backend"
 import { useAuth } from "@/utility/use-auth-client"
 import { Principal } from "@dfinity/principal"
+import { Chat_backend } from "@/declarations/Chat_backend"
 // Sample property data
 // const property = {
 //   id: 1,
@@ -64,11 +65,10 @@ export default function PropertyDetailPage() {
   const navigate = useNavigate();
 
   const [selectedRatings, setSelectedRatings] = useState(
-    reviews.map((review) => review.rating) // Initial ratings
+    reviews.map((review) => review.rating)
   );
 
   const handleStarClick = (reviewIndex : number, starIndex : number) => {
-    // Update the selected rating for the clicked review
     setSelectedRatings((prevRatings) =>
       prevRatings.map((rating, i) => (i === reviewIndex ? starIndex + 1 : rating))
     );
@@ -80,31 +80,31 @@ export default function PropertyDetailPage() {
     setReviewText(e.target.value);
   };
 
-  // const handleRatingClick = (index: number) => {
-  //   if (rating == 1 && index == 0)  {
-  //     console.log("Rating di reset jadi 0")
-  //     setRating(0);
-  //     return;
-  //   }
-  //   setRating(index + 1);
-  // };
-
   const handleRatingClick = (index:number) => {
-    // If the user clicks the currently selected rating, reset to 0
     setRating((prevRating) => (prevRating === index + 1 ? 0 : index + 1));
+  };
+
+  const handleChatClick = async () => {
+    if (principal) {
+      await Chat_backend.createChat(principal, property.owner);
+      navigate('/chat', { state: { owner: property.owner } });
+    }
   };
 
   const fetchOwner = async () => {
     try {
       
       if(property.owner) {
-        // console.log(property.owner)
-        // if (property.owner instanceof Principal) {
-        //   console.error('property.owner is not a valid Principal', property.owner);
-        //   return;
-        // } else if (typeof property.owner === 'string') {
-        //   console.log('is string')
-        // }
+        console.log(property.owner)
+        if (property.owner instanceof Principal) {
+          console.error('property.owner is not a valid Principal', property.owner);
+          return;
+        } else if (typeof property.owner === 'string') {
+          console.log('is string')
+          property.owner = Principal.fromText(property.owner); 
+        } else {
+          console.log('not string and principle')
+        }
         // let ownerText = property.owner.toText();
         // let ownerPrincipal = Principal.fromText(ownerText);
         const result = await User_backend.getUser(property.owner);
@@ -127,9 +127,6 @@ export default function PropertyDetailPage() {
 
   const fetchUser = async () => {
     try {
-      // setLoading(true);
-      // setError(null);
-      // const actor = getChatActor();
       if(principal != null) {
         const result = await User_backend.getUser(principal);
         setUser(result[0])
@@ -147,9 +144,6 @@ export default function PropertyDetailPage() {
 
   const fetchReviews= async () => {
     try {
-      // setLoading(true);
-      // setError(null);
-      // const actor = getChatActor();
       if(id) {
         const result = await Property_backend.getAllPropertyReviews(id);
         setReviews(result);
@@ -164,12 +158,12 @@ export default function PropertyDetailPage() {
   useEffect(() => {
     fetchReviews();
   }, [id]);
-  
+
   const handleSubmit: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
     e.preventDefault();
 
-    if (isSubmitting) return; // Prevent multiple submissions
-    setIsSubmitting(true); // Set loading state
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     try {
       const date = new Date();
@@ -330,13 +324,17 @@ export default function PropertyDetailPage() {
               <div className="space-y-4">
                 <DatePickerWithRange />
                 <GuestSelector maxGuests={Number(property.guestCapacity)} />
-                <Button
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-lg"
-                  onClick={() => navigate(`/properties/reserve/${property.id}`)}
-                >
-                  Reserve
-                </Button>
+                <div className="space-x-2">
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-8"
+                    onClick={() => navigate(`/properties/reserve/${property.id}`)}
+                  >
+                    Reserve
+                  </Button>
+                  <Button variant="outline" className="text-blue-500 border-blue-500 hover:bg-blue-500/10" onClick={handleChatClick}>Chat</Button>
+                </div>
               </div>
+
 
               <div className="mt-6 space-y-4 text-sm">
                 <div className="flex justify-between">

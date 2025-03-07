@@ -38,7 +38,11 @@ module {
         propertyType: Text;
         pricePerNight: Float;
         description: Text;
+
         location: Text;
+        latitude: Float;
+        longitude: Float;
+
         builtInDate: Text;
         bedroomCount: Nat;
         guestCapacity: Nat;
@@ -70,7 +74,11 @@ module {
         status: Text;
         pricePerNight: Float;
         description: Text;
+
         location: Text;
+        latitude: Float;
+        longitude: Float;
+        
         builtInDate: Text;
         bedroomCount: Nat;
         guestCapacity: Nat;
