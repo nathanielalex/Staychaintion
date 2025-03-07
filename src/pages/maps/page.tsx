@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Search, Filter, X, Star, List, Layers, Heart } from "lucide-react"
 import React, { lazy, Suspense } from "react";
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
+import { Property_backend } from "@/declarations/Property_backend"
 
 // Dynamically import the Map component to avoid SSR issues with Leaflet
 
@@ -235,15 +236,34 @@ export default function PropertiesMapPage() {
   const [selectedPropertyTypes, setSelectedPropertyTypes] = useState<string[]>(["all"])
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
   const [bedroomsFilter, setBedroomsFilter] = useState<number | null>(null)
+  const [properties, setProperties] = useState<Property[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [mapCenter, setMapCenter] = useState<[number, number]>([-8.4095, 115.1889]) // Bali center
   const [mapZoom, setMapZoom] = useState(9)
   const [isLiked, setIsLiked] = useState<Record<string, boolean>>({})
 
+  const fetchProperties = async () => {
+      try {
+        // setLoading(true);
+        // setError(null);
+        const properties = await Property_backend.getAllProperties();
+        setProperties(properties);
+      } catch (err) {
+        console.log(err);
+        // setError('An error occured while fetching properties\n' + err);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
   // Filter properties based on selected filters
   useEffect(() => {
-    let filtered = filteredProperties;
+    let filtered = properties;
 
     // Filter by search query
     if (searchQuery) {
