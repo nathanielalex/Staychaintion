@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, KeyboardEventHandler, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import L from 'leaflet';
 import { Property } from '@/declarations/Property_backend/Property_backend.did';
 import { Property_backend } from '@/declarations/Property_backend';
 import MapLocator from '@/components/maps/map-locator';
+import { useSearchParams } from 'react-router-dom';
 
 // Custom marker icon for Leaflet
 const customIcon = new L.Icon({
@@ -20,26 +21,26 @@ const customIcon = new L.Icon({
 });
 
 // Sample data - in a real app this would come from an API
-const locations = [
-  {
-    id: 1,
-    title: 'Modern Research Lab',
-    type: 'lab',
-    rating: 4.9,
-    price: 1200,
-    image: '/placeholder.svg?height=200&width=300',
-    position: { lat: 40.7128, lng: -74.006 },
-  },
-  {
-    id: 2,
-    title: 'University Research Center',
-    type: 'university',
-    rating: 4.8,
-    price: 950,
-    image: '/placeholder.svg?height=200&width=300',
-    position: { lat: 40.758, lng: -73.9855 },
-  },
-];
+// const locations = [
+//   {
+//     id: 1,
+//     title: 'Modern Research Lab',
+//     type: 'lab',
+//     rating: 4.9,
+//     price: 1200,
+//     image: '/placeholder.svg?height=200&width=300',
+//     position: { lat: 40.7128, lng: -74.006 },
+//   },
+//   {
+//     id: 2,
+//     title: 'University Research Center',
+//     type: 'university',
+//     rating: 4.8,
+//     price: 950,
+//     image: '/placeholder.svg?height=200&width=300',
+//     position: { lat: 40.758, lng: -73.9855 },
+//   },
+// ];
 
 const categories = [
   { id: 'lab', label: 'Research Labs', icon: '🧪' },
@@ -54,7 +55,11 @@ export default function MapPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(
+    null,
+  );
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>();
@@ -90,6 +95,14 @@ export default function MapPage() {
                 type="text"
                 placeholder="Search locations..."
                 className="pl-10 pr-4 py-2 w-full border-gray-200 rounded-full focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setSearchParams((params) => {
+                      params.set('search', encodeURIComponent(e.currentTarget.value));
+                      return params;
+                    });
+                  }
+                }}
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             </div>
@@ -126,24 +139,28 @@ export default function MapPage() {
 
       {/* Map Container */}
       <div className="flex-1 relative">
-        <MapContainer center={mapCenter} zoom={13} className="w-full h-full z-0">
+        <MapContainer
+          center={mapCenter}
+          zoom={13}
+          className="w-full h-full z-0"
+        >
           {/* OpenStreetMap Tile Layer */}
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
 
-          <MapLocator/>
+          <MapLocator />
 
           {properties.map((property) => (
             <Marker
               key={property.id}
               position={{
                 lat: property.latitude,
-                lng: property.longitude
+                lng: property.longitude,
               }}
               icon={customIcon}
-              eventHandlers={{ click: () => setSelectedProperty(property)}}
+              eventHandlers={{ click: () => setSelectedProperty(property) }}
             >
               <Popup>
                 <div className="text-center">
@@ -153,7 +170,6 @@ export default function MapPage() {
               </Popup>
             </Marker>
           ))}
-
         </MapContainer>
 
         {/* Location Preview */}
