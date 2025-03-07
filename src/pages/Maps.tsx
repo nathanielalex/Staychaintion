@@ -125,7 +125,7 @@ export default function MapPage() {
 
       {/* Map Container */}
       <div className="flex-1 relative">
-        <MapContainer center={mapCenter} zoom={13} className="w-full h-full">
+        <MapContainer center={mapCenter} zoom={13} className="w-full h-full z-0">
           {/* OpenStreetMap Tile Layer */}
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -157,7 +157,7 @@ export default function MapPage() {
                 lng: property.longitude
               }}
               icon={customIcon}
-              eventHandlers={{ click: () => {}}}
+              eventHandlers={{ click: () => setSelectedProperty(property)}}
             >
               <Popup>
                 <div className="text-center">
@@ -172,17 +172,17 @@ export default function MapPage() {
 
         {/* Location Preview */}
         <AnimatePresence>
-          {selectedLocation && (
+          {selectedProperty && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               className="absolute bottom-4 left-4 bg-white rounded-xl shadow-lg p-4 max-w-sm"
             >
-              {locations.map(
-                (location) =>
-                  location.id === selectedLocation && (
-                    <div key={location.id} className="relative">
+              {properties.map(
+                (property) =>
+                  property.id === selectedProperty.id && (
+                    <div key={property.id} className="relative">
                       <Button
                         variant="ghost"
                         size="icon"
@@ -193,13 +193,13 @@ export default function MapPage() {
                       </Button>
                       <div className="relative h-48 rounded-lg overflow-hidden mb-4">
                         <img
-                          src={location.image || '/placeholder.svg'}
-                          alt={location.title}
+                          src={property.coverPicture || '/placeholder.svg'}
+                          alt={property.name}
                           className="object-cover"
                         />
                       </div>
                       <h3 className="text-lg font-semibold mb-1">
-                        {location.title}
+                        {property.name}
                       </h3>
                       <div className="flex items-center text-gray-600 mb-2">
                         <MapPin className="w-4 h-4 mr-1" />
@@ -209,11 +209,11 @@ export default function MapPage() {
                         <div className="flex items-center">
                           <span className="text-yellow-400 mr-1">⭐</span>
                           <span className="text-sm font-medium">
-                            {location.rating}
+                            {property.rating}
                           </span>
                         </div>
                         <p className="text-lg font-semibold text-blue-600">
-                          ${location.price}/mo
+                          ${property.pricePerNight}/mo
                         </p>
                       </div>
                     </div>
