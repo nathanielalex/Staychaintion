@@ -89,18 +89,28 @@ module {
         id: Text;
         propertyId: Text;
         user: Principal;
+        owner: Principal;
         checkInDate: Text;
         checkOutDate: Text;
         totalPrice: Float;
+        propName: Text;
+        propType: Text;
+        propLocation: Text;
+        propCoverPicture: Text;
         transactionStatus: Text;
     };
 
     public type UnregisteredTransaction = {
         propertyId: Text;
         user: Principal;
+        owner: Principal;
         checkInDate: Text;
         checkOutDate: Text;
         totalPrice: Float;
+        propName: Text;
+        propType: Text;
+        propLocation: Text;
+        propCoverPicture: Text;
         transactionStatus: Text;
     };
 
@@ -138,8 +148,9 @@ module {
     public func transactionStatusVal(status: Text) : Bool {
         switch (status) {
             case ("waitingPayment") { return true }; // initiate transaction start payment process
-            case ("pending") { return true }; // payment finishes, waiting untill the date of check-in
+            case ("booked") { return true }; // payment finishes, waiting untill the date of check-in
             case ("checkedIn") { return true }; // check-in date has passed, waiting for check-out
+            case ("checkedOut") { return true }; // checked-out waiting payment transfer to owner
             case ("completed") { return true }; // checked-out, transaction finished and payment transfered to client
             case ("cancelled") { return true }; // transaction cancelled by the user or the owner
             case (_) { return false };

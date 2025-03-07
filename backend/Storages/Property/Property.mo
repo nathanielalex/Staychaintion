@@ -480,6 +480,18 @@ actor {
 
     // Transaction functions
     public shared func initiateTransaction(newTransaction: Util.UnregisteredTransaction) : async Text {   
+        if(Util.transactionStatusVal(newTransaction.transactionStatus) == false) {
+            return "";
+        };
+
+        for (p in transactionHistory.vals()) {
+            // Check if property is already on a transaction and is not completed or cancelled then it's not eligible for a new transaction
+            // one property can only have one ongoing transaction at a time (waiting payment, booked, checkin, checkout)
+            if(newTransaction.propertyId == p.propertyId and not (newTransaction.transactionStatus == "completed" or newTransaction.transactionStatus == "cancelled") and p.transactionStatus == newTransaction.transactionStatus) {
+                return "";
+            };
+        };
+        
         let id = await Util.generateUUID();
         let transaction : Transaction = {
             newTransaction with
@@ -528,14 +540,121 @@ actor {
         };
     };
 
-    public query func getUserTransactionHistory(userId: Principal) : async [Transaction] {
+    public query func getTransactionStatus(transactionId: Text) : async ?Text {
+        return transactionHistory.get(transactionId).transactionStatus;
+    };
+
+    public query func getTransactionByStatus(status: Text) : async [Transaction] {
         let transactions = Vector.Vector<Transaction>();
         for (t in transactionHistory.vals()) {
-            if(userId == t.user) {
+            if(status == t.transactionStatus) {
                 transactions.add(t);
             };
         };
         return (Vector.toArray(transactions));
+    };
+
+    public query func getUserTransactionHistoryPaginate(userId: Principal, status: ?Text, page: Nat, count: Nat) : async ([Transaction], Nat) {
+        switch(status) {
+            case(null) { 
+                // First collect and sort all relevant transactions
+                let filteredTransactions = Array.filter<Transaction>(
+                    Iter.toArray<Transaction>(transactionHistory.vals()),
+                    func (t: Transaction): Bool {
+                        return userId == t.user;
+                    }
+                );
+                
+                // Sort the filtered transactions
+                let sortedTransactions = Array.sort<Transaction>(
+                    filteredTransactions, 
+                    compareTransactionAsc
+                );
+                
+                // Then paginate the results
+                var cursor = 0;
+                var counter = 0;
+                let skip = (page-1)*count;
+                
+                let paginatedTransactions = Array.filter<Transaction>(
+                    sortedTransactions,
+                    func (t: Transaction): Bool {
+                        cursor += 1;
+                        if (cursor > skip and counter < count) {
+                            counter += 1;
+                            return true;
+                        };
+                        return false;
+                    }
+                );
+                
+                return (paginatedTransactions, filteredTransactions.size());
+            };
+            case(?stat) { 
+                if(Util.transactionStatusVal(stat) == false) {
+                    return ([], 0);
+                };
+
+                // First collect and sort all relevant transactions
+                let filteredTransactions = Array.filter<Transaction>(
+                    Iter.toArray<Transaction>(transactionHistory.vals()),
+                    func (t: Transaction): Bool {
+                        return userId == t.user and stat == t.transactionStatus;
+                    }
+                );
+                
+                // Sort the filtered transactions
+                let sortedTransactions = Array.sort<Transaction>(
+                    filteredTransactions, 
+                    compareTransactionAsc
+                );
+                
+                // Then paginate the results
+                var cursor = 0;
+                var counter = 0;
+                let skip = (page-1)*count;
+                
+                return (Array.filter<Transaction>(
+                    sortedTransactions,
+                    func (t: Transaction): Bool {
+                        cursor += 1;
+                        if (cursor > skip and counter < count) {
+                            counter += 1;
+                            return true;
+                        };
+                        return false;
+                    }
+                ), filteredTransactions.size());
+            };
+        };
+    };
+
+    private func compareTransactionAsc(t1: Transaction, t2:Transaction): Order.Order {
+        // Helper function to convert transaction status to priority number
+        // Lower number means higher priority in ascending sort
+        let statusPriority = func (status: Text) : Int {
+            switch (status) {
+            case "waitingPayment" { 1 };
+            case "booked" { 2 };
+            case "checkedIn" { 3 };
+            case "checkedOut" { 4 };
+            case _ { 5 }; // Other statuses (completed, cancelled, etc.) get lowest priority
+            };
+        };
+        
+        // First compare by status priority
+        let t1Priority = statusPriority(t1.transactionStatus);
+        let t2Priority = statusPriority(t2.transactionStatus);
+        
+        if (t1Priority < t2Priority) { return #less; }
+        else if (t1Priority > t2Priority) { return #greater; }
+        else {
+            switch (compareDates(t1.checkInDate, t2.checkInDate)) {
+                case (#less) { #less };
+                case (#equal) { #equal };
+                case (#greater) { #greater };
+            };
+        };
     };
 
     public query func getPropertyTransactionHistory(propertyId: Text) : async [Transaction] {
@@ -551,5 +670,37 @@ actor {
     public query func getTransaction(transactionId: Text) : async ?Transaction {
         return transactionHistory.get(transactionId);
     };
- 
+
+    private func compareDates(date1: Text, date2: Text) : {#less; #equal; #greater} {
+        // Parse dates in DD-MM-YYYY format
+        let d1Parts:[Text] = Iter.toArray<Text>(Text.split(date1, #char('-')));
+        let d2Parts:[Text] = Iter.toArray<Text>(Text.split(date2, #char('-')));
+        
+        if (d1Parts.size() != 3 or d2Parts.size() != 3) {
+            return #equal; // Invalid format, treat as equal
+        };
+        
+        // Compare years first
+        let year1 = d1Parts[2];
+        let year2 = d2Parts[2];
+        
+        if (Text.greater(year1, year2)) { return #less };
+        if (Text.less(year1, year2)) { return #greater };
+        
+        // Years equal, compare months
+        let month1 = d1Parts[1];
+        let month2 = d2Parts[1];
+        
+        if (Text.greater(month1, month2)) { return #less };
+        if (Text.less(month1, month2)) { return #greater };
+        
+        // Months equal, compare days
+        let day1 = d1Parts[0];
+        let day2 = d1Parts[0];
+        
+        if (Text.greater(day1, day2)) { return #less };
+        if (Text.less(day1, day2)) { return #greater };
+        
+        return #equal;
+    }
 };
