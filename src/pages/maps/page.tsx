@@ -1,15 +1,15 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Slider } from "@/components/ui/slider"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Search, Filter, X, Star, List, Layers, Heart } from "lucide-react"
-import React, { lazy, Suspense } from "react";
-import { Property } from "@/declarations/Property_backend/Property_backend.did"
-import { Property_backend } from "@/declarations/Property_backend"
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Slider } from '@/components/ui/slider';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Search, Filter, X, Star, List, Layers, Heart } from 'lucide-react';
+import React, { lazy, Suspense } from 'react';
+import { Property } from '@/declarations/Property_backend/Property_backend.did';
+import { Property_backend } from '@/declarations/Property_backend';
 
 // Dynamically import the Map component to avoid SSR issues with Leaflet
 
@@ -27,8 +27,7 @@ import { Property_backend } from "@/declarations/Property_backend"
 //   ),
 // })
 
-
-const PropertyMap = lazy(() => import("@/components/maps/property-map"));
+const PropertyMap = lazy(() => import('@/components/maps/property-map'));
 
 // const PropertyMapWrapper() {
 //   return (
@@ -46,7 +45,6 @@ const PropertyMap = lazy(() => import("@/components/maps/property-map"));
 //     </Suspense>
 //   );
 // }
-
 
 // Sample property data
 // const properties = [
@@ -206,56 +204,60 @@ const PropertyMap = lazy(() => import("@/components/maps/property-map"));
 
 // Property types for filtering
 const propertyTypes = [
-  { id: "all", label: "All Types" },
-  { id: "apartment", label: "Apartment" },
-  { id: "house", label: "House" },
-  { id: "villa", label: "Villa" },
-  { id: "cabin", label: "Cabin" },
-  { id: "resort", label: "Resort" },
-]
+  { id: 'all', label: 'All Types' },
+  { id: 'apartment', label: 'Apartment' },
+  { id: 'house', label: 'House' },
+  { id: 'villa', label: 'Villa' },
+  { id: 'cabin', label: 'Cabin' },
+  { id: 'resort', label: 'Resort' },
+];
 
 // Amenities for filtering
 const amenitiesOptions = [
-  { id: "pool", label: "Swimming Pool" },
-  { id: "wifi", label: "WiFi" },
-  { id: "parking", label: "Parking" },
-  { id: "ac", label: "Air Conditioning" },
-  { id: "kitchen", label: "Kitchen" },
-  { id: "workspace", label: "Workspace" },
-  { id: "gym", label: "Gym" },
-  { id: "spa", label: "Spa" },
-  { id: "beach", label: "Beach Access" },
-  { id: "restaurant", label: "Restaurant" },
-]
+  { id: 'pool', label: 'Swimming Pool' },
+  { id: 'wifi', label: 'WiFi' },
+  { id: 'parking', label: 'Parking' },
+  { id: 'ac', label: 'Air Conditioning' },
+  { id: 'kitchen', label: 'Kitchen' },
+  { id: 'workspace', label: 'Workspace' },
+  { id: 'gym', label: 'Gym' },
+  { id: 'spa', label: 'Spa' },
+  { id: 'beach', label: 'Beach Access' },
+  { id: 'restaurant', label: 'Restaurant' },
+];
 
 export default function PropertiesMapPage() {
-  const [selectedProperty, setSelectedProperty] = useState<string | null>(null)
-  const [showFilters, setShowFilters] = useState(false)
-  const [viewMode, setViewMode] = useState<"map" | "list">("map")
-  const [priceRange, setPriceRange] = useState([500000, 3500000])
-  const [selectedPropertyTypes, setSelectedPropertyTypes] = useState<string[]>(["all"])
-  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([])
-  const [bedroomsFilter, setBedroomsFilter] = useState<number | null>(null)
+  const [selectedProperty, setSelectedProperty] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [priceRange, setPriceRange] = useState([500000, 3500000]);
+  const [selectedPropertyTypes, setSelectedPropertyTypes] = useState<string[]>([
+    'all',
+  ]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [bedroomsFilter, setBedroomsFilter] = useState<number | null>(null);
   const [properties, setProperties] = useState<Property[]>([]);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [mapCenter, setMapCenter] = useState<[number, number]>([-8.4095, 115.1889]) // Bali center
-  const [mapZoom, setMapZoom] = useState(9)
-  const [isLiked, setIsLiked] = useState<Record<string, boolean>>({})
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mapCenter, setMapCenter] = useState<[number, number]>([
+    -8.4095, 115.1889,
+  ]); // Bali center
+  const [mapZoom, setMapZoom] = useState(9);
+  const [isLiked, setIsLiked] = useState<Record<string, boolean>>({});
 
   const fetchProperties = async () => {
-      try {
-        // setLoading(true);
-        // setError(null);
-        const properties = await Property_backend.getAllProperties();
-        setProperties(properties);
-      } catch (err) {
-        console.log(err);
-        // setError('An error occured while fetching properties\n' + err);
-      } finally {
-        // setLoading(false);
-      }
-    };
+    try {
+      // setLoading(true);
+      // setError(null);
+      const properties = await Property_backend.getAllProperties();
+      setProperties(properties);
+    } catch (err) {
+      console.log(err);
+      // setError('An error occured while fetching properties\n' + err);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchProperties();
@@ -267,19 +269,26 @@ export default function PropertiesMapPage() {
 
     // Filter by search query
     if (searchQuery) {
-      const query = searchQuery.toLowerCase()
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (property) =>
-          property.name.toLowerCase().includes(query) || property.location.toLowerCase().includes(query),
-      )
+          property.name.toLowerCase().includes(query) ||
+          property.location.toLowerCase().includes(query),
+      );
     }
 
     // Filter by price range
-    filtered = filtered.filter((property) => property.pricePerNight >= priceRange[0] && property.pricePerNight <= priceRange[1])
+    filtered = filtered.filter(
+      (property) =>
+        property.pricePerNight >= priceRange[0] &&
+        property.pricePerNight <= priceRange[1],
+    );
 
     // Filter by property type
-    if (!selectedPropertyTypes.includes("all")) {
-      filtered = filtered.filter((property) => selectedPropertyTypes.includes(property.propertyType))
+    if (!selectedPropertyTypes.includes('all')) {
+      filtered = filtered.filter((property) =>
+        selectedPropertyTypes.includes(property.propertyType),
+      );
     }
 
     // Filter by amenities
@@ -291,57 +300,66 @@ export default function PropertiesMapPage() {
 
     // Filter by bedrooms
     if (bedroomsFilter !== null) {
-      filtered = filtered.filter((property) => property.bedroomCount >= bedroomsFilter)
+      filtered = filtered.filter(
+        (property) => property.bedroomCount >= bedroomsFilter,
+      );
     }
 
-    setFilteredProperties(filtered)
-  }, [searchQuery, priceRange, selectedPropertyTypes, selectedAmenities, bedroomsFilter])
+    setFilteredProperties(filtered);
+  }, [
+    searchQuery,
+    priceRange,
+    selectedPropertyTypes,
+    selectedAmenities,
+    bedroomsFilter,
+    properties
+  ]);
 
   // Handle property type selection
   const handlePropertyTypeChange = (type: string) => {
-    if (type === "all") {
-      setSelectedPropertyTypes(["all"])
+    if (type === 'all') {
+      setSelectedPropertyTypes(['all']);
     } else {
-      const newTypes = selectedPropertyTypes.filter((t) => t !== "all")
+      const newTypes = selectedPropertyTypes.filter((t) => t !== 'all');
       if (newTypes.includes(type)) {
-        const filtered = newTypes.filter((t) => t !== type)
-        setSelectedPropertyTypes(filtered.length === 0 ? ["all"] : filtered)
+        const filtered = newTypes.filter((t) => t !== type);
+        setSelectedPropertyTypes(filtered.length === 0 ? ['all'] : filtered);
       } else {
-        setSelectedPropertyTypes([...newTypes, type])
+        setSelectedPropertyTypes([...newTypes, type]);
       }
     }
-  }
+  };
 
   // Handle amenity selection
   const handleAmenityChange = (amenity: string) => {
     if (selectedAmenities.includes(amenity)) {
-      setSelectedAmenities(selectedAmenities.filter((a) => a !== amenity))
+      setSelectedAmenities(selectedAmenities.filter((a) => a !== amenity));
     } else {
-      setSelectedAmenities([...selectedAmenities, amenity])
+      setSelectedAmenities([...selectedAmenities, amenity]);
     }
-  }
+  };
 
   // Handle bedrooms filter
   const handleBedroomsFilter = (bedrooms: number | null) => {
-    setBedroomsFilter(bedrooms === bedroomsFilter ? null : bedrooms)
-  }
+    setBedroomsFilter(bedrooms === bedroomsFilter ? null : bedrooms);
+  };
 
   // Reset all filters
   const resetFilters = () => {
-    setPriceRange([500000, 3500000])
-    setSelectedPropertyTypes(["all"])
-    setSelectedAmenities([])
-    setBedroomsFilter(null)
-    setSearchQuery("")
-  }
+    setPriceRange([500000, 3500000]);
+    setSelectedPropertyTypes(['all']);
+    setSelectedAmenities([]);
+    setBedroomsFilter(null);
+    setSearchQuery('');
+  };
 
   // Toggle like status for a property
   const toggleLike = (id: string) => {
     setIsLiked((prev) => ({
       ...prev,
       [id]: !prev[id],
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -349,21 +367,23 @@ export default function PropertiesMapPage() {
       <header className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-gray-900">Find Your Perfect Property</h1>
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Find Your Perfect Property
+            </h1>
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="icon"
-                className={`${viewMode === "map" ? "bg-blue-50 text-blue-600" : ""}`}
-                onClick={() => setViewMode("map")}
+                className={`${viewMode === 'map' ? 'bg-blue-50 text-blue-600' : ''}`}
+                onClick={() => setViewMode('map')}
               >
                 <Layers className="w-5 h-5" />
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                className={`${viewMode === "list" ? "bg-blue-50 text-blue-600" : ""}`}
-                onClick={() => setViewMode("list")}
+                className={`${viewMode === 'list' ? 'bg-blue-50 text-blue-600' : ''}`}
+                onClick={() => setViewMode('list')}
               >
                 <List className="w-5 h-5" />
               </Button>
@@ -382,8 +402,8 @@ export default function PropertiesMapPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             </div>
             <Button
-              variant={showFilters ? "default" : "outline"}
-              className={`${showFilters ? "bg-blue-600 text-white" : "text-gray-600"}`}
+              variant={showFilters ? 'default' : 'outline'}
+              className={`${showFilters ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
               onClick={() => setShowFilters(!showFilters)}
             >
               <Filter className="w-5 h-5 mr-2" />
@@ -396,7 +416,7 @@ export default function PropertiesMapPage() {
             {showFilters && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
+                animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
@@ -412,7 +432,9 @@ export default function PropertiesMapPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Price Range */}
                     <div>
-                      <h4 className="text-sm font-medium mb-2">Price Range (per night)</h4>
+                      <h4 className="text-sm font-medium mb-2">
+                        Price Range (per night)
+                      </h4>
                       <div className="px-2">
                         <Slider
                           defaultValue={[500000, 3500000]}
@@ -432,16 +454,26 @@ export default function PropertiesMapPage() {
 
                     {/* Property Type */}
                     <div>
-                      <h4 className="text-sm font-medium mb-2">Property Type</h4>
+                      <h4 className="text-sm font-medium mb-2">
+                        Property Type
+                      </h4>
                       <div className="grid grid-cols-2 gap-2">
                         {propertyTypes.map((type) => (
-                          <div key={type.id} className="flex items-center space-x-2">
+                          <div
+                            key={type.id}
+                            className="flex items-center space-x-2"
+                          >
                             <Checkbox
                               id={`type-${type.id}`}
                               checked={selectedPropertyTypes.includes(type.id)}
-                              onCheckedChange={() => handlePropertyTypeChange(type.id)}
+                              onCheckedChange={() =>
+                                handlePropertyTypeChange(type.id)
+                              }
                             />
-                            <label htmlFor={`type-${type.id}`} className="text-sm">
+                            <label
+                              htmlFor={`type-${type.id}`}
+                              className="text-sm"
+                            >
                               {type.label}
                             </label>
                           </div>
@@ -456,9 +488,11 @@ export default function PropertiesMapPage() {
                         {[1, 2, 3, 4].map((num) => (
                           <Button
                             key={num}
-                            variant={bedroomsFilter === num ? "default" : "outline"}
+                            variant={
+                              bedroomsFilter === num ? 'default' : 'outline'
+                            }
                             size="sm"
-                            className={`${bedroomsFilter === num ? "bg-blue-600 text-white" : "text-gray-600"}`}
+                            className={`${bedroomsFilter === num ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
                             onClick={() => handleBedroomsFilter(num)}
                           >
                             {num}+
@@ -473,13 +507,21 @@ export default function PropertiesMapPage() {
                     <h4 className="text-sm font-medium mb-2">Amenities</h4>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                       {amenitiesOptions.map((amenity) => (
-                        <div key={amenity.id} className="flex items-center space-x-2">
+                        <div
+                          key={amenity.id}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox
                             id={`amenity-${amenity.id}`}
                             checked={selectedAmenities.includes(amenity.id)}
-                            onCheckedChange={() => handleAmenityChange(amenity.id)}
+                            onCheckedChange={() =>
+                              handleAmenityChange(amenity.id)
+                            }
                           />
-                          <label htmlFor={`amenity-${amenity.id}`} className="text-sm">
+                          <label
+                            htmlFor={`amenity-${amenity.id}`}
+                            className="text-sm"
+                          >
                             {amenity.label}
                           </label>
                         </div>
@@ -488,7 +530,10 @@ export default function PropertiesMapPage() {
                   </div>
 
                   <div className="mt-4 flex justify-end">
-                    <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setShowFilters(false)}>
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-700"
+                      onClick={() => setShowFilters(false)}
+                    >
                       Show {filteredProperties.length} properties
                     </Button>
                   </div>
@@ -502,7 +547,7 @@ export default function PropertiesMapPage() {
       {/* Main Content */}
       <main className="relative">
         {/* Map View */}
-        {viewMode === "map" && (
+        {viewMode === 'map' && (
           <div className="relative h-[calc(100vh-180px)]">
             <PropertyMap
               properties={filteredProperties}
@@ -537,9 +582,8 @@ export default function PropertiesMapPage() {
 
                           <div className="relative h-48">
                             <img
-                              src={property.coverPicture || "/placeholder.svg"}
+                              src={property.coverPicture || '/placeholder.svg'}
                               alt={property.name}
-                              
                               className="object-cover"
                             />
                             <button
@@ -547,28 +591,38 @@ export default function PropertiesMapPage() {
                               className="absolute top-2 right-10 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm transition-colors hover:bg-white"
                             >
                               <Heart
-                                className={`w-4 h-4 ${isLiked[property.id] ? "fill-red-500 text-red-500" : "text-gray-600"}`}
+                                className={`w-4 h-4 ${isLiked[property.id] ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
                               />
                             </button>
                           </div>
 
                           <div className="p-4">
                             <div className="flex items-start justify-between mb-2">
-                              <h3 className="font-semibold text-lg line-clamp-1">{property.name}</h3>
+                              <h3 className="font-semibold text-lg line-clamp-1">
+                                {property.name}
+                              </h3>
                               <div className="flex items-center space-x-1 text-sm">
                                 <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                                 <span>{property.rating}</span>
                               </div>
                             </div>
 
-                            <p className="text-gray-600 text-sm mb-2">{property.location}</p>
+                            <p className="text-gray-600 text-sm mb-2">
+                              {property.location}
+                            </p>
 
                             <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
-                              <span>{Number(property.guestCapacity)} guests</span>
+                              <span>
+                                {Number(property.guestCapacity)} guests
+                              </span>
                               <span>•</span>
-                              <span>{Number(property.bedroomCount)} bedrooms</span>
+                              <span>
+                                {Number(property.bedroomCount)} bedrooms
+                              </span>
                               <span>•</span>
-                              <span>{Number(property.bathroomCount)} bathrooms</span>
+                              <span>
+                                {Number(property.bathroomCount)} bathrooms
+                              </span>
                             </div>
 
                             <div className="flex items-baseline space-x-1 mb-4">
@@ -579,7 +633,9 @@ export default function PropertiesMapPage() {
                             </div>
 
                             <a href={`/properties/${property.id}`}>
-                              <Button className="w-full bg-blue-600 hover:bg-blue-700">View Details</Button>
+                              <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                                View Details
+                              </Button>
                             </a>
                           </div>
                         </div>
@@ -591,16 +647,19 @@ export default function PropertiesMapPage() {
 
             {/* Results Count */}
             <div className="absolute top-4 right-4 z-10 bg-white px-4 py-2 rounded-full shadow-md">
-              <span className="font-medium">{filteredProperties.length}</span> properties found
+              <span className="font-medium">{filteredProperties.length}</span>{' '}
+              properties found
             </div>
           </div>
         )}
 
         {/* List View */}
-        {viewMode === "list" && (
+        {viewMode === 'list' && (
           <div className="container mx-auto px-4 py-8">
             <div className="mb-4 flex justify-between items-center">
-              <h2 className="text-xl font-semibold">{filteredProperties.length} properties found</h2>
+              <h2 className="text-xl font-semibold">
+                {filteredProperties.length} properties found
+              </h2>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-white">Sort by:</span>
                 <select className="border rounded-md px-2 py-1 text-sm">
@@ -623,9 +682,8 @@ export default function PropertiesMapPage() {
                 >
                   <div className="relative h-48">
                     <img
-                      src={property.coverPicture || "/placeholder.svg"}
+                      src={property.coverPicture || '/placeholder.svg'}
                       alt={property.name}
-                      
                       className="object-cover"
                     />
                     <button
@@ -633,21 +691,25 @@ export default function PropertiesMapPage() {
                       className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm transition-colors hover:bg-white"
                     >
                       <Heart
-                        className={`w-4 h-4 ${isLiked[property.id] ? "fill-red-500 text-red-500" : "text-gray-600"}`}
+                        className={`w-4 h-4 ${isLiked[property.id] ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
                       />
                     </button>
                   </div>
 
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-lg line-clamp-1">{property.name}</h3>
+                      <h3 className="font-semibold text-lg line-clamp-1">
+                        {property.name}
+                      </h3>
                       <div className="flex items-center space-x-1 text-sm">
                         <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                         <span>{property.rating}</span>
                       </div>
                     </div>
 
-                    <p className="text-gray-600 text-sm mb-2">{property.location}</p>
+                    <p className="text-gray-600 text-sm mb-2">
+                      {property.location}
+                    </p>
 
                     <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
                       <span>{Number(property.guestCapacity)} guests</span>
@@ -658,12 +720,16 @@ export default function PropertiesMapPage() {
                     </div>
 
                     <div className="flex items-baseline space-x-1 mb-4">
-                      <span className="text-lg font-semibold">Rp {property.pricePerNight.toLocaleString()}</span>
+                      <span className="text-lg font-semibold">
+                        Rp {property.pricePerNight.toLocaleString()}
+                      </span>
                       <span className="text-gray-500">/night</span>
                     </div>
 
                     <a href={`/properties/${property.id}`}>
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700">View Details</Button>
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                        View Details
+                      </Button>
                     </a>
                   </div>
                 </motion.div>
@@ -675,8 +741,12 @@ export default function PropertiesMapPage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-4">
                   <Search className="w-8 h-8 text-blue-600" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">No properties found</h3>
-                <p className="text-gray-600 mb-4">Try adjusting your search filters</p>
+                <h3 className="text-xl font-semibold mb-2">
+                  No properties found
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Try adjusting your search filters
+                </p>
                 <Button variant="outline" onClick={resetFilters}>
                   Reset all filters
                 </Button>
@@ -686,6 +756,5 @@ export default function PropertiesMapPage() {
         )}
       </main>
     </div>
-  )
+  );
 }
-

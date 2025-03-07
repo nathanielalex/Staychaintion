@@ -69,6 +69,18 @@ function MapController({
         })
       }
     }
+
+    // Fit map to show all properties
+    if (properties.length > 0) {
+      const bounds = L.latLngBounds(properties.map((p) => [p.latitude, p.longitude]))
+      map.fitBounds(bounds, {
+      padding: [50, 50],
+      maxZoom: 14,
+      animate: true,
+      duration: 1,
+      })
+    }
+
   }, [selectedProperty, properties, map])
 
   // Track map movements
