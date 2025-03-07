@@ -53,7 +53,7 @@ export default function MapPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
-  const [selectedProperty, setSelectedProperty] = useState<Property>();
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>();
@@ -187,7 +187,7 @@ export default function MapPage() {
                         variant="ghost"
                         size="icon"
                         className="absolute right-0 top-0 z-10"
-                        onClick={() => setSelectedLocation(null)}
+                        onClick={() => setSelectedProperty(null)}
                       >
                         <X className="w-4 h-4" />
                       </Button>
