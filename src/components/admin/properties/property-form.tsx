@@ -109,6 +109,8 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
         pictures: images,
         propertyType: formData.type,
         location: formData.location,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
         coverPicture: images[0]
       }
       try {
@@ -131,6 +133,8 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
             pictures: images,
             propertyType: formData.type,
             location: formData.location,
+            latitude: formData.latitude,
+            longitude: formData.longitude,
             coverPicture: images[0],
             reviewCount: 0n
           }
