@@ -26,6 +26,8 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
     type: property.propertyType,
     price: property.pricePerNight,
     location: property.location,
+    latitude: property.latitude,
+    longitude: property.longitude,
     bedrooms: property.bedroomCount,
     bathrooms: property.bathroomCount,
     guests: property.guestCapacity,
@@ -65,6 +67,8 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
       pictures: images,
       propertyType: formData.type,
       location: formData.location,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
       coverPicture: images[0] || "/placeholder.jpg",
       reviewCount: property.reviewCount
     }

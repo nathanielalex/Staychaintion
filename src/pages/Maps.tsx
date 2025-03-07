@@ -1,15 +1,18 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, MapPin, Filter, X } from "lucide-react";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Search, MapPin, Filter, X } from 'lucide-react';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import { Property } from '@/declarations/Property_backend/Property_backend.did';
+import { Property_backend } from '@/declarations/Property_backend';
 
 // Custom marker icon for Leaflet
 const customIcon = new L.Icon({
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  iconUrl:
+    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -19,30 +22,30 @@ const customIcon = new L.Icon({
 const locations = [
   {
     id: 1,
-    title: "Modern Research Lab",
-    type: "lab",
+    title: 'Modern Research Lab',
+    type: 'lab',
     rating: 4.9,
     price: 1200,
-    image: "/placeholder.svg?height=200&width=300",
+    image: '/placeholder.svg?height=200&width=300',
     position: { lat: 40.7128, lng: -74.006 },
   },
   {
     id: 2,
-    title: "University Research Center",
-    type: "university",
+    title: 'University Research Center',
+    type: 'university',
     rating: 4.8,
     price: 950,
-    image: "/placeholder.svg?height=200&width=300",
+    image: '/placeholder.svg?height=200&width=300',
     position: { lat: 40.758, lng: -73.9855 },
   },
 ];
 
 const categories = [
-  { id: "lab", label: "Research Labs", icon: "🧪" },
-  { id: "university", label: "Universities", icon: "🎓" },
-  { id: "library", label: "Libraries", icon: "📚" },
-  { id: "innovation", label: "Innovation Centers", icon: "💡" },
-  { id: "tech", label: "Tech Hubs", icon: "🖥️" },
+  { id: 'lab', label: 'Research Labs', icon: '🧪' },
+  { id: 'university', label: 'Universities', icon: '🎓' },
+  { id: 'library', label: 'Libraries', icon: '📚' },
+  { id: 'innovation', label: 'Innovation Centers', icon: '💡' },
+  { id: 'tech', label: 'Tech Hubs', icon: '🖥️' },
 ];
 
 export default function MapPage() {
@@ -50,7 +53,30 @@ export default function MapPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
+  const [selectedProperty, setSelectedProperty] = useState<Property>();
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>();
+
   const mapCenter = { lat: 40.7128, lng: -74.006 };
+
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const properties = await Property_backend.getAllProperties();
+      setProperties(properties);
+    } catch (err) {
+      console.log(err);
+      setError('An error occured while fetching properties\n' + err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
 
   return (
     <div className="h-screen flex flex-col">
@@ -66,7 +92,12 @@ export default function MapPage() {
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             </div>
-            <Button variant="ghost" size="icon" className="ml-2" onClick={() => setShowFilters(!showFilters)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-2"
+              onClick={() => setShowFilters(!showFilters)}
+            >
               <Filter className="w-5 h-5 text-gray-600" />
             </Button>
           </div>
@@ -77,9 +108,11 @@ export default function MapPage() {
           {categories.map((category) => (
             <Button
               key={category.id}
-              variant={activeCategory === category.id ? "default" : "outline"}
+              variant={activeCategory === category.id ? 'default' : 'outline'}
               className={`whitespace-nowrap ${
-                activeCategory === category.id ? "bg-blue-600 text-white" : "text-gray-600"
+                activeCategory === category.id
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600'
               }`}
               onClick={() => setActiveCategory(category.id)}
             >
@@ -100,7 +133,7 @@ export default function MapPage() {
           />
 
           {/* Render markers for locations */}
-          {locations.map((location) => (
+          {/* {locations.map((location) => (
             <Marker
               key={location.id}
               position={location.position}
@@ -114,7 +147,27 @@ export default function MapPage() {
                 </div>
               </Popup>
             </Marker>
+          ))} */}
+
+          {properties.map((property) => (
+            <Marker
+              key={property.id}
+              position={{
+                lat: property.latitude,
+                lng: property.longitude
+              }}
+              icon={customIcon}
+              eventHandlers={{ click: () => {}}}
+            >
+              <Popup>
+                <div className="text-center">
+                  <p className="font-semibold">{property.name}</p>
+                  <p>${property.pricePerNight}/mo</p>
+                </div>
+              </Popup>
+            </Marker>
           ))}
+
         </MapContainer>
 
         {/* Location Preview */}
@@ -140,12 +193,14 @@ export default function MapPage() {
                       </Button>
                       <div className="relative h-48 rounded-lg overflow-hidden mb-4">
                         <img
-                          src={location.image || "/placeholder.svg"}
+                          src={location.image || '/placeholder.svg'}
                           alt={location.title}
                           className="object-cover"
                         />
                       </div>
-                      <h3 className="text-lg font-semibold mb-1">{location.title}</h3>
+                      <h3 className="text-lg font-semibold mb-1">
+                        {location.title}
+                      </h3>
                       <div className="flex items-center text-gray-600 mb-2">
                         <MapPin className="w-4 h-4 mr-1" />
                         <span className="text-sm">New York, USA</span>
@@ -153,9 +208,13 @@ export default function MapPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
                           <span className="text-yellow-400 mr-1">⭐</span>
-                          <span className="text-sm font-medium">{location.rating}</span>
+                          <span className="text-sm font-medium">
+                            {location.rating}
+                          </span>
                         </div>
-                        <p className="text-lg font-semibold text-blue-600">${location.price}/mo</p>
+                        <p className="text-lg font-semibold text-blue-600">
+                          ${location.price}/mo
+                        </p>
                       </div>
                     </div>
                   ),

@@ -122,6 +122,8 @@ export default function PropertiesPage() {
       pictures: [],
       propertyType: 'cabin',
       location: 'Tambon Huai Sat Yai, Thailand',
+      latitude: 12.533784,
+      longitude: 99.546974,
       coverPicture: 'https://www.jonesthegrocer.com/images/orange-1kg-p1440-3590_image.jpg',
       reviewCount: 0n,
     };
