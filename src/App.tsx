@@ -16,7 +16,7 @@ import AnimatedCursor from 'react-animated-cursor';
 import PropertyListPage from './pages/PropertyListPage';
 import MainLayout from './pages/layout/MainLayout';
 import { AnimatePresence, motion } from "framer-motion";
-import Logo from "./assets/house.png";
+import Logo from "/images/Staychaintion_Logo_Final.png";
 import Maps from "@/pages/Maps"
 import { PropertyFilterProvider } from './context/PropertyFilterContext';
 
@@ -94,9 +94,12 @@ import CommunityPage from './pages/community/page';
 import DisputesPage from './pages/disputes/page';
 
 
-// Dark Mode
+// Others
 
 import { ThemeProvider } from '@/context/ThemeContext';
+import ScrollToTop from "./utility/ScrollToTop"; 
+import NewMaps from "./pages/maps/page"
+
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
@@ -129,6 +132,8 @@ const AnimatedRoutes = () => {
 
     <ThemeProvider>
 
+      <ScrollToTop />
+
       {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
 
       <AnimatePresence mode="wait">
@@ -156,7 +161,19 @@ const AnimatedRoutes = () => {
               throw new Error('Function not implemented.');
             } } />} /> */}
 
-            <Route path="/register" element={<RegisterPage2 />} />
+            <Route
+              path="/register"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <RegisterPage2 />
+                </ProtectedRoute>
+              }
+            />
+            {/* <Route
+              path="/register"
+              element={<RegisterPage2 />}
+            /> */}
+
 
             <Route path="/legal" element={<LegalPage />} />
 
@@ -164,19 +181,23 @@ const AnimatedRoutes = () => {
 
             <Route path="/maps" element={<Maps />} />
 
+            <Route path="/map" element={<NewMaps />} />
+
             {/* MAIN PAGES SECTION */}
 
             <Route element={<MainLayout/>}>
-              <Route path="/list" element={
+              {/* <Route path="/list" element={
                 <PropertyFilterProvider>
                   <PropertyListPage/>
                 </PropertyFilterProvider>
-              } />
+              } /> */}
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/teams" element={<TeamPage />} />
               <Route path="/landing" element={<LandingPage />} />
               <Route path="/properties" element={<PropertiesPage />} />
-              <Route path="/properties/details" element={<PropertyDetailPage />} />
+              {/* <Route path="/properties/details" element={<PropertyDetailPage />} /> */}
+              <Route path="/properties/details/:id" element={<PropertyDetailPage />} />
+
             </Route>
 
             {/* ADMIN PAGES SECTION */}

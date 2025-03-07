@@ -22,7 +22,7 @@ const mockJudges: Judge[] = [
   {
     id: "judge-1",
     name: "Alex Morgan",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "/images/placeholder/user.png",
     reputation: 98,
     casesJudged: 142,
     expertise: ["Property Law", "Tenant Rights"],
@@ -31,7 +31,7 @@ const mockJudges: Judge[] = [
   {
     id: "judge-2",
     name: "Taylor Williams",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "/images/placeholder/user.png",
     reputation: 95,
     casesJudged: 118,
     expertise: ["Legal Advisor"],
@@ -40,7 +40,7 @@ const mockJudges: Judge[] = [
   {
     id: "judge-3",
     name: "Jamie Chen",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "/images/placeholder/user.png",
     reputation: 92,
     casesJudged: 87,
     expertise: ["Property Management"],
@@ -48,7 +48,7 @@ const mockJudges: Judge[] = [
   {
     id: "judge-4",
     name: "Sam Rodriguez",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "/images/placeholder/user.png",
     reputation: 89,
     casesJudged: 76,
     expertise: ["Community Contributor"],
@@ -56,7 +56,7 @@ const mockJudges: Judge[] = [
   {
     id: "judge-5",
     name: "Jordan Lee",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "/images/placeholder/user.png",
     reputation: 85,
     casesJudged: 64,
     expertise: ["Dispute Resolution"],

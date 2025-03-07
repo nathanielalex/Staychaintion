@@ -141,7 +141,83 @@ actor {
         };
     };
 
+    public shared func transferPropertyToUser(userId:Principal, propertyId: Text): async Nat{
+        switch (userProfiles.get(userId)) {
+            case null { return 0 };
+            case (?user) {
+                let newPropertiesId = optAppend<Text>(user.propertiesId, ?[propertyId]);
+                
+                let updatedUser = {
+                    user with
+                    propertiesId = newPropertiesId;
+                };
+
+                switch(await Property.getPropertyInfo(propertyId)){
+                    case null { return 0 };
+                    case (?prop) { 
+                        let updatedProp: Property.Property = {
+                            prop with
+                            owner = userId;
+                        };
+                        let resultStatus: Int = await Property.updateProperty(updatedProp);
+                        if(resultStatus == 0){
+                            return 0;
+                        };
+                    };
+                };
+
+                try {
+                    userProfiles.put(userId, updatedUser);
+                    return 1;
+                } catch (e: Error) {
+                    print("Error adding property to user: " # Error.message(e));
+                    return 0;
+                };
+            };
+        };
+    };
+
     public shared func removePropertyFromUser(userId: Principal, propertyId: Text) : async Nat {
+        switch (userProfiles.get(userId)) {
+            case null { return 0 };
+            case (?user) {
+                let filteredPropertiesId = optfilter<Text>(
+                    user.propertiesId, 
+                    func (propId: Text) { propId != propertyId }
+                );
+                
+                let updatedUser = {
+                    user with
+                    propertiesId = filteredPropertiesId;
+                };
+
+                switch(await Property.getPropertyInfo(propertyId)){
+                    case null { return 0 };
+                    case (?prop) { 
+                        let updatedProp: Property.Property = {
+                            prop with
+                            owner = Principal.fromText("aaaaa-aa");
+                            status = "unavailable";
+                        };
+                        let resultStatus: Int = await Property.updateProperty(updatedProp);
+                        if(resultStatus == 0){
+                            return 0;
+                        };
+                    };
+                };
+
+                try {
+                    userProfiles.put(userId, updatedUser);
+                    return 1;
+                } catch (e: Error) {
+                    print("Error removing property from user: " # Error.message(e));
+                    return 0;
+                };
+            };
+        };
+    };
+
+    public shared func deleterPropertyFromUser(userId: Principal, propertyId: Text) : async Nat {
         switch (userProfiles.get(userId)) {
             case null { return 0 };
             case (?user) {
@@ -157,6 +233,10 @@ actor {
 
                 try {
                     userProfiles.put(userId, updatedUser);
+                    let resultStatus: Int = await Property.removeProperty(propertyId);
+                    if(resultStatus == 0){
+                        return 0;
+                    };
                     return 1;
                 } catch (e: Error) {
                     print("Error removing property from user: " # Error.message(e));
@@ -288,27 +368,24 @@ actor {
      * ```
      */
     public query func getUserPaginate(
-        textAttrs: Text, textQueries: Text,
-        numAttrs: Text, numQueries: Text, comparisons: Text,
-        orderAttr: Text, orderDir: Text,
-        page: Nat, count: Nat
+        queries: Util.PaginationQuery
     ): async ([UserProfile], Nat) {
-        if(page <= 0 or count <= 0) {
+        if(queries.page <= 0 or queries.count <= 0) {
             return ([], 0);
         };
 
         // Parse input parameters
-        let textAttrIter = Text.tokens(textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
-        let textQueryIter = Text.tokens(textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let textAttrIter = Text.tokens(queries.textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let textQueryIter = Text.tokens(queries.textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
         
-        let numAttrIter = Text.tokens(numAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
-        let numQueryIter = Text.tokens(numQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
-        let comparIter = Text.tokens(comparisons, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let numAttrIter = Text.tokens(queries.numAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let numQueryIter = Text.tokens(queries.numQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let comparIter = Text.tokens(queries.comparisons, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
 
         var itertyp = userProfiles.vals();
         var cursor = 0;
         var counter = 0;
-        let skip = (page-1)*count;
+        let skip = (queries.page-1)*queries.count;
 
         // Filter by text attributes
         loop {
@@ -349,7 +426,7 @@ actor {
                                 });
                             };
                             case(null, null, null) { 
-                                let sorted = if(switch(orderAttr) {
+                                let sorted = if(switch(queries.orderAttr) {
                                     case ("ballance") { true };
                                     case ("id"){ true };
                                     case ("role"){ true };
@@ -359,12 +436,12 @@ actor {
                                     case ("profilePictureUrl"){ true };
                                     case (_){ false };
                                 }) {
-                                    sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (orderDir == "asc") compareAsc else compareDesc, orderAttr)
+                                    sort<UserProfile>(Iter.toArray<UserProfile>(itertyp), if (queries.orderDir == "asc") compareAsc else compareDesc, queries.orderAttr)
                                 } else Iter.toArray<UserProfile>(itertyp);
 
                                 let paginated = Iter.filter<UserProfile>(Iter.fromArray(sorted), func (prop: UserProfile): Bool {
                                     cursor += 1;
-                                    if (cursor > skip and counter < count) {
+                                    if (cursor > skip and counter < queries.count) {
                                         counter += 1;
                                         true;
                                     } else false;

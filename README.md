@@ -1,54 +1,91 @@
-# Vite + React + Motoko
+<h1 align="center">
+  <br>
+  <a href="https://github.com/nathanielalex/Staychaintion"><img src="https://i.ibb.co.com/NbtGcjt/Staychaintion-Logo-removebg-preview.png
+  " alt="Staychaintion" width="200"></a>
+  <br>
+  	Staychaintion
+  <br>
+</h1>
 
-### Get started directly in your browser:
+<h4 align="center"> An innovative Web3-powered AI platform that redefines short-term property rentals built on top of <a href="https://internetcomputer.org/docs/current/motoko/tutorial" target="_blank">Internet Computer</a>.</h4>
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/rvanasa/vite-react-motoko)
+StayChaintion is an innovative Web3-powered AI platform that redefines short-term property rentals through the power of blockchain, decentralization, and artificial intelligence. We offer secure, transparent, and AI-enhanced property management solutions that empower hosts and guests with a frictionless, trustless experience.
 
-This template gives you everything you need to build a full-stack Web3 application on the [Internet Computer](https://internetcomputer.org/).
+## 📚 Complete Documentation
 
-For an example of a real-world dapp built using this starter project, check out the [source code](https://github.com/dfinity/feedback) for DFINITY's [Developer Experience Feedback Board](https://dx.internetcomputer.org/).
+<ul>
+    <li><b>Notion Documentation</b></li>
+    https://www.notion.so/stanley-n-wijaya/StayChaintion-Documentation-1af73555b71f805a933ff1074e3e8059
+    <li><b>Pitch Deck</b></li>
+    https://www.canva.com/design/DAGgX6SkP8c/e9ZRfIfppA58yAfmVapf7w/edit?utm_content=DAGgX6SkP8c&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+    <li><b>Demo Video</b></li>
+    https://www.notion.so/stanley-n-wijaya/StayChaintion-Documentation-1af73555b71f805a933ff1074e3e8059
+</ul>
 
-## 📦 Create a New Project
 
-Make sure that [Node.js](https://nodejs.org/en/) `>= 16` and [`dfx`](https://internetcomputer.org/docs/current/developer-docs/build/install-upgrade-remove) `>= 0.14` are installed on your system.
+## 🚩 Features
+- ✅**Blockchain-Powered Transactions:**
+    - Ensuring secure, transparent, and tamper-proof rental agreements.
+- ✅**Decentralized Trust System:**
+    - Utilizing smart contracts to eliminate intermediaries, reducing costs and increasing fairness for both hosts and guests.
+- ✅**AI-Driven Smart Pricing & Insights:**
+    - Predicting optimal rental prices based on location, room type, and room facility.
+    - Get to know StayAI, the Staychaintion Chatbot that will help answer all questions related to Property, Web3, and AI.
 
-Run the following commands in a new, empty project directory:
 
-```sh
-npx degit rvanasa/vite-react-motoko # Download this starter project
-dfx start --clean --background # Run dfx in the background
-npm run setup # Install packages, deploy canisters, and generate type bindings
+You can see the following documentation for Internet Computer online:
+- [Quick Start](https://internetcomputer.org/docs/current/developer-docs/setup/deploy-locally)
+- [SDK Developer Tools](https://internetcomputer.org/docs/current/developer-docs/setup/install)
+- [Motoko Programming Language Guide](https://internetcomputer.org/docs/current/motoko/main/motoko)
+- [Motoko Language Quick Reference](https://internetcomputer.org/docs/current/motoko/main/language-manual)
 
-npm start # Start the development server
+## 📦 Packages
+- Git
+    - https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+- WSL
+    - powershell > type in "wsl --install"
+- Visual Studio Code https://code.visualstudio.com/ With the extensions :
+    - Motoko Language
+        - https://marketplace.visualstudio.com/items?itemName=dfinity-foundation.vscode-motoko
+    - Remote WSL
+        - https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
+- Plug Connect
+    - Extension
+        - https://plugwallet.ooo/
+    - Psychedelic packages
+        - https://github.com/Psychedelic/plug-connect?tab=readme-ov-file
+
+Make sure to have dfx installed, update if needed.
+- DFX Version : 0.19.0
+
+Also, make sure node is installed too.
+- Node Version : 20
+
+For more details, you can check the installation docs here:
+<br>
+https://docs.google.com/document/d/e/2PACX-1vTNicu-xuf4EiLAehHIqgfpjAnPjzqMGT-xpZVvYaAWNyvzYK_Ceve_me4PVRIxpzH7ea5PAX9NxGwY/pub
+
+## 📜 Getting Started
+Finally, to get it running, you can follow these instructions :
+Go to visual studio code and open a new terminal.
+
+```
+git clone https://github.com/nathanielalex/Staychaintion
+cd staychaintion
+
+npm install
+dfx start --clean --background
+dfx deps pull
+dfx deps deploy
+
+npm run setup
+npm run start
 ```
 
-When ready, run `dfx deploy --network ic` to deploy your application to the Internet Computer.
 
-## 🛠️ Technology Stack
-
-- [Vite](https://vitejs.dev/): high-performance tooling for front-end web development
-- [React](https://reactjs.org/): a component-based UI library
-- [TypeScript](https://www.typescriptlang.org/): JavaScript extended with syntax for types
-- [Sass](https://sass-lang.com/): an extended syntax for CSS stylesheets
-- [Prettier](https://prettier.io/): code formatting for a wide range of supported languages
-- [Motoko](https://github.com/dfinity/motoko#readme): a safe and simple programming language for the Internet Computer
-- [Mops](https://mops.one): an on-chain community package manager for Motoko
-- [mo-dev](https://github.com/dfinity/motoko-dev-server#readme): a live reload development server for Motoko
-- [@ic-reactor](https://github.com/B3Pay/ic-reactor): A suite of JavaScript libraries for seamless frontend development on the Internet Computer
-
-## 📚 Documentation
-
-- [Vite developer docs](https://vitejs.dev/guide/)
-- [React quick start guide](https://react.dev/learn)
-- [Internet Computer docs](https://internetcomputer.org/docs/current/developer-docs/ic-overview)
-- [`dfx.json` reference schema](https://internetcomputer.org/docs/current/references/dfx-json-reference/)
-- [Motoko developer docs](https://internetcomputer.org/docs/current/developer-docs/build/cdks/motoko-dfinity/motoko/)
-- [Mops usage instructions](https://j4mwm-bqaaa-aaaam-qajbq-cai.ic0.app/#/docs/install)
-- [@ic-reactor/react](https://b3pay.github.io/ic-reactor/modules/react.html)
-
-## 💡 Tips and Tricks
-
-- Customize your project's code style by editing the `.prettierrc` file and then running `npm run format`.
-- Reduce the latency of update calls by passing the `--emulator` flag to `dfx start`.
-- Install a Motoko package by running `npx ic-mops add <package-name>`. Here is a [list of available packages](https://mops.one/).
-- Split your frontend and backend console output by running `npm run frontend` and `npm run backend` in separate terminals.
+## 📧 Contact Information
+If any questions occured, or in the need of any discussion or details,
+please contact us :
+- Email : stanley.n.wijaya7@gmail.com
+- Telegram : https://t.me/xstynwx
+- Discord : stynw7

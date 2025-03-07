@@ -6,6 +6,7 @@ import type React from "react";
 import getBalance from "@/utility/wallet-func";
 import clsx from "clsx";
 import { Link, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import ThemeToggleButton from "@/components/ui/toggle";
 
 export default function Navbar() {
@@ -82,7 +83,7 @@ export default function Navbar() {
 
               <li className="p-2">
                 <NavLink
-                  href="/profile"
+                  href="/register"
                 >
                   <div className="flex flex-row space-x-2">
                     <LucideIdCard />
@@ -222,11 +223,11 @@ function NavLink({ href, children, onClick, className }: { href: string; childre
     <Link
       to={href}
       onClick={onClick}
-      className={clsx(
+      className={cn([
         "text-gray-600 hover:text-blue-600 transition-colors relative group block px-4 py-2",
         {"!text-blue-600": location.pathname === href,},
         className
-      )}
+      ])}
     >
       {children}
       <span className={clsx(

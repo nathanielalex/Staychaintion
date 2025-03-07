@@ -48,6 +48,8 @@ module {
         reviewId: Text;
         propertyId: Text;
         reviewer: Principal;
+        reviewerName: Text;
+        reviwerPP: Text;
         rating: Float;
         reviewText: Text;
         reviewDate: Text; 
@@ -71,10 +73,51 @@ module {
         coverPicture: Text;
     };
 
+    public type PaginationQuery = {
+        textAttrs: Text;
+        textQueries: Text;
+        numAttrs: Text; 
+        numQueries: Text; 
+        comparisons: Text;
+        orderAttr: Text; 
+        orderDir: Text;
+        page: Nat; 
+        count: Nat;
+    };
+
+    public type Transaction = {
+        id: Text;
+        propertyId: Text;
+        user: Principal;
+        owner: Principal;
+        checkInDate: Text;
+        checkOutDate: Text;
+        totalPrice: Float;
+        propName: Text;
+        propType: Text;
+        propLocation: Text;
+        propCoverPicture: Text;
+        transactionStatus: Text;
+    };
+
+    public type UnregisteredTransaction = {
+        propertyId: Text;
+        user: Principal;
+        owner: Principal;
+        checkInDate: Text;
+        checkOutDate: Text;
+        totalPrice: Float;
+        propName: Text;
+        propType: Text;
+        propLocation: Text;
+        propCoverPicture: Text;
+        transactionStatus: Text;
+    };
+
     public func userRoleVal(role: Text) : Bool {
         switch (role) {
             case ("admin") { return true };
-            case ("renter") { return true };
+            case ("renter") { return true }; //renter in this project means the rental provider
             case ("user") { return true };
             case (_) { return false };
         };
@@ -99,6 +142,18 @@ module {
             case ("bungalow") { return true };
             case ("chalet") { return true };
             case (_) { return false };  // Default case
+        };
+    };
+
+    public func transactionStatusVal(status: Text) : Bool {
+        switch (status) {
+            case ("waitingPayment") { return true }; // initiate transaction start payment process
+            case ("booked") { return true }; // payment finishes, waiting untill the date of check-in
+            case ("checkedIn") { return true }; // check-in date has passed, waiting for check-out
+            case ("checkedOut") { return true }; // checked-out waiting payment transfer to owner
+            case ("completed") { return true }; // checked-out, transaction finished and payment transfered to client
+            case ("cancelled") { return true }; // transaction cancelled by the user or the owner
+            case (_) { return false };
         };
     };
     

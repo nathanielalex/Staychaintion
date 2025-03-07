@@ -10,7 +10,7 @@ export default function OnboardPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (isAuthenticated) navigate('/landing');
+        if (isAuthenticated) navigate('/register');
     }, [isAuthenticated]);
 
     return (

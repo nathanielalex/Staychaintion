@@ -46,6 +46,7 @@ export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivE
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}
+            className="text-blue-400"
           />
         </PopoverContent>
       </Popover>

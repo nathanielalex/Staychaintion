@@ -56,9 +56,9 @@ export default function DisputesPage() {
         </div>
       </main>
 
-      <div className="mt-20">
+      {/* <div className="mt-20">
         <GradientWave />
-      </div>
+      </div> */}
     </div>
   )
 }

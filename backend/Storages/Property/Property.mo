@@ -20,20 +20,22 @@ import Vector "mo:vector/Class";
 actor {
 
     type Property = Util.Property;
+    type Transaction = Util.Transaction;
 
     var propertyInfo = TrieMap.TrieMap<Text, Property>(Text.equal, Text.hash);
-    // var propertyIdIndexes = Array.init<Text>(propertyInfo.size());
+    var transactionHistory = TrieMap.TrieMap<Text, Transaction>(Text.equal, Text.hash);
 
     stable var stablePropertyInfo: [(Text, Property)] = [];
+    stable var stableTransaction: [(Text, Transaction)] = [];
 
     system func preupgrade()  {
-        // seedProperties();
         stablePropertyInfo := Iter.toArray(propertyInfo.entries());
+        stableTransaction := Iter.toArray(transactionHistory.entries());
     };
 
     system func postupgrade() {
         propertyInfo := TrieMap.fromEntries<Text, Property>(Iter.fromArray(stablePropertyInfo), Text.equal, Text.hash);
-        // propertyIdIndexes := Array.fromIterable<Text>(propertyInfo.keys());
+        transactionHistory := TrieMap.fromEntries<Text, Transaction>(Iter.fromArray(stableTransaction), Text.equal, Text.hash);
     };
 
     public shared func registerProperty(unreg: Util.UnregisteredProperty) : async Text {   
@@ -82,9 +84,9 @@ actor {
         };
     };
 
-    public shared func removeProperty(property: Property) : async Int {
+    public shared func removeProperty(propId: Text) : async Int {
         try {
-            propertyInfo.delete(property.id);
+            propertyInfo.delete(propId);
             return 1;
         } catch (e: Error) {
             Debug.print("Error removing property: " # Error.message(e));
@@ -104,13 +106,49 @@ actor {
         return (Vector.toArray(properties));
     };
 
-    // Add this function to seed the properties when canister is initialized
-    // public func initialize() : async () {
-    //     // Call the seeder function
-    //     await seedProperties();
-    // }
+    public query func getProperties(count: Nat) : async [Property] {
+        var counter = 0;
+        let properties = Vector.Vector<Property>();
+        for (p in propertyInfo.vals()) {
+            if(counter >= count){
+                return Vector.toArray(properties)
+            };
+            properties.add(p);
+            counter += 1;
+        };
+        return (Vector.toArray(properties));
+    };
+
+    public query func getOwnerProperties(ownerId: Principal) : async [Property] {
+        let properties = Vector.Vector<Property>();
+        for (p in propertyInfo.vals()) {
+            if(ownerId == p.owner) {
+                properties.add(p);
+            }
+        };
+        return (Vector.toArray(properties));
+    };
+
     public query func propertyCount(): async Nat {
         return propertyInfo.size();
+    };
+
+    public shared func updatePropertyStatus(propId:Text, status: Text): async Nat{
+        if(Util.propStatusVal(status) == false){
+            return 0;
+        };
+
+        switch(propertyInfo.get(propId)){
+            case(null) { return 0; };
+            case(?prop) {
+                let updatedProp: Property = {
+                    prop with
+                    status = status;
+                };
+                propertyInfo.put(propId, updatedProp);
+                return 1;
+            };
+        };
     };
 
     public query func getPropertyIdFromTextAttribute(attribute: Text, text_query: Text): async [Text] {
@@ -241,27 +279,24 @@ actor {
      * ```
      */
     public query func getPropertyPaginate(
-        textAttrs: Text, textQueries: Text,
-        numAttrs: Text, numQueries: Text, comparisons: Text,
-        orderAttr: Text, orderDir: Text,
-        page: Nat, count: Nat
+        queries: Util.PaginationQuery
     ): async ([Property], Nat) {
-        if(page <= 0 or count <= 0) {
+        if(queries.page <= 0 or queries.count <= 0) {
             return ([], 0);
         };
 
         // Parse input parameters
-        let textAttrIter = Text.tokens(textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
-        let textQueryIter = Text.tokens(textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let textAttrIter = Text.tokens(queries.textAttrs, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
+        let textQueryIter = Text.tokens(queries.textQueries, #predicate(func(c):Bool{ c==',' or c==';' or c=='\n' }));
         
-        let numAttrIter = Text.tokens(numAttrs, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
-        let numQueryIter = Text.tokens(numQueries, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
-        let comparIter = Text.tokens(comparisons, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
+        let numAttrIter = Text.tokens(queries.numAttrs, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
+        let numQueryIter = Text.tokens(queries.numQueries, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
+        let comparIter = Text.tokens(queries.comparisons, #predicate(func(c):Bool{ c==' ' or c == ',' or c==';' or c=='\n' }));
 
         var itertyp = propertyInfo.vals();
         var cursor = 0;
         var counter = 0;
-        let skip = (page-1)*count;
+        let skip = (queries.page-1)*queries.count;
 
         // Filter by text attributes
         loop {
@@ -273,7 +308,7 @@ actor {
                                 case("owner"){Principal.toText(prop.owner) : Text};
                                 case("name"){prop.name};
                                 case("status"){prop.status};
-                                case("propertyType"){prop.status};
+                                case("propertyType"){prop.propertyType};
                                 case("location"){prop.location};
                                 case("builtInDate"){prop.builtInDate};
                                 case (_) { "" };                
@@ -307,7 +342,7 @@ actor {
                                 });
                             };
                             case(null, null, null) { 
-                                let sorted = if(switch(orderAttr) {
+                                let sorted = if(switch(queries.orderAttr) {
                                     case("pricePerNight") { true };
                                     case("bedroomCount") { true };
                                     case("guestCapacity") { true };
@@ -322,12 +357,12 @@ actor {
                                     case("builtInDate") { true };
                                     case(_) { false };
                                 }) {
-                                    sort<Property>(Iter.toArray<Property>(itertyp), if (orderDir == "asc") compareAsc else compareDesc, orderAttr)
+                                    sort<Property>(Iter.toArray<Property>(itertyp), if (queries.orderDir == "asc") compareAsc else compareDesc, queries.orderAttr)
                                 } else Iter.toArray<Property>(itertyp);
 
                                 let paginated = Iter.filter<Property>(Iter.fromArray(sorted), func (prop: Property): Bool {
                                     cursor += 1;
-                                    if (cursor > skip and counter < count) {
+                                    if (cursor > skip and counter < queries.count) {
                                         counter += 1;
                                         true;
                                     } else false;
@@ -358,13 +393,14 @@ actor {
     var reviews = TrieMap.TrieMap<Text, PropertyReview>(Text.equal, Text.hash);
     var averageRatings = TrieMap.TrieMap<Text, Float>(Text.equal, Text.hash);
 
-    public shared func addReview(newPropertyId: Text, newReviewer: Principal, newRating: Float, newReviewText: Text, newReviewDate: Text) : async Text {   
+    public shared func addReview(newPropertyId: Text, newReviewer: Principal, newReviewerName: Text, newReviewerPP: Text, newRating: Float, newReviewText: Text, newReviewDate: Text) : async Text {         
         let id = await Util.generateUUID();
-        
         let review : PropertyReview = {
             reviewId = id;
             propertyId = newPropertyId;
             reviewer = newReviewer;
+            reviewerName = newReviewerName;
+            reviwerPP = newReviewerPP;
             rating = newRating;
             reviewText = newReviewText;
             reviewDate = newReviewDate; 
@@ -418,7 +454,7 @@ actor {
                 if (updateResult == 1) {
                     // Successfully updated property, now add the review
                     reviews.put(id, review);
-                    return "Review added and property updated successfully!";
+                    return id;
                 } else {
                     // If property update failed
                     return "Failed to update property. Review not added.";
@@ -442,11 +478,232 @@ actor {
         return (Vector.toArray(reviews));
     };
 
-    // public func getAverageRating(propertyId: Text): ?Float {
-    //     return TrieMap.get(propertyRatings, propertyId);
-    // }
+    // Transaction functions
+    public shared func initiateTransaction(newTransaction: Util.UnregisteredTransaction) : async Text {   
+        if(Util.transactionStatusVal(newTransaction.transactionStatus) == false) {
+            return "";
+        };
 
-    // public query func getPropertyInfo(propertyId: Text) : async ?Property {
-    //     return propertyInfo.get(propertyId);
-    // };
+        for (p in transactionHistory.vals()) {
+            // Check if property is already on a transaction and is not completed or cancelled then it's not eligible for a new transaction
+            // one property can only have one ongoing transaction at a time (waiting payment, booked, checkin, checkout)
+            if(newTransaction.propertyId == p.propertyId and not (newTransaction.transactionStatus == "completed" or newTransaction.transactionStatus == "cancelled") and p.transactionStatus == newTransaction.transactionStatus) {
+                return "";
+            };
+        };
+        
+        let id = await Util.generateUUID();
+        let transaction : Transaction = {
+            newTransaction with
+            id = id;
+        };
+
+        transactionHistory.put(id, transaction);
+        return id;
+    };
+
+    public shared func updateTransaction(updatedTransaction: Transaction) : async Int {
+        try {
+            transactionHistory.put(updatedTransaction.id, updatedTransaction);
+            return 1;
+        } catch (e: Error) {
+            Debug.print("Error updating transaction: " # Error.message(e));
+            return 0;
+        };
+    };
+
+    public shared func changeTransactionStatus(transactionId: Text, newStatus: Text) : async Int {
+        if(Util.transactionStatusVal(newStatus) == false){
+            return 0;
+        };
+
+        switch(transactionHistory.get(transactionId)){
+            case(null) { return 0; };
+            case(?transaction) {
+                let updatedTransaction: Transaction = {
+                    transaction with
+                    status = newStatus;
+                };
+                transactionHistory.put(transactionId, updatedTransaction);
+                return 1;
+            };
+        };
+    };
+
+    public shared func removeTransaction(transactionId: Text) : async Int {
+        try {
+            transactionHistory.delete(transactionId);
+            return 1;
+        } catch (e: Error) {
+            Debug.print("Error removing transaction: " # Error.message(e));
+            return 0;
+        };
+    };
+
+    public query func getTransactionStatus(transactionId: Text) : async Text {
+        switch(transactionHistory.get(transactionId)){
+            case(?transaction) { return transaction.transactionStatus; };
+            case(null) { return ""; };
+        };
+    };
+
+    public query func getTransactionByStatus(status: Text) : async [Transaction] {
+        let transactions = Vector.Vector<Transaction>();
+        for (t in transactionHistory.vals()) {
+            if(status == t.transactionStatus) {
+                transactions.add(t);
+            };
+        };
+        return (Vector.toArray(transactions));
+    };
+
+    public query func getUserTransactionHistoryPaginate(userId: Principal, status: ?Text, page: Nat, count: Nat) : async ([Transaction], Nat) {
+        switch(status) {
+            case(null) { 
+                // First collect and sort all relevant transactions
+                let filteredTransactions = Array.filter<Transaction>(
+                    Iter.toArray<Transaction>(transactionHistory.vals()),
+                    func (t: Transaction): Bool {
+                        return userId == t.user;
+                    }
+                );
+                
+                // Sort the filtered transactions
+                let sortedTransactions = Array.sort<Transaction>(
+                    filteredTransactions, 
+                    compareTransactionAsc
+                );
+                
+                // Then paginate the results
+                var cursor = 0;
+                var counter = 0;
+                let skip = (page-1)*count;
+                
+                let paginatedTransactions = Array.filter<Transaction>(
+                    sortedTransactions,
+                    func (t: Transaction): Bool {
+                        cursor += 1;
+                        if (cursor > skip and counter < count) {
+                            counter += 1;
+                            return true;
+                        };
+                        return false;
+                    }
+                );
+                
+                return (paginatedTransactions, filteredTransactions.size());
+            };
+            case(?stat) { 
+                if(Util.transactionStatusVal(stat) == false) {
+                    return ([], 0);
+                };
+
+                // First collect and sort all relevant transactions
+                let filteredTransactions = Array.filter<Transaction>(
+                    Iter.toArray<Transaction>(transactionHistory.vals()),
+                    func (t: Transaction): Bool {
+                        return userId == t.user and stat == t.transactionStatus;
+                    }
+                );
+                
+                // Sort the filtered transactions
+                let sortedTransactions = Array.sort<Transaction>(
+                    filteredTransactions, 
+                    compareTransactionAsc
+                );
+                
+                // Then paginate the results
+                var cursor = 0;
+                var counter = 0;
+                let skip = (page-1)*count;
+                
+                return (Array.filter<Transaction>(
+                    sortedTransactions,
+                    func (t: Transaction): Bool {
+                        cursor += 1;
+                        if (cursor > skip and counter < count) {
+                            counter += 1;
+                            return true;
+                        };
+                        return false;
+                    }
+                ), filteredTransactions.size());
+            };
+        };
+    };
+
+    private func compareTransactionAsc(t1: Transaction, t2:Transaction): Order.Order {
+        // Helper function to convert transaction status to priority number
+        // Lower number means higher priority in ascending sort
+        let statusPriority = func (status: Text) : Int {
+            switch (status) {
+            case "waitingPayment" { 1 };
+            case "booked" { 2 };
+            case "checkedIn" { 3 };
+            case "checkedOut" { 4 };
+            case _ { 5 }; // Other statuses (completed, cancelled, etc.) get lowest priority
+            };
+        };
+        
+        // First compare by status priority
+        let t1Priority = statusPriority(t1.transactionStatus);
+        let t2Priority = statusPriority(t2.transactionStatus);
+        
+        if (t1Priority < t2Priority) { return #less; }
+        else if (t1Priority > t2Priority) { return #greater; }
+        else {
+            switch (compareDates(t1.checkInDate, t2.checkInDate)) {
+                case (#less) { #less };
+                case (#equal) { #equal };
+                case (#greater) { #greater };
+            };
+        };
+    };
+
+    public query func getPropertyTransactionHistory(propertyId: Text) : async [Transaction] {
+        let transactions = Vector.Vector<Transaction>();
+        for (t in transactionHistory.vals()) {
+            if(propertyId == t.propertyId) {
+                transactions.add(t);
+            };
+        };
+        return (Vector.toArray(transactions));
+    };
+
+    public query func getTransaction(transactionId: Text) : async ?Transaction {
+        return transactionHistory.get(transactionId);
+    };
+
+    private func compareDates(date1: Text, date2: Text) : {#less; #equal; #greater} {
+        // Parse dates in DD-MM-YYYY format
+        let d1Parts:[Text] = Iter.toArray<Text>(Text.split(date1, #char('-')));
+        let d2Parts:[Text] = Iter.toArray<Text>(Text.split(date2, #char('-')));
+        
+        if (d1Parts.size() != 3 or d2Parts.size() != 3) {
+            return #equal; // Invalid format, treat as equal
+        };
+        
+        // Compare years first
+        let year1 = d1Parts[2];
+        let year2 = d2Parts[2];
+        
+        if (Text.greater(year1, year2)) { return #less };
+        if (Text.less(year1, year2)) { return #greater };
+        
+        // Years equal, compare months
+        let month1 = d1Parts[1];
+        let month2 = d2Parts[1];
+        
+        if (Text.greater(month1, month2)) { return #less };
+        if (Text.less(month1, month2)) { return #greater };
+        
+        // Months equal, compare days
+        let day1 = d1Parts[0];
+        let day2 = d1Parts[0];
+        
+        if (Text.greater(day1, day2)) { return #less };
+        if (Text.less(day1, day2)) { return #greater };
+        
+        return #equal;
+    }
 };
