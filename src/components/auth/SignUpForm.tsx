@@ -153,7 +153,7 @@ export default function SignUpForm() {
               selected={formData.dateOfBirth}
               onSelect={handleDateOfBirthChange}
               initialFocus
-              className="bg-white text-gray-900"
+              className="bg-white text-white"
             />
           </PopoverContent>
         </Popover>
