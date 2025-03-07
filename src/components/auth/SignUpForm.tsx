@@ -12,6 +12,7 @@ import { loadFull } from "tsparticles";
 import { User_backend } from "@/declarations/User_backend";
 import { UserProfile } from "@/declarations/User_backend/User_backend.did";
 import { useAuth } from "@/utility/use-auth-client";
+import { useNavigate } from "react-router-dom";
 export default function SignUpForm() {
 
   const [selectedRole, setSelectedRole] = useState("");
@@ -26,6 +27,9 @@ export default function SignUpForm() {
   });
 
   const { principal } = useAuth();
+
+  const navigate = useNavigate();
+
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -82,6 +86,7 @@ export default function SignUpForm() {
       }
       await User_backend.registerUser(userData);
       //maybe add context
+      navigate(`/landing`); 
     }
   };
 
