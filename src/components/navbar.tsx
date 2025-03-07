@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import ThemeToggleButton from "@/components/ui/toggle";
+import { useRegistration } from "@/utility/RegistrationContext";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,6 +16,8 @@ export default function Navbar() {
   const [balance, setBalance] = useState<number>();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState<boolean>();
   const [isConnected, setIsConnected] = useState<boolean>();
+
+  const { isRegistered, role } = useRegistration();
 
   const _getBalance = async () => {
     const _isConnected = await window.ic?.plug?.isConnected();
@@ -83,7 +86,15 @@ export default function Navbar() {
 
               <li className="p-2">
                 <NavLink
-                  href="/register"
+                  href={
+                    isRegistered
+                      ? role === 'admin'
+                        ? '/admin'
+                        : role === 'owner'
+                        ? '/owner'
+                        : '/user'  
+                      : '/register'
+                  }
                 >
                   <div className="flex flex-row space-x-2">
                     <LucideIdCard />

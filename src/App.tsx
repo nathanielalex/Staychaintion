@@ -99,6 +99,7 @@ import DisputesPage from './pages/disputes/page';
 import { ThemeProvider } from '@/context/ThemeContext';
 import ScrollToTop from "./utility/ScrollToTop"; 
 import NewMaps from "./pages/maps/page"
+import { RegistrationProvider } from './utility/RegistrationContext';
 
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -357,6 +358,8 @@ function App() {
 
 export default () => (
   <AuthProvider>
-    <App />
+    <RegistrationProvider>
+      <App />
+    </RegistrationProvider>
   </AuthProvider>
 );
