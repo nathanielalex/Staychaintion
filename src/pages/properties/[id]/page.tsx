@@ -81,8 +81,18 @@ export default function PropertyDetailPage() {
     setReviewText(e.target.value);
   };
 
-  const handleRatingClick = (index: number) => {
-    setRating(index + 1);
+  // const handleRatingClick = (index: number) => {
+  //   if (rating == 1 && index == 0)  {
+  //     console.log("Rating di reset jadi 0")
+  //     setRating(0);
+  //     return;
+  //   }
+  //   setRating(index + 1);
+  // };
+
+  const handleRatingClick = (index:number) => {
+    // If the user clicks the currently selected rating, reset to 0
+    setRating((prevRating) => (prevRating === index + 1 ? 0 : index + 1));
   };
 
   const fetchOwner = async () => {
@@ -274,14 +284,14 @@ export default function PropertyDetailPage() {
               <div className="border-t pt-6">
                 <div className="flex items-center space-x-4">
                   <img
-                    src={owner?.profilePictureUrl || "/placeholder.svg"}
+                    src={owner?.profilePictureUrl || "/images/placeholder/user.png"}
                     alt={owner?.fullName}
                     width={56}
                     height={56}
                     className="rounded-full"
                   />
                   <div>
-                    <p className="font-medium">Hosted by {owner?.fullName}</p>
+                    <p className="font-medium">Hosted by {owner?.fullName || "Stanley"}</p>
                     {/* <p className="text-sm text-gray-600">Superhost · {property.host.hostingSince} hosting</p> */}
                   </div>
                 </div>
@@ -481,18 +491,54 @@ export default function PropertyDetailPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Rating</label>
+
+
                 <div className="flex space-x-1">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <button key={i} className="focus:outline-none" onClick={() => handleRatingClick(i)}>
-                      <Star className="w-6 h-6 text-gray-300 hover:text-blue-600 hover:fill-blue-600 transition-colors" />
+                    <button
+                      key={i}
+                      className="focus:outline-none"
+                      onClick={() => handleRatingClick(i)}
+                    >
+                      {/* <Star
+                        className={`w-6 h-6 transition-colors 
+
+                          ${
+                            rating == 0
+                              ? "text-gray-300"
+                              : "text-gray-300"
+                          }
+                          
+                          ${
+                          i < rating
+                            ? "text-yellow-400 fill-yellow-400" // Filled blue for selected stars
+                            : "text-gray-300"
+                          
+                        }
+                        
+                        `
+
+                      }
+                      /> */}
+
+                    <Star
+                                className={`w-6 h-6 transition-colors ${
+                                  i < rating
+                                    ? "text-yellow-400 fill-yellow-400" // Filled yellow when selected
+                                    : "text-gray-300"
+                                }`}
+                              />
+
                     </button>
                   ))}
                 </div>
+
+
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Review</label>
                 <textarea
-                  className="w-full border rounded-md p-3 h-32 focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  className="w-full border rounded-md p-3 h-32 focus:ring-2 focus:ring-blue-600 focus:border-transparent text-white"
                   placeholder="Share your experience with this property..."
                   value={reviewText}
                   onChange={handleReviewTextChange}
