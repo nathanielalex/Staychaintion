@@ -100,7 +100,7 @@ export default function Navbar() {
                     <LucideWallet2 />
                     <div>{isConnected ? "Wallet" : "Connect to Wallet"}</div>
                   </div>
-                  <div>Balance: {balance?.toFixed(2)} ICP</div>
+                  {isConnected && (<div>Balance: {balance?.toFixed(2)} ICP</div>)}
                 </NavLink>
               </li>
 
