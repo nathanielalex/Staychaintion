@@ -64,6 +64,17 @@ export default function PropertyDetailPage() {
   const [reviewText, setReviewText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  const [selectedRatings, setSelectedRatings] = useState(
+    reviews.map((review) => review.rating) // Initial ratings
+  );
+
+  const handleStarClick = (reviewIndex : number, starIndex : number) => {
+    // Update the selected rating for the clicked review
+    setSelectedRatings((prevRatings) =>
+      prevRatings.map((rating, i) => (i === reviewIndex ? starIndex + 1 : rating))
+    );
+  };
+
   const { principal } = useAuth();
 
   const handleReviewTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -427,10 +438,25 @@ export default function PropertyDetailPage() {
                         </div>
                         <div className="flex">
                           {Array.from({ length: 5 }).map((_, i) => (
+
+                            // Old Star
+                            // <Star
+                            //   key={i}
+                            //   className={`w-4 h-4 ${i < review.rating ? "text-blue-600 fill-blue-600" : "text-gray-300"}`}
+                            // />
+
+                            // New Star
+                            
                             <Star
-                              key={i}
-                              className={`w-4 h-4 ${i < review.rating ? "text-blue-600 fill-blue-600" : "text-gray-300"}`}
-                            />
+                            key={i}
+                            className={`w-6 h-6 cursor-pointer transition-colors duration-200 ${
+                              i < selectedRatings[index]
+                                ? "text-blue-600 fill-blue-600"
+                                : "text-gray-300"
+                            }`}
+                            onClick={() => handleStarClick(index, i)}
+                          />
+
                           ))}
                         </div>
                       </div>
