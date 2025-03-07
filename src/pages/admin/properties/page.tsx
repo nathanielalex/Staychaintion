@@ -9,6 +9,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react"
 import PropertyForm from "@/components/admin/properties/property-form"
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
 import { Property_backend } from "@/declarations/Property_backend"
+import { useAuth } from "@/utility/use-auth-client"
 
 /*
 const properties = [
@@ -41,7 +42,10 @@ export default function PropertiesPage() {
   const [editingProperty, setEditingProperty] = useState<any>(null)
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  
 
+  
   const fetchProperties = async () => {
     try {
       // setLoading(true);
@@ -60,7 +64,7 @@ export default function PropertiesPage() {
     fetchProperties();
   }, []);
 
-  const handleEdit = async(property: Property) => {
+  const handleEdit = (property: Property) => {
     setEditingProperty(property)
     setShowForm(true)
   }
@@ -96,7 +100,7 @@ export default function PropertiesPage() {
 
       {showForm ? (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}>
-          <PropertyForm property={editingProperty} onClose={() => setShowForm(false)} setProperties={setProperties}/>
+          <PropertyForm property={editingProperty} isUpdating={isUpdating} onClose={() => setShowForm(false)} setProperties={setProperties}/>
         </motion.div>
       ) : (
         <Card>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { Search, SlidersHorizontal, Home, Building, Tent, Castle, Mountain, PocketIcon as Pool } from "lucide-react"
+import { Search, SlidersHorizontal, Home, Building, Tent, Warehouse, School, Store, Castle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import PropertyCard from "@/components/properties/property-card"
@@ -53,11 +53,12 @@ interface PropertyQuery extends Partial<Property>{
 const categories = [
   { id: "all", name: "All", icon: Home },
   { id: "apartment", name: "Apartments", icon: Building },
-  { id: "cabin", name: "Cabins", icon: Home },
+  { id: "cabin", name: "Cabins", icon: Warehouse },
   { id: "camping", name: "Camping", icon: Tent },
-  { id: "castle", name: "Castles", icon: Castle },
-  { id: "mountain", name: "Mountain", icon: Mountain },
-  { id: "pool", name: "Amazing Pools", icon: Pool },
+  { id: "house", name: "House", icon: Home },
+  { id: "villa", name: "Villa", icon: Castle },
+  { id: "bungalow", name: "Bungalow", icon: Store },
+  { id: "chalet", name: "Chalet", icon: School },
 ]
 
 export default function PropertiesPage() {
@@ -85,6 +86,8 @@ export default function PropertiesPage() {
           numAttrs: "",
           numQueries: "",
           comparisons: "",
+          orderAttr: "",
+          orderDir: "",
           page: BigInt(page), 
           count: BigInt(onePageCount)
         } as PaginationQuery);

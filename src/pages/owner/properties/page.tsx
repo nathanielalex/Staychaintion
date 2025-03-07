@@ -104,6 +104,7 @@ export default function PropertiesPage() {
 
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   
   const { principal } = useAuth();
 
@@ -127,7 +128,7 @@ export default function PropertiesPage() {
     fetchProperties();
   }, []);
 
-  const handleEdit = (property: any) => {
+  const handleEdit = (property: Property) => {
     setEditingProperty(property)
     setShowForm(true)
   }
@@ -176,10 +177,10 @@ export default function PropertiesPage() {
           <p className="text-gray-500">Manage your rental properties</p>
         </div>
         <Button
-          // onClick={() => {
-          //   setEditingProperty(null)
-          //   setShowForm(true)
-          // }}
+          onClick={() => {
+            // setEditingProperty(null)
+            setShowForm(true)
+          }}
           className="bg-blue-600 hover:bg-blue-700"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -189,7 +190,7 @@ export default function PropertiesPage() {
 
       {showForm ? (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}>
-          <PropertyForm property={editingProperty} setProperties={setProperties} onClose={() => setShowForm(false)} />
+          <PropertyForm property={editingProperty} setProperties={setProperties} isUpdating={isUpdating} onClose={() => setShowForm(false)} />
         </motion.div>
       ) : (
         <>

@@ -13,14 +13,16 @@ import { X, Upload } from "lucide-react"
 import { Property_backend } from "@/declarations/Property_backend"
 import { Property } from "@/declarations/Property_backend/Property_backend.did"
 import { UnregisteredProperty } from "@/declarations/Property_backend/Property_backend.did"
+import { useAuth } from "@/utility/use-auth-client"
 
 interface PropertyFormProps {
   property: Property
   setProperties: React.Dispatch<React.SetStateAction<Property[]>>;
   onClose: () => void
+  isUpdating: boolean;
 }
 
-export default function PropertyForm({ property, onClose, setProperties }: PropertyFormProps) {
+export default function PropertyForm({ property, onClose, setProperties, isUpdating }: PropertyFormProps) {
   const [formData, setFormData] = useState({
     name: property.name,
     type: property.propertyType,
@@ -39,6 +41,8 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
   const [error, setError] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(false)
 
+  const { principal } = useAuth();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({
@@ -50,46 +54,137 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault() // Prevent page refresh on form submit
     console.log('submit form')
-    // Create the property data object from form state
-    const propertyData: Property = {
-      id: property.id,
-      rating: property.rating,
-      status: property.status,
-      bedCount: formData.beds,
-      owner: property.owner,
-      pricePerNight: formData.price,
-      name: formData.name,
-      bedroomCount: formData.bedrooms,
-      bathroomCount: formData.bathrooms,
-      description: formData.description,
-      builtInDate: formData.builtInDate,
-      guestCapacity: formData.guests,
-      pictures: images,
-      propertyType: formData.type,
-      location: formData.location,
-      latitude: formData.latitude,
+
+    if(isUpdating) {
+      const propertyData: Property = {
+        id: property.id,
+        rating: property.rating,
+        status: property.status,
+        bedCount: formData.beds,
+        owner: property.owner,
+        pricePerNight: formData.price,
+        name: formData.name,
+        bedroomCount: formData.bedrooms,
+        bathroomCount: formData.bathrooms,
+        description: formData.description,
+        builtInDate: formData.builtInDate,
+        guestCapacity: formData.guests,
+        pictures: images,
+        propertyType: formData.type,
+        location: formData.location,
+        latitude: formData.latitude,
       longitude: formData.longitude,
-      coverPicture: images[0] || "/placeholder.jpg",
-      reviewCount: property.reviewCount
+      coverPicture: images[0],
+        reviewCount: property.reviewCount
+      }
+      try {
+        setLoading(true);
+        const result = await Property_backend.updateProperty(propertyData);
+  
+        // If the update is successful, update the state with the new property
+        setProperties(prevProperties => 
+          prevProperties.map(property => 
+            property.id === propertyData.id ? { ...property, ...propertyData } : property
+          )
+        );
+        console.log(property);
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setLoading(false);
+      }
+      onClose()
+    } else if(!isUpdating) {
+      const unregisteredProperty: UnregisteredProperty = {
+        status: "available",
+        bedCount: formData.beds,
+        owner: property.owner,
+        pricePerNight: formData.price,
+        name: formData.name,
+        bedroomCount: formData.bedrooms,
+        bathroomCount: formData.bathrooms,
+        description: formData.description,
+        builtInDate: formData.builtInDate,
+        guestCapacity: formData.guests,
+        pictures: images,
+        propertyType: formData.type,
+        location: formData.location,
+        coverPicture: images[0]
+      }
+      try {
+        setLoading(true);
+        const result = await Property_backend.registerProperty(unregisteredProperty);
+        if(principal != null) {
+          const newProperty: Property = {
+            id: result,
+            rating: 0,
+            status: "available",
+            bedCount: formData.beds,
+            owner: principal,
+            pricePerNight: formData.price,
+            name: formData.name,
+            bedroomCount: formData.bedrooms,
+            bathroomCount: formData.bathrooms,
+            description: formData.description,
+            builtInDate: formData.builtInDate,
+            guestCapacity: formData.guests,
+            pictures: images,
+            propertyType: formData.type,
+            location: formData.location,
+            coverPicture: images[0],
+            reviewCount: 0n
+          }
+          // If the update is successful, update the state with the new property
+          setProperties(prevProperties => 
+            [...prevProperties, newProperty]
+          );
+        }
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setLoading(false);
+      }
+      onClose()
     }
 
-    try {
-      setLoading(true);
-      const result = await Property_backend.updateProperty(propertyData);
+    // Create the property data object from form state
+    // const propertyData: Property = {
+    //   id: property.id,
+    //   rating: property.rating,
+    //   status: property.status,
+    //   bedCount: formData.beds,
+    //   owner: property.owner,
+    //   pricePerNight: formData.price,
+    //   name: formData.name,
+    //   bedroomCount: formData.bedrooms,
+    //   bathroomCount: formData.bathrooms,
+    //   description: formData.description,
+    //   builtInDate: formData.builtInDate,
+    //   guestCapacity: formData.guests,
+    //   pictures: images,
+    //   propertyType: formData.type,
+    //   location: formData.location,
+    //   coverPicture: images[0] || "/placeholder.jpg",
+    //   reviewCount: property.reviewCount
+    // }
 
-      // If the update is successful, update the state with the new property
-      setProperties(prevProperties => 
-        prevProperties.map(property => 
-          property.id === propertyData.id ? { ...property, ...propertyData } : property
-        )
-      );
-      console.log(property);
-    } catch (err) {
-      console.log(err)
-      setError('An error occurred while updating the property');
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   setLoading(true);
+    //   const result = await Property_backend.updateProperty(propertyData);
+
+    //   // If the update is successful, update the state with the new property
+    //   setProperties(prevProperties => 
+    //     prevProperties.map(property => 
+    //       property.id === propertyData.id ? { ...property, ...propertyData } : property
+    //     )
+    //   );
+    //   console.log(property);
+    // } catch (err) {
+    //   console.log(err)
+    //   setError('An error occurred while updating the property');
+    // } finally {
+    //   setLoading(false);
+    // }
 
     onClose()
   }
@@ -109,7 +204,7 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
   return (
     <Card className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">{property ? "Edit Property" : "Add New Property"}</h2>
+        <h2 className="text-2xl font-semibold">{isUpdating ? "Edit Property" : "Add New Property"}</h2>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="w-5 h-5" />
         </Button>
@@ -281,7 +376,7 @@ export default function PropertyForm({ property, onClose, setProperties }: Prope
             Cancel
           </Button>
           <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-            {property ? "Update Property" : "Add Property"}
+            {isUpdating ? "Update Property" : "Add Property"}
           </Button>
         </div>
       </form>
