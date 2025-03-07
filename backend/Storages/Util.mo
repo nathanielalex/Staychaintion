@@ -10,10 +10,12 @@ import Char "mo:base/Char";
 import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
+import Principal "mo:base/Principal";
 
 module {
     public type UserProfile = {
         id: Principal;
+        walletId: ?Principal;
         role: Text;
         fullName: Text;
         email: Text;
@@ -117,8 +119,9 @@ module {
     public func userRoleVal(role: Text) : Bool {
         switch (role) {
             case ("admin") { return true };
-            case ("renter") { return true }; //renter in this project means the rental provider
-            case ("user") { return true };
+            case ("owner") { return true };
+            case ("renter") { return true };
+            case ("guest") { return true };
             case (_) { return false };
         };
     };

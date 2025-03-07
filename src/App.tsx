@@ -5,7 +5,6 @@ import { Principal } from '@dfinity/principal';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Wallet from './pages/Wallet';
-import RegisterPage from './pages/RegisterPage';
 import RegisterPage2 from './pages/auth/RegisterPage';
 import { SetStateAction, useEffect, useState } from 'react';
 import LandingPage from './pages/LandingPage';
@@ -314,9 +313,11 @@ function App() {
   if (!auth) return null;
 
   const { isAuthenticated, principal } = auth;
-
+  console.log('isAuthenticated ', isAuthenticated);
+  
   useEffect(() => {
     const checkIfRegistered = async () => {
+      console.log('in checkIfRegistered isAuthenticated ', isAuthenticated);
       if (isAuthenticated && principal) {
         try {
           // const principalObj = Principal.fromText(principal);
@@ -329,10 +330,11 @@ function App() {
       }
       setLoading(false);
     };
-
+    
     if (isAuthenticated && principal) {
       checkIfRegistered();
     } else {
+      console.log('in else checkIfRegistered isAuthenticated ', isAuthenticated);
       setLoading(false);
     }
   }, [isAuthenticated, principal]);

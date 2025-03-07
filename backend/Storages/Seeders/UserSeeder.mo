@@ -10,6 +10,7 @@ actor {
     let users : [Util.UserProfile] = [
       {
       id = Principal.fromText("aaaaa-aa");
+      walletId = null;
       role = "admin";
       fullName = "superadmin";
       email = "superadmin@gmail.com";
@@ -20,6 +21,7 @@ actor {
       },
       {
       id = Principal.fromBlob(Blob.fromArray([1])); 
+      walletId = null;
       role = "user";
       fullName = "iAmUser";
       email = "user123@gmail.com";
@@ -30,6 +32,7 @@ actor {
       },
       {
       id = Principal.fromBlob(Blob.fromArray([2])); 
+      walletId = null;
       role = "renter";
       fullName = "iAmRenter";
       email = "renter123@gmail.com";
@@ -40,6 +43,7 @@ actor {
       },
       {
       id = Principal.fromBlob(Blob.fromArray([3])); 
+      walletId = null;
       role = "guest";
       fullName = "iAmGuest";
       email = "guest123@gmail.com";
@@ -50,6 +54,7 @@ actor {
       },
       {
       id = Principal.fromBlob(Blob.fromArray([4])); 
+      walletId = null;
       role = "user";
       fullName = "John Smith";
       email = "johnsmith@example.com";
@@ -60,6 +65,7 @@ actor {
       },
       {
       id = Principal.fromBlob(Blob.fromArray([5])); 
+      walletId = null;
       role = "renter";
       fullName = "Sarah Johnson";
       email = "sarahj@example.com";
@@ -70,6 +76,7 @@ actor {
       },
       {
       id = Principal.fromBlob(Blob.fromArray([6])); 
+      walletId = null;
       role = "user";
       fullName = "Michael Brown";
       email = "mbrown@example.com";
@@ -80,6 +87,7 @@ actor {
       },
       {
       id = Principal.fromBlob(Blob.fromArray([7])); 
+      walletId = null;
       role = "renter";
       fullName = "Emily Davis";
       email = "edavis@example.com";
@@ -90,6 +98,7 @@ actor {
       },
       {
       id = Principal.fromBlob(Blob.fromArray([8])); 
+      walletId = null;
       role = "guest";
       fullName = "David Wilson";
       email = "dwilson@example.com";
