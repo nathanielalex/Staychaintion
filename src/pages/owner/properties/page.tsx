@@ -92,6 +92,8 @@ const initialProperty: Property = {
   pictures: [],
   propertyType:'',
   location: '',
+  latitude: 0,
+  longitude: 0,
   coverPicture: '',
   reviewCount: 0n
 };
