@@ -83,7 +83,7 @@ export default function Navbar() {
 
               <li className="p-2">
                 <NavLink
-                  href="/profile"
+                  href="/register"
                 >
                   <div className="flex flex-row space-x-2">
                     <LucideIdCard />

@@ -161,7 +161,19 @@ const AnimatedRoutes = () => {
               throw new Error('Function not implemented.');
             } } />} /> */}
 
-            <Route path="/register" element={<RegisterPage2 />} />
+            <Route
+              path="/register"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <RegisterPage2 />
+                </ProtectedRoute>
+              }
+            />
+            {/* <Route
+              path="/register"
+              element={<RegisterPage2 />}
+            /> */}
+
 
             <Route path="/legal" element={<LegalPage />} />
 
