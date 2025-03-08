@@ -7,7 +7,7 @@ actor {
     let props = await Property.getProperties(3);
 
     for(prop in props.vals()) {
-      let userPropertyId = await User.transferPropertyToUser(userId, prop.id);
+      let status = await User.transferPropertyToUser(userId, prop.id);
     };
   };
 };
