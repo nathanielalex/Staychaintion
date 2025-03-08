@@ -23,6 +23,7 @@ module {
         balance: Float;
         profilePictureUrl: Text;
         propertiesId: ?[Text];
+        walletId: ?Principal;
     };
     
     public type Property = {
@@ -163,7 +164,13 @@ module {
     expired_date : Nat;
   };
 
+    public type RecommendationType = {
+        #property;
+        #product;
+    };
+
     public type PropertyRecommendation = {
+        recommendationType: RecommendationType;
         id: Text;
         name: Text;
         coverPicture: Text;
@@ -171,6 +178,7 @@ module {
     };
 
     public type ProductRecommendation = {
+        recommendationType: RecommendationType;
         id: Text;
         name: Text;
         coverPicture: Text;
@@ -189,7 +197,7 @@ module {
     public type ChatbotMessage = {
         user: Principal;
         prompt: Text;
-        response: ChatbotResponse;
+        response: ?ChatbotResponse;
     };
 
   public func userRoleVal(role : Text) : Bool {

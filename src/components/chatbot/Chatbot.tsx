@@ -1,12 +1,56 @@
-import { ChatbotMessage, _SERVICE } from "@/declarations/Chatbot/Chatbot.did";
-import { Chatbot_backend } from "@/declarations/Chatbot";
+import { Chatbot_backend } from "@/declarations/Chatbot_backend";
+import { ProductRecommendation, PropertyRecommendation, ChatbotMessage, ChatbotResponse } from "@/declarations/Chatbot_backend/Chatbot_backend.did";
 import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
 import { useAuth } from "@ic-reactor/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoSend } from "react-icons/io5";
+import { toast } from "react-toastify";
+import clsx from "clsx";
+import ReactLoading from 'react-loading';
+import { useNavigate } from "react-router-dom";
+import { Property_backend } from "@/declarations/Property_backend";
+import { Product_backend } from "@/declarations/Product_backend";
 
-const Chatbot: React.FC = () => {
+const ProductRecommendationCard = ({recommendation}: {recommendation: ProductRecommendation}) => {
+
+  const navigate = useNavigate();
+  return (
+    <div
+      className="flex flex-row space-y-2"
+      onClick={() => {
+        navigate('');
+      }}
+    >
+      <img src={recommendation.coverPicture} />
+      <div>
+        <strong>{recommendation.name}</strong>
+        <div>Rp. {Number(recommendation.price ?? 0).toLocaleString()}</div>
+      </div>
+    </div>
+  );
+}
+
+const PropertyRecommendationCard = ({recommendation}: {recommendation: PropertyRecommendation}) => {
+
+  const navigate = useNavigate();
+  return (
+    <div
+      className="flex flex-row space-y-2"
+      onClick={() => {
+        navigate('');
+      }}
+    >
+      <img src={recommendation.coverPicture} />
+      <div>
+        <strong>{recommendation.name}</strong>
+        <div>Rp. {Number(recommendation.price_per_night ?? 0).toLocaleString()}</div>
+      </div>
+    </div>
+  );
+}
+
+const ChatbotPage: React.FC = () => {
   const [messages, setMessages] = useState<ChatbotMessage[]>([]);
   const [avalilabeData, setAvalilabeData] = useState<{ products: string; properties: string; }>({products: '', properties: ''});
   const [prompt, setPrompt] = useState<string>("");
@@ -15,38 +59,87 @@ const Chatbot: React.FC = () => {
   const [chosenModel, setChosenModel] = useState<string>("gemini-1.5-flash");
   const [isMessageLoading, setIsMessageLoading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
 
   const { identity } = useAuth();
-  
-  const getMessages = async() => {
-    setIsLoading(true);
+  const principal = identity?.getPrincipal();
+
+  const init = async() => {
     try {
-      const principal = identity?.getPrincipal();
-      const _messages = await Chatbot.
-      setMessages(_messages);
+      setIsLoading(true);
+      await Promise.all([
+        fetchAvailableData,
+        getMessages,
+      ]);
+
+      setModelProvider(new GoogleGenerativeAI(process.env.GOOGLE_API_KEY ?? ''));  
+      setModel(modelProvider?.getGenerativeModel({ model: chosenModel }));
     } catch (err) {
-      
+      toast.error("Error initiating chatbot.", {
+        position: 'top-center',
+      });
     } finally {
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    getMessages();
-    setModelProvider(new GoogleGenerativeAI(process.env.GOOGLE_API_KEY ?? ''));  
+    init();
   }, []);
 
   useEffect(() => {
     setModel(modelProvider?.getGenerativeModel({ model: chosenModel }));
   }, [chosenModel]);
+  
+  const getMessages = async() => {
+    setIsLoading(true);
+    try {
+      const _messages = await Chatbot_backend.fetchMessages(principal!);
+      setMessages(_messages);
+    } catch (err) {
+      toast.error("Error getting past messages.", {
+        position: 'top-center',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const fetchAvailableData = async() => {
+    setIsLoading(true);
+    try {
+      const properties = await Promise.all(
+        (await Property_backend.getAllProperties()).map(async (prop) => {
+          const reviews = await Property_backend.getAllPropertyReviews(prop.id);
+          return {
+            ...prop,
+            reviews,
+          };
+        })
+      );
 
+      const products = await Product_backend.getAllProducts();
+
+      setAvalilabeData({properties: JSON.stringify(properties), products: JSON.stringify(products)});
+    } catch (err) {
+      toast.error("Error fetching available data.", {
+        position: 'top-center',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const onSend = async() => {
+    
     setIsMessageLoading(true);
     try {
+      if (!isError) {
+        setMessages(msg => ([...msg, {user: principal!, prompt, response: []}]));
+      } else {
+        setIsError(false);
+      }
+      
       const message = `
         ${prompt}
 
@@ -88,14 +181,32 @@ const Chatbot: React.FC = () => {
         Ensure your response is **structured, concise, and highly relevant to the user's request**.\n
         Ensure the response is a valid JSON object and nothing else. Do not include any explanations, markdown, or extra text outside of the JSON object.\n
         Only respond with available data. If no data is available, respond with a suggestion to the user in the message field, and leave the rest emtpy.
-      `
+      `;
       const resp = await model?.generateContent(message);
 
-      const newResp = JSON.parse(resp?.response.text()!);
+      const newResp: ChatbotResponse = JSON.parse(resp?.response.text()!);
+      const msg: ChatbotMessage = {
+        user: principal!,
+        prompt: prompt,
+        response: [newResp],
+      }
 
-      setMessages(msgs => [...msgs, newResp])
+      setMessages(msgs => 
+        msgs.map((m, i) => 
+          i === msgs.length - 1 ? msg : m
+        )
+      );
+      Chatbot_backend.storeMessage(msg);
     } catch (err) {
-      
+      setIsError(true);
+      setMessages(msgs => 
+        msgs.map((m, i) => 
+          i === msgs.length - 1 ? { ...m, response: {...m.response, message: 'Error getting a response.'} } : m
+        )
+      );
+      toast.error(`Failed to access Chatbot: ${err}.`, {
+        position: 'top-center',
+      });
     } finally {
       setIsMessageLoading(false);
     }
@@ -112,27 +223,50 @@ const Chatbot: React.FC = () => {
                 {msg.prompt}
               </span>
             </div>
-            <div key={index} className="p-2 my-1 text-gray-700">
+            <div key={index} className={clsx(
+              "p-2 my-1 text-gray-700",
+              {
+                "!text-white bg-red-600": isError && index === messages.length - 1,
+              }
+            )}>
               <span className="px-3 py-1 rounded-lg bg-gray-200">
-                {msg.response.message}
-                <strong>Considerations:</strong>
-                <ol>
-                  {msg.response.considerations.map((consideration, index) => (
-                    <li key={index}>{consideration}</li>
-                  ))}
-                </ol>
-                <strong>Pros:</strong>
-                <ol>
-                  {msg.response.pros.map((pro, index) => (
-                    <li key={index}>{pro}</li>
-                  ))}
-                </ol>
-                <strong>Cons:</strong>
-                <ol>
-                  {msg.response.cons.map((cons, index) => (
-                    <li key={index}>{cons}</li>
-                  ))}
-                </ol>
+                {index === messages.length - 1 && isMessageLoading ? (<ReactLoading />) :
+                  index === messages.length - 1 && isError ? (<div>{msg.response?.[0]?.message}</div>) :
+                    (
+                      <div>
+                        <div>{msg.response?.[0]?.message}</div>
+                        <strong>Considerations:</strong>
+                        <ol>
+                          {msg.response?.[0]?.considerations.map((consideration: string, index: number) => (
+                            <li key={index}>{consideration}</li>
+                          ))}
+                        </ol>
+                        <strong>Pros:</strong>
+                        <ol>
+                          {msg.response?.[0]?.pros.map((pro: string, index: number) => (
+                            <li key={index}>{pro}</li>
+                          ))}
+                        </ol>
+                        <strong>Cons:</strong>
+                        <ol>
+                          {msg.response?.[0]?.cons.map((cons: string, index: number) => (
+                            <li key={index}>{cons}</li>
+                          ))}
+                        </ol>
+                        <strong>Recommended Properties:</strong>
+                        <div className="max-w-full min-w-full overflow-x-scroll">
+                          {msg.response?.[0]?.recommended_properties.map((rec: PropertyRecommendation, idx: number) => (
+                            <PropertyRecommendationCard recommendation={rec} key={idx} />
+                          ))}
+                        </div>
+                        <strong>Recommended Products:</strong>
+                        <div className="max-w-full min-w-full overflow-x-scroll">
+                          {msg.response?.[0]?.recommended_products.map((rec: ProductRecommendation, idx: number) => (
+                            <ProductRecommendationCard recommendation={rec} key={idx} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
               </span>
             </div>
           </div>
@@ -154,4 +288,4 @@ const Chatbot: React.FC = () => {
   );
 };
 
-export default Chatbot;
+export default ChatbotPage;
