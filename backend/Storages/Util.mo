@@ -78,6 +78,20 @@ module {
     coverPicture : Text;
   };
 
+  public type CartItem = {
+    quantity: Nat;
+    userId: Principal;
+
+    // Product attributes
+    productId : Text;
+    name : Text;
+    productType : Text;
+    price : Float;
+    coverPicture : Text;
+    discountType : Text;
+    discount : Float;
+  };
+
   public type Product = {
     id : Text;
     seller : Principal;
