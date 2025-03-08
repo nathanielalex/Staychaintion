@@ -10,10 +10,19 @@ import Char "mo:base/Char";
 import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
+import Principal "mo:base/Principal";
+import Voucher "Voucher/Voucher";
 
 module {
+    public type VoucherType = {
+        #fixed;
+        #percentage;
+        #unknown;
+    };
+    
     public type UserProfile = {
         id: Principal;
+        walletId: ?Principal;
         role: Text;
         fullName: Text;
         email: Text;
@@ -122,11 +131,37 @@ module {
         transactionStatus: Text;
     };
 
+    public type Voucher = {
+        id: Text;
+        code: Text;
+        discount: Nat;
+        voucherType: Text;
+        start_date: Nat;
+        expired_date: Nat;
+    };
+
+    public func voucherTypeToVar(voucherType: Text): VoucherType {
+        switch (voucherType) {
+            case ("fixed") return #fixed;
+            case ("percentage") return #percentage;
+            case (_) return #unknown;
+        }
+    };
+
+    public func voucherTypeToText(voucherType: VoucherType) {
+        switch (voucherType) {
+            case (#fixed) return "fixed";
+            case (#percentage) return "percentage";
+            case (#unknown) return "unknown";
+        }
+    };
+
     public func userRoleVal(role: Text) : Bool {
         switch (role) {
             case ("admin") { return true };
-            case ("renter") { return true }; //renter in this project means the rental provider
-            case ("user") { return true };
+            case ("owner") { return true };
+            case ("renter") { return true };
+            case ("guest") { return true };
             case (_) { return false };
         };
     };

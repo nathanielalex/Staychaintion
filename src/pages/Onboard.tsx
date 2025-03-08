@@ -2,17 +2,30 @@ import { useAuth } from '../utility/use-auth-client';
 import { motion } from "framer-motion"
 import LoggedOut from './LoggedOut';
 import { useEffect } from 'react';
+import { Principal } from '@dfinity/principal';
 import { useNavigate } from 'react-router-dom';
 import pageVariants from '@/utility/page-variants';
+import { User_backend } from "@/declarations/User_backend";
 
 export default function OnboardPage() {
-    const { isAuthenticated } = useAuth();
+    const { principal, isAuthenticated } = useAuth();
     const navigate = useNavigate();
-
     useEffect(() => {
-        if (isAuthenticated) navigate('/register');
+        handleIfRegistered();
     }, [isAuthenticated]);
 
+    const handleIfRegistered = async () => {
+        if(!isAuthenticated || !principal) {
+            return;
+        };
+
+        let user = await User_backend.getUser(principal!);
+        if (isAuthenticated && user.length > 0) {
+            navigate('/landing')
+        }else {
+            navigate('/register')
+        };
+    }
     return (
         <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants} transition={{ duration: 0.5 }}>
             <LoggedOut />

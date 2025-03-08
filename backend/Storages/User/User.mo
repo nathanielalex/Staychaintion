@@ -59,10 +59,28 @@ actor {
         return userProfiles.get(id);
     };
 
-    public query func getUserBalance(id: Principal) : async Float {
+    public query func getAllUser(count: Nat) : async [UserProfile] {
+        var userArray: [UserProfile] = [];
+        for (user in userProfiles.vals()) {
+            if (userArray.size() >= count) {
+                return userArray;
+            };
+            userArray := Array.append<UserProfile>(userArray, [user]);
+        };
+        return userArray;
+    };
+
+    public query func getUserBallance(id: Principal) : async Float {
         switch (userProfiles.get(id)) {
             case null { return 0 };
             case (?user) { return user.ballance };
+        };
+    };
+
+    public query func getUserWalletId(id: Principal) : async ?Principal {
+        switch (userProfiles.get(id)) {
+            case null { return null };
+            case (?user) { return user.walletId };
         };
     };
 
@@ -73,17 +91,17 @@ actor {
         };
     };
 
+    public query func isOwner(id: Principal): async Bool {
+        switch (userProfiles.get(id)) {
+            case null { return false };
+            case (?user) { return user.role == "owner" };
+        };
+    };
+
     public query func isRenter(id: Principal): async Bool {
         switch (userProfiles.get(id)) {
             case null { return false };
             case (?user) { return user.role == "renter" };
-        };
-    };
-
-    public query func isUser(id: Principal): async Bool {
-        switch (userProfiles.get(id)) {
-            case null { return false };
-            case (?user) { return user.role == "user" };
         };
     };
 
@@ -94,20 +112,20 @@ actor {
         };
     };
 
-    public shared func updateUserBalance(id: Principal, newBalance: Float) : async Nat {
+    public shared func updateUserBallance(id: Principal, newBallance: Float) : async Nat {
         switch (userProfiles.get(id)) {
             case null { return 0 };
             case (?user) {
                 let updatedUser = {
                     user with
-                    ballance = newBalance;
+                    ballance = newBallance;
                 };
                 
                 try {
                     userProfiles.put(id, updatedUser);
                     return 1;
                 } catch (e: Error) {
-                    print("Error updating user balance: " # Error.message(e));
+                    print("Error updating user ballance: " # Error.message(e));
                     return 0;
                 };
             };

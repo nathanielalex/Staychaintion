@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import ThemeToggleButton from "@/components/ui/toggle";
+import { useRegistration } from "@/utility/RegistrationContext";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,6 +16,8 @@ export default function Navbar() {
   const [balance, setBalance] = useState<number>();
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState<boolean>();
   const [isConnected, setIsConnected] = useState<boolean>();
+
+  const { isRegistered, role } = useRegistration();
 
   const _getBalance = async () => {
     const _isConnected = await window.ic?.plug?.isConnected();
@@ -47,7 +50,7 @@ export default function Navbar() {
       } flex items-center justify-between px-6 py-4 border-b border-white/10`}
     >
       {/* Logo */}
-      <a href="/" className="flex items-center space-x-2">
+      <a href="/landing" className="flex items-center space-x-2">
         <House className="w-8 h-8 text-blue-500" />
         <span className="text-gray-900 font-medium text-xl">StayChaintion</span>
       </a>
@@ -110,7 +113,15 @@ export default function Navbar() {
 
               <li className="p-2">
                 <NavLink
-                  href="/register"
+                  href={
+                    isRegistered
+                      ? role === 'admin'
+                        ? '/admin'
+                        : role === 'owner'
+                        ? '/owner'
+                        : '/user'  
+                      : '/register'
+                  }
                 >
                   <div className="flex flex-row space-x-2">
                     <LucideIdCard />
@@ -121,14 +132,15 @@ export default function Navbar() {
 
               <li className="p-2">
                 <NavLink
-                  href={isConnected ? "/history" : "/wallet"}
+                  // href={isConnected ? "/history" : "/wallet"}
+                  href="/wallet"
                   className="flex flex-col space-y-4"
                 >
                   <div className="flex flex-row space-x-2">
                     <LucideWallet2 />
                     <div>{isConnected ? "Wallet" : "Connect to Wallet"}</div>
                   </div>
-                  <div>Balance: {balance?.toFixed(2)} ICP</div>
+                  {isConnected && (<div>Balance: {balance?.toFixed(2)} ICP</div>)}
                 </NavLink>
               </li>
 
