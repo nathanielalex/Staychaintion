@@ -33,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       />
       <a href='/landing'>
         <Button
-          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-none"
         >
           Back to Home
         </Button>

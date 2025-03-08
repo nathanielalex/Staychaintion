@@ -66,6 +66,7 @@ export default function PropertiesPage() {
 
   const handleEdit = (property: Property) => {
     setEditingProperty(property)
+    setIsUpdating(true)
     setShowForm(true)
   }
 
@@ -88,7 +89,8 @@ export default function PropertiesPage() {
         <h1 className="text-2xl font-semibold">Properties</h1>
         <Button
           onClick={() => {
-            setEditingProperty(null)
+            // setEditingProperty(null)
+            setIsUpdating(false)
             setShowForm(true)
           }}
           className="bg-blue-600 hover:bg-blue-700"
