@@ -135,4 +135,20 @@ actor {
 
   };
 
+  public shared(msg) func addBallance(amount: Float): async Text{
+    let user = await User.getUser(msg.caller);
+    switch(user){
+      case (null){
+        return "You are not registered";
+      };
+      case (?usr){
+        let updatedUserStatus = await User.updateUser({
+          usr with
+          ballance = usr.ballance + amount
+        });
+        return "Your ballance is now " # Nat.toText(updatedUserStatus.ballance);
+      };
+    };
+  };
+
 };
