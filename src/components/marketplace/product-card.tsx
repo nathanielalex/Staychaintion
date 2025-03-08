@@ -1,29 +1,34 @@
-"use client"
+'use client';
 
-import { motion } from "framer-motion"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ShoppingCart, Heart, Star } from "lucide-react"
-import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import type { Product } from "@/pages/marketplace/page"
+import { motion } from 'framer-motion';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ShoppingCart, Heart, Star } from 'lucide-react';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Product } from '@/declarations/Product_backend/Product_backend.did';
 
 interface ProductCardProps {
-  product: Product
+  product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const [isLiked, setIsLiked] = useState(false)
+  const [isLiked, setIsLiked] = useState(false);
 
   // Calculate discounted price
   const discountedPrice =
-    product.discountType === "Percentage"
+    product.discountType === 'percentage'
       ? product.price * (1 - product.discount / 100)
-      : product.price - product.discount
+      : product.price - product.discount;
 
   // Check if product has a discount
-  const hasDiscount = product.discount > 0
+  const hasDiscount = product.discount > 0;
 
   return (
     <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
@@ -32,7 +37,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <a href={`/marketplace/${product.id}`}>
             <div className="aspect-[4/3] relative overflow-hidden">
               <img
-                src={product.coverPicture || "/placeholder.svg"}
+                src={product.coverPicture || '/placeholder.svg'}
                 alt={product.name}
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
@@ -41,7 +46,9 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           {hasDiscount && (
             <Badge className="absolute top-3 left-3 bg-red-500 hover:bg-red-600">
-              {product.discountType === "Percentage" ? `${product.discount}% OFF` : `$${product.discount} OFF`}
+              {product.discountType === 'Percentage'
+                ? `${product.discount}% OFF`
+                : `$${product.discount} OFF`}
             </Badge>
           )}
 
@@ -54,11 +61,13 @@ export default function ProductCard({ product }: ProductCardProps) {
                   className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/80 hover:bg-white"
                   onClick={() => setIsLiked(!isLiked)}
                 >
-                  <Heart className={`h-4 w-4 ${isLiked ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
+                  <Heart
+                    className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                  />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{isLiked ? "Remove from wishlist" : "Add to wishlist"}</p>
+                <p>{isLiked ? 'Remove from wishlist' : 'Add to wishlist'}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -70,7 +79,9 @@ export default function ProductCard({ product }: ProductCardProps) {
               <p className="text-sm text-blue-600">{product.productType}</p>
               <div className="flex items-center">
                 <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400 mr-1" />
-                <span className="text-sm text-gray-600">{product.rating}</span>
+                <span className="text-sm text-gray-600">
+                  {Number(product.rating)}
+                </span>
               </div>
             </div>
 
@@ -80,14 +91,28 @@ export default function ProductCard({ product }: ProductCardProps) {
               </h3>
             </a>
 
-            <p className="text-sm text-gray-500 mb-3 line-clamp-2">{product.shortDescription}</p>
+            <p className="text-sm text-gray-500 mb-3 line-clamp-2">
+              {product.shortDescription}
+            </p>
 
             <div className="flex items-baseline mb-1">
-              <p className="text-xl font-bold text-gray-900">${discountedPrice.toFixed(2)}</p>
-              {hasDiscount && <p className="ml-2 text-sm text-gray-500 line-through">${product.price.toFixed(2)}</p>}
+              <p className="text-xl font-bold text-gray-900">
+                {discountedPrice.toLocaleString('id-ID', {
+                  style: 'currency',
+                  currency: 'IDR',
+                })}
+              </p>
+              {hasDiscount && (
+                <p className="ml-2 text-sm text-gray-500 line-through">
+                  {product.price.toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                  })}
+                </p>
+              )}
             </div>
 
-            <p className="text-xs text-gray-500 mb-3">Sold by: {product.seller}</p>
+            {/* <p className="text-xs text-gray-500 mb-3">Sold by: {product.seller}</p> */}
           </div>
 
           <div className="mt-auto">
@@ -99,6 +124,5 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Card>
     </motion.div>
-  )
+  );
 }
-
