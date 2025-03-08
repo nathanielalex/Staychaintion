@@ -324,7 +324,6 @@ function App() {
   
   useEffect(() => {
     const checkIfRegistered = async () => {
-      console.log('in checkIfRegistered isAuthenticated ', isAuthenticated);
       if (isAuthenticated && principal) {
         try {
           // const principalObj = Principal.fromText(principal);
@@ -341,7 +340,6 @@ function App() {
     if (isAuthenticated && principal) {
       checkIfRegistered();
     } else {
-      console.log('in else checkIfRegistered isAuthenticated ', isAuthenticated);
       setLoading(false);
     }
   }, [isAuthenticated, principal]);
