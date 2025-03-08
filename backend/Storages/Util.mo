@@ -142,6 +142,7 @@ module {
     };
 
     public type ChatbotMessage = {
+        user: Principal;
         prompt: Text;
         response: ChatbotResponse;
     };
