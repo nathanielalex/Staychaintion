@@ -113,4 +113,26 @@ actor {
       let userId = await User.registerUser(user);
     };
   };
+
+  public shared(msg) func changeRole(role: Text): async Text{
+    if(Util.userRoleVal(role)){
+      let user = await User.getUser(msg.caller);
+      switch(user){
+        case (null){
+          return "You are not registered";
+        };
+        case (?usr){
+          let updatedUserStatus = await User.updateUser({
+            usr with
+            role = role
+          });
+          return "You are now an " # role;
+        };
+      };
+    } else {
+      return "Invalid role " # role;
+    };
+
+  };
+
 };
