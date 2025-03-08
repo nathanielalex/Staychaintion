@@ -1,0 +1,35 @@
+# Product Module Documentation
+
+## Functions
+
+### getProductInfo
+Retrieves product information by product ID.
+- Params: `prodId: Text` - The ID of the product to retrieve
+- Returns: `async ?Product` - The product information if found, null otherwise
+
+### getAllProducts
+Retrieves all products stored in the system.
+- Returns: `async [Product]` - Array of all product objects
+
+### registerProduct
+Registers a new product in the system.
+- Params: `unreg: UnregisteredProduct` - The unregistered product details
+- Returns: `async Text` - The generated unique ID for the newly registered product
+
+### updateProduct
+Updates an existing product's information.
+- Params: `updatedProduct: Product` - The complete updated product object including the ID
+- Returns: `async Int` - Returns 1 if update was successful, 0 if there was an error
+
+### removeProduct
+Removes a product from the system.
+- Params: `prodId: Text` - The ID of the product to remove
+- Returns: `async Int` - Returns 1 if removal was successful, 0 if there was an error
+
+## System Functions
+
+### preupgrade
+System function that prepares data for canister upgrade by storing the product data in stable storage.
+
+### postupgrade
+System function that restores the product data from stable storage after a canister upgrade.

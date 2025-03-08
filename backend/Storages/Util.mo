@@ -11,35 +11,28 @@ import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
 import Principal "mo:base/Principal";
-// import Voucher "Voucher/Voucher";
 
 module {
-  public type VoucherType = {
-    #fixed;
-    #percentage;
-    #unknown;
-  };
-
-  public type UserProfile = {
-    id : Principal;
-    walletId : ?Principal;
-    role : Text;
-    fullName : Text;
-    email : Text;
-    dateOfBirth : Text;
-    balance : Float;
-    profilePictureUrl : Text;
-    propertiesId : ?[Text];
-  };
-
-  public type Property = {
-    id : Text;
-    owner : Principal;
-    name : Text;
-    status : Text;
-    propertyType : Text;
-    pricePerNight : Float;
-    description : Text;
+    
+    public type UserProfile = {
+        id: Principal;
+        role: Text;
+        fullName: Text;
+        email: Text;
+        dateOfBirth: Text;
+        balance: Float;
+        profilePictureUrl: Text;
+        propertiesId: ?[Text];
+    };
+    
+    public type Property = {
+        id: Text;
+        owner: Principal;
+        name : Text;
+        status: Text;
+        propertyType: Text;
+        pricePerNight: Float;
+        description: Text;
 
     location : Text;
     latitude : Float;
@@ -170,21 +163,34 @@ module {
     expired_date : Nat;
   };
 
-  public func voucherTypeToVar(voucherType : Text) : VoucherType {
-    switch (voucherType) {
-      case ("fixed") return #fixed;
-      case ("percentage") return #percentage;
-      case (_) return #unknown;
+    public type PropertyRecommendation = {
+        id: Text;
+        name: Text;
+        coverPicture: Text;
+        price_per_night: Nat;
     };
-  };
 
-  public func voucherTypeToText(voucherType : VoucherType) : Text {
-    switch (voucherType) {
-      case (#fixed) return "fixed";
-      case (#percentage) return "percentage";
-      case (#unknown) return "unknown";
+    public type ProductRecommendation = {
+        id: Text;
+        name: Text;
+        coverPicture: Text;
+        price: Nat;
     };
-  };
+
+    public type ChatbotResponse = {
+        message: Text;
+        considerations: [Text];
+        pros: [Text];
+        cons: [Text];
+        recommended_properties: [PropertyRecommendation];
+        recommended_products: [ProductRecommendation];
+    };
+
+    public type ChatbotMessage = {
+        user: Principal;
+        prompt: Text;
+        response: ChatbotResponse;
+    };
 
   public func userRoleVal(role : Text) : Bool {
     switch (role) {

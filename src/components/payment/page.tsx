@@ -4,7 +4,7 @@ import { Property, UnregisteredTransaction } from "@/declarations/Property_backe
 import { AxiosError } from "axios";
 import { Calendar, Clock, CreditCard, Home, MapPin, Tag, User, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useAuth } from "@/utility/use-auth-client";
 import { toast } from "react-toastify";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
@@ -126,7 +126,6 @@ export default function TransactionPage() {
             propLocation: property.location,
             propCoverPicture: property.coverPicture,
             transactionStatus: "booked",
-            imageUrl: property.coverPicture,
         };
         
         // initiate the transaction
@@ -138,7 +137,7 @@ export default function TransactionPage() {
                 // deduct the balance from user account instantly because wallet or ledger transaction is not implemented yet
                 let deductStatus = await User_backend.updateUserBalance(principal, bal-(totalPrice+fee));
                 if(deductStatus > 0){
-                    toast.success('Payment initiated successfully');
+                    toast.success('Payment successfull');
                     return;
                 } else {
                     toast.error('Failed to process payment');

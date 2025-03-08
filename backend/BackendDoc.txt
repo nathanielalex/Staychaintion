@@ -1,0 +1,23 @@
+# Backend Module Documentation
+
+## Functions
+
+### greet
+A greeting function that concatenates a provided name into a hello message.
+- Params: `name: Text` - Name to include in greeting
+- Returns: `Text` - Greeting message with the name
+
+### whoami
+Returns the principal identifier of the caller of the function.
+- Params: None (uses message context)
+- Returns: `Principal` - Principal ID of the caller
+
+### checkBalance
+Retrieves the balance of a specified user from the User canister.
+- Params: `user: Principal` - Principal ID of the user to check
+- Returns: `Float` - User's account balance
+
+### hasProfile
+Verifies whether a user has registered a profile in the User canister.
+- Params: `userPrincipal: Principal` - Principal ID to check
+- Returns: `Bool` - True if the user has a registered profile, False otherwise

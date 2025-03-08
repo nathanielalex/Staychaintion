@@ -16,10 +16,6 @@
       "type": "assets",
       "source": ["dist/"]
     },
-    "chatbot": {
-      "type": "motoko",
-      "main": "backend/chatbot.mo"
-    },
     "Property_backend": {
       "type": "motoko",
       "main": "backend/Storages/Property/Property.mo"
@@ -33,6 +29,15 @@
       "dependencies": ["User_backend"],
       "type": "motoko",
       "main": "backend/Chat_backend/Chat.mo"
+    },
+    "Chatbot_backend": {
+      "type": "motoko",
+      "main": "backend/Storages/Chatbot/Chatbot.mo"
+    },
+    "Voucher_backend": {
+      "type": "motoko",
+      "dependencies": ["Property_backend"],
+      "main": "backend/Storages/Voucher/Voucher.mo"
     },
     "Property_seeder": {
       "type": "motoko",
