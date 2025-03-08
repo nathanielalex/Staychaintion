@@ -158,12 +158,6 @@ const AnimatedRoutes = () => {
               }
             />
 
-            {/* <Route path="/home" element={<HomePage />} /> */}
-
-            {/* <Route path="/register" element={<RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
-              throw new Error('Function not implemented.');
-            } } />} /> */}
-
             <Route
               path="/register"
               element={
@@ -172,6 +166,7 @@ const AnimatedRoutes = () => {
                 </ProtectedRoute>
               }
             />
+            
             {/* <Route
               path="/register"
               element={<RegisterPage2 />}
@@ -187,21 +182,28 @@ const AnimatedRoutes = () => {
             {/* MAIN PAGES SECTION */}
 
             <Route element={<MainLayout/>}>
+
               <Route path="/map" element={<NewMaps />} />
+              
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/teams" element={<TeamPage />} />
+              <Route path="/landing" element={<LandingPage />} />
+              <Route path="/properties" element={<PropertiesPage />} />
+              
+              <Route path="/properties/details/:id" element={<PropertyDetailPage />} />
+              <Route path="/properties/reserve/:id" element={<TransactionPage />} />
+
+              {/* <Route path="/properties/details" element={<PropertyDetailPage />} /> */}
+
               {/* <Route path="/list" element={
                 <PropertyFilterProvider>
                   <PropertyListPage/>
                 </PropertyFilterProvider>
               } /> */}
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/teams" element={<TeamPage />} />
-              <Route path="/landing" element={<LandingPage />} />
-              <Route path="/properties" element={<PropertiesPage />} />
-              {/* <Route path="/properties/details" element={<PropertyDetailPage />} /> */}
-              <Route path="/properties/details/:id" element={<PropertyDetailPage />} />
-              <Route path="/properties/reserve/:id" element={<TransactionPage />} />
 
             </Route>
+
+            {/* DASHBOARD SECTIONS */}
 
             {/* ADMIN PAGES SECTION */}
             
@@ -257,7 +259,7 @@ const AnimatedRoutes = () => {
 
               <Route path="/chatbot" element={<StayAI />} />
 
-              <Route path="/predicts-old" element={<PredictPriceArchieved />} />
+              {/* <Route path="/predicts-old" element={<PredictPriceArchieved />} /> */}
               
             </Route>
 

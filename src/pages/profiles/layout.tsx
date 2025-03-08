@@ -94,7 +94,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </button>
           <div className="flex items-center space-x-4">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-blue-600 font-medium">A</span>
+              <span className="text-blue-600 font-medium">R</span>
             </div>
           </div>
         </header>
