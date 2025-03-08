@@ -108,6 +108,7 @@ import FeaturesNavigation from "./pages/features/page"
 import CartPage from './pages/marketplace/cart/page';
 
 import ClickerPage from './pages/clicker/page';
+import NewChatbot from "./components/chatbot/Chatbot"
 
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -264,7 +265,9 @@ const AnimatedRoutes = () => {
 
               <Route path="/predicts" element={<PredictPrice />} />
 
-              <Route path="/chatbot" element={<StayAI />} />
+              {/* <Route path="/chatbot" element={<StayAI />} /> */}
+
+              <Route path="/chatbot" element={<NewChatbot />} />
 
               {/* <Route path="/predicts-old" element={<PredictPriceArchieved />} /> */}
               
