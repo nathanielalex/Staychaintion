@@ -27,7 +27,7 @@ module {
     fullName : Text;
     email : Text;
     dateOfBirth : Text;
-    ballance : Float;
+    balance : Float;
     profilePictureUrl : Text;
     propertiesId : ?[Text];
   };
