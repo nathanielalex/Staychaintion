@@ -131,9 +131,10 @@ export default function TransactionPage() {
         // initiate the transaction
         try {
             let transactionId = await Property_backend.initiateTransaction(transactionData); //to make sure we deduct user ballance based on existing transaction
-            // deduct the ballance from user account instantly because wallet or ledger transaction is not implemented yet
             let [registeredTransaction] = await Property_backend.getTransaction(transactionId);
+            let propertyStatusChange = await Property_backend.updatePropertyStatus(property.id, "booked");
             if(registeredTransaction){
+                // deduct the ballance from user account instantly because wallet or ledger transaction is not implemented yet
                 let deductStatus = await User_backend.updateUserBallance(principal, bal-(totalPrice+fee));
                 if(deductStatus > 0){
                     toast.success('Payment initiated successfully');
