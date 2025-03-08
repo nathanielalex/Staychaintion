@@ -23,7 +23,6 @@ module {
         balance: Float;
         profilePictureUrl: Text;
         propertiesId: ?[Text];
-        walletId: ?Principal;
     };
     
     public type Property = {

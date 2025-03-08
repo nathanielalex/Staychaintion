@@ -94,6 +94,7 @@ import OnboardPage from './pages/Onboard';
 import BalancePage from "./pages/wallet/page";
 import CommunityPage from './pages/community/page';
 import DisputesPage from './pages/disputes/page';
+import ChatbotPage from './components/chatbot/Chatbot';
 
 
 // Others
@@ -264,7 +265,7 @@ const AnimatedRoutes = () => {
 
               <Route path="/predicts" element={<PredictPrice />} />
 
-              <Route path="/chatbot" element={<StayAI />} />
+              <Route path="/chatbot" element={<ChatbotPage />} />
 
               {/* <Route path="/predicts-old" element={<PredictPriceArchieved />} /> */}
               

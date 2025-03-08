@@ -17,7 +17,7 @@ const ProductRecommendationCard = ({recommendation}: {recommendation: ProductRec
   const navigate = useNavigate();
   return (
     <div
-      className="flex flex-row space-y-2"
+      className="flex flex-row space-x-2 p-4"
       onClick={() => {
         navigate('');
       }}
@@ -36,7 +36,7 @@ const PropertyRecommendationCard = ({recommendation}: {recommendation: PropertyR
   const navigate = useNavigate();
   return (
     <div
-      className="flex flex-row space-y-2"
+      className="flex flex-row space-x-2 p-4"
       onClick={() => {
         navigate('');
       }}
@@ -68,12 +68,14 @@ const ChatbotPage: React.FC = () => {
     try {
       setIsLoading(true);
       await Promise.all([
-        fetchAvailableData,
+        // fetchAvailableData,
         getMessages,
       ]);
+      await fetchAvailableData();
 
       setModelProvider(new GoogleGenerativeAI(process.env.GOOGLE_API_KEY ?? ''));  
-      setModel(modelProvider?.getGenerativeModel({ model: chosenModel }));
+      setModel((new GoogleGenerativeAI("AIzaSyAG1J0zuMSEaYhuwKccb1AH9EK9H5gpm1c")).getGenerativeModel({ model: chosenModel }));
+      
     } catch (err) {
       toast.error("Error initiating chatbot.", {
         position: 'top-center',
@@ -84,8 +86,13 @@ const ChatbotPage: React.FC = () => {
   }
 
   useEffect(() => {
-    init();
+    init();    
   }, []);
+
+  useEffect(() => {
+    console.log(model);
+  }, [model])
+  
 
   useEffect(() => {
     setModel(modelProvider?.getGenerativeModel({ model: chosenModel }));
@@ -147,13 +154,12 @@ const ChatbotPage: React.FC = () => {
 
         ### **Available Data**
         - **Properties**: A list of properties available for rent.
-          ${JSON.stringify(avalilabeData.properties)}
+          ${avalilabeData.properties}
         - **Products**: Products to purchase that may be useful for the trip.
-          ${JSON.stringify(avalilabeData.products)}
+          ${avalilabeData.products}
 
         ### **Response Format (JSON)**
         Respond in JSON format with the following structure:
-        \`\`\`json
         {
           "message": "string", // Intuitive and friendly response explaining the recommended properties.
           "considerations": ["string"], // Key considerations for choosing these properties.
@@ -176,15 +182,16 @@ const ChatbotPage: React.FC = () => {
             }
           ] // Recommended products based on the trip requirements and what user has.
         }
-        \`\`\`
-
         Ensure your response is **structured, concise, and highly relevant to the user's request**.\n
         Ensure the response is a valid JSON object and nothing else. Do not include any explanations, markdown, or extra text outside of the JSON object.\n
-        Only respond with available data. If no data is available, respond with a suggestion to the user in the message field, and leave the rest emtpy.
+        Only respond with available data. If no data is available, respond with a suggestion to the user in the message field, and leave the rest emtpy.\n
+        Ensure your response is always valid JSON.\n
       `;
-      const resp = await model?.generateContent(message);
 
-      const newResp: ChatbotResponse = JSON.parse(resp?.response.text()!);
+      console.log(message);
+      const resp = await model?.generateContent([message]);
+      console.log(resp?.response.text().substring(7, resp?.response.text().length - 4));
+      const newResp: ChatbotResponse = JSON.parse(resp?.response.text().substring(7, resp?.response.text().length - 4)!);
       const msg: ChatbotMessage = {
         user: principal!,
         prompt: prompt,
@@ -235,35 +242,45 @@ const ChatbotPage: React.FC = () => {
                     (
                       <div>
                         <div>{msg.response?.[0]?.message}</div>
-                        <strong>Considerations:</strong>
-                        <ol>
-                          {msg.response?.[0]?.considerations.map((consideration: string, index: number) => (
-                            <li key={index}>{consideration}</li>
-                          ))}
-                        </ol>
-                        <strong>Pros:</strong>
-                        <ol>
-                          {msg.response?.[0]?.pros.map((pro: string, index: number) => (
-                            <li key={index}>{pro}</li>
-                          ))}
-                        </ol>
-                        <strong>Cons:</strong>
-                        <ol>
-                          {msg.response?.[0]?.cons.map((cons: string, index: number) => (
-                            <li key={index}>{cons}</li>
-                          ))}
-                        </ol>
-                        <strong>Recommended Properties:</strong>
-                        <div className="max-w-full min-w-full overflow-x-scroll">
-                          {msg.response?.[0]?.recommended_properties.map((rec: PropertyRecommendation, idx: number) => (
-                            <PropertyRecommendationCard recommendation={rec} key={idx} />
-                          ))}
+                        <div className="space-y-2">
+                          <strong className="text-lg">Considerations:</strong>
+                          <ol>
+                            {msg.response?.[0]?.considerations.map((consideration: string, index: number) => (
+                              <li key={index}>{consideration}</li>
+                            ))}
+                          </ol>
                         </div>
-                        <strong>Recommended Products:</strong>
-                        <div className="max-w-full min-w-full overflow-x-scroll">
-                          {msg.response?.[0]?.recommended_products.map((rec: ProductRecommendation, idx: number) => (
-                            <ProductRecommendationCard recommendation={rec} key={idx} />
-                          ))}
+                        <div className="space-y-2">
+                          <strong className="text-lg">Pros:</strong>
+                          <ol>
+                            {msg.response?.[0]?.pros.map((pro: string, index: number) => (
+                              <li key={index}>{pro}</li>
+                            ))}
+                          </ol>
+                        </div>
+                        <div className="space-y-2">
+                          <strong className="text-lg">Cons:</strong>
+                          <ol>
+                            {msg.response?.[0]?.cons.map((cons: string, index: number) => (
+                              <li key={index}>{cons}</li>
+                            ))}
+                          </ol>
+                        </div>
+                        <div className="space-y-2">
+                          <strong className="text-lg">Recommended Properties:</strong>
+                          <div className="max-w-full min-w-full overflow-x-scroll space-x-2">
+                            {msg.response?.[0]?.recommended_properties.map((rec: PropertyRecommendation, idx: number) => (
+                              <PropertyRecommendationCard recommendation={rec} key={idx} />
+                            ))}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <strong className="text-lg">Recommended Products:</strong>
+                          <div className="max-w-full min-w-full overflow-x-scroll space-x-2">
+                            {msg.response?.[0]?.recommended_products.map((rec: ProductRecommendation, idx: number) => (
+                              <ProductRecommendationCard recommendation={rec} key={idx} />
+                            ))}
+                          </div>
                         </div>
                       </div>
                     )}

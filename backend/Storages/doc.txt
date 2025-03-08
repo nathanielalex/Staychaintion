@@ -11,7 +11,6 @@ Enum representing different types of vouchers:
 ### UserProfile
 Structure for storing user information:
 - `id`: Principal identifier for the user
-- `walletId`: Optional wallet principal
 - `role`: User role (admin, owner, renter, guest)
 - `fullName`: User's full name
 - `email`: User's email address

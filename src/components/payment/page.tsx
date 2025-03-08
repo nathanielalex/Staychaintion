@@ -140,7 +140,6 @@ export default function TransactionPage() {
             propLocation: property.location,
             propCoverPicture: property.coverPicture,
             transactionStatus: "booked",
-            imageUrl: property.coverPicture,
         };
         
         // initiate the transaction

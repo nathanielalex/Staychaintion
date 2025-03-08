@@ -27,11 +27,6 @@ Gets the balance of a specific user.
 - Params: `id: Principal` - The principal ID of the user
 - Returns: `async Float` - The user's balance, or 0 if user not found
 
-### getUserWalletId
-Retrieves the wallet ID associated with a user.
-- Params: `id: Principal` - The principal ID of the user
-- Returns: `async ?Principal` - The user's wallet ID if found, null otherwise
-
 ### isAdmin
 Checks if a user has admin role.
 - Params: `id: Principal` - The principal ID of the user
