@@ -19,7 +19,7 @@ StayChaintion is an innovative Web3-powered AI platform that redefines short-ter
     <li><b>Pitch Deck</b></li>
     https://www.canva.com/design/DAGgX6SkP8c/e9ZRfIfppA58yAfmVapf7w/edit?utm_content=DAGgX6SkP8c&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
     <li><b>Demo Video</b></li>
-    https://www.notion.so/stanley-n-wijaya/StayChaintion-Documentation-1af73555b71f805a933ff1074e3e8059
+    https://drive.google.com/file/d/1CnUGvAF6VMQLnUvK59eWFMMUCT3y4AsJ/view?usp=sharing
 </ul>
 
 
