@@ -141,7 +141,6 @@ export const useAuthClient = (
 // Provider untuk AuthContext
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const auth = useAuthClient();
-
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 };
 
