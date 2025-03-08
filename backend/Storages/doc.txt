@@ -1,0 +1,174 @@
+# Util Module Documentation
+
+## Types
+
+### VoucherType
+Enum representing different types of vouchers:
+- `#fixed`: A fixed amount discount
+- `#percentage`: A percentage-based discount
+- `#unknown`: Default/unknown voucher type
+
+### UserProfile
+Structure for storing user information:
+- `id`: Principal identifier for the user
+- `walletId`: Optional wallet principal
+- `role`: User role (admin, owner, renter, guest)
+- `fullName`: User's full name
+- `email`: User's email address
+- `dateOfBirth`: User's date of birth as string
+- `balance`: User's account balance
+- `profilePictureUrl`: URL to user's profile picture
+- `propertiesId`: Optional array of property IDs owned by user
+
+### Property
+Structure for storing property information:
+- `id`: Unique identifier for the property
+- `owner`: Principal of the property owner
+- `name`: Property name
+- `status`: Current status (available, booked, unavailable)
+- `propertyType`: Type of property (apartment, house, etc.)
+- `pricePerNight`: Cost per night
+- `description`: Property description
+- `location`: Text description of property location
+- `latitude`: Geographic latitude coordinate
+- `longitude`: Geographic longitude coordinate
+- `builtInDate`: Construction date
+- `bedroomCount`: Number of bedrooms
+- `guestCapacity`: Maximum number of guests
+- `bathroomCount`: Number of bathrooms
+- `bedCount`: Number of beds
+- `pictures`: Array of picture URLs
+- `coverPicture`: URL of main/cover image
+- `rating`: Average property rating
+- `reviewCount`: Number of reviews
+
+### PropertyReview
+Structure for storing property reviews:
+- `reviewId`: Unique identifier for the review
+- `propertyId`: ID of the reviewed property
+- `reviewer`: Principal of the reviewer
+- `reviewerName`: Name of the reviewer
+- `reviwerPP`: Profile picture of the reviewer
+- `rating`: Numeric rating value
+- `reviewText`: Review content
+- `reviewDate`: Date when review was submitted
+
+### UnregisteredProperty
+Structure for storing property information before registration:
+- Contains most fields from Property but without ID, rating, and reviewCount
+
+### PaginationQuery
+Structure for pagination and filtering requests:
+- `textAttrs`: Text attributes to filter by
+- `textQueries`: Text values to search for
+- `numAttrs`: Numeric attributes to filter by
+- `numQueries`: Numeric values to compare against
+- `comparisons`: Comparison operators
+- `orderAttr`: Attribute to order results by
+- `orderDir`: Sort direction (asc/desc)
+- `page`: Page number to return
+- `count`: Items per page
+
+### Transaction
+Structure for storing booking transactions:
+- `id`: Unique identifier for the transaction
+- `propertyId`: ID of the booked property
+- `user`: Principal of the renter
+- `owner`: Principal of the property owner
+- `checkInDate`: Start date of stay
+- `checkOutDate`: End date of stay
+- `totalPrice`: Total cost of booking
+- `propName`: Name of property
+- `propType`: Type of property
+- `propLocation`: Location of property
+- `propCoverPicture`: Property's cover image
+- `transactionStatus`: Current status of transaction
+
+### UnregisteredTransaction
+Structure for transactions before registration:
+- Contains fields from Transaction but without ID
+
+### Voucher
+Structure for discount vouchers:
+- `id`: Unique identifier
+- `code`: Voucher redemption code
+- `discount`: Discount amount
+- `voucherType`: Type of voucher (fixed or percentage)
+- `start_date`: Start date when voucher becomes valid
+- `expired_date`: Expiration date
+
+## Functions
+
+### voucherTypeToVar
+Converts a text representation of voucher type to the VoucherType variant.
+- Params: `voucherType: Text` - String representing voucher type
+- Returns: `VoucherType` enum
+
+### voucherTypeToText
+Converts a VoucherType variant to its text representation.
+- Params: `voucherType: VoucherType` - Voucher type enum
+- Returns: `Text` representation of the voucher type
+
+### userRoleVal
+Validates if a user role string is valid.
+- Params: `role: Text` - Role to validate
+- Returns: `Bool` - True if role is valid (admin, owner, renter, guest)
+
+### propStatusVal
+Validates if a property status string is valid.
+- Params: `status: Text` - Status to validate
+- Returns: `Bool` - True if status is valid (available, booked, unavailable)
+
+### propTypeVal
+Validates if a property type string is valid.
+- Params: `propType: Text` - Property type to validate
+- Returns: `Bool` - True if property type is valid
+
+### transactionStatusVal
+Validates if a transaction status string is valid.
+- Params: `status: Text` - Status to validate
+- Returns: `Bool` - True if status is valid
+
+### generateUUID
+Generates a unique UUID as text.
+- Returns: `async Text` - New UUID string
+
+### sort
+Sorts an array based on a comparison function and attribute.
+- Params:
+    - `array: [X]` - Array to sort
+    - `compare: (X, X, Text) -> Order.Order` - Comparison function
+    - `attribute: Text` - Attribute to sort by
+- Returns: `[X]` - New sorted array
+
+### sortInPlace
+Sorts an array in place using a merge sort algorithm.
+- Params:
+    - `array: [var X]` - Mutable array to sort
+    - `compare: (X, X, Text) -> Order.Order` - Comparison function
+    - `attribute: Text` - Attribute to sort by
+- No return value (modifies array in place)
+
+### optAppend
+Appends two optional arrays.
+- Params:
+    - `array1: ?[X]` - First optional array
+    - `array2: ?[X]` - Second optional array
+- Returns: `?[X]` - Optional combined array
+
+### optfilter
+Filters elements in an optional array.
+- Params:
+    - `array: ?[X]` - Optional array to filter
+    - `predicate: X -> Bool` - Function determining which elements to keep
+- Returns: `?[X]` - Optional filtered array
+
+### textToInt
+Converts a text string to an integer.
+- Params: `text: Text` - String to convert
+- Returns: `Int` - Converted integer value, or 0 if invalid
+
+### textToFloat
+Converts a text string to a floating-point number.
+- Params: `t: Text` - String to convert
+- Returns: `Float` - Converted float value, or 0 if invalid

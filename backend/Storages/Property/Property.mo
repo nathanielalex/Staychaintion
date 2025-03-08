@@ -155,6 +155,15 @@ actor {
         };
     };
 
+    public query func checkPropertyAvailability(propId: Text): async Bool {
+        switch(propertyInfo.get(propId)){
+            case(?prop) {
+                return prop.status == "available";
+            };
+            case(null) { return false; };
+        };
+    };
+
     public query func getPropertyIdFromTextAttribute(attribute: Text, text_query: Text): async [Text] {
         var itertyp = propertyInfo.vals();
 
@@ -433,23 +442,7 @@ actor {
                 
                 // Create a new property object with updated rating
                 let updatedProperty : Property = {
-                    id = property.id;
-                    owner = property.owner;
-                    name = property.name;
-                    status = property.status;
-                    propertyType = property.propertyType;
-                    pricePerNight = property.pricePerNight;
-                    description = property.description;
-                    location = property.location;
-                    latitude = property.latitude;
-                    longitude = property.longitude;
-                    builtInDate = property.builtInDate;
-                    bedroomCount = property.bedroomCount;
-                    guestCapacity = property.guestCapacity;
-                    bathroomCount = property.bathroomCount;
-                    bedCount = property.bedCount;
-                    pictures = property.pictures;
-                    coverPicture = property.coverPicture;
+                    property with
                     rating = newAvgRating;
                     reviewCount = currentCount + 1; // Increment review count
                 };
@@ -616,6 +609,16 @@ actor {
         let transactions = Vector.Vector<Transaction>();
         for (t in transactionHistory.vals()) {
             if(status == t.transactionStatus) {
+                transactions.add(t);
+            };
+        };
+        return (Vector.toArray(transactions));
+    };
+
+    public query func getUserUncompletedTransactions(userId: Principal) : async [Transaction] {
+        let transactions = Vector.Vector<Transaction>();
+        for (t in transactionHistory.vals()) {
+            if(userId == t.user and not (t.transactionStatus == "completed" or t.transactionStatus == "cancelled")) {
                 transactions.add(t);
             };
         };
