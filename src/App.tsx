@@ -107,6 +107,8 @@ import { RegistrationProvider } from './utility/RegistrationContext';
 import FeaturesNavigation from "./pages/features/page"
 import CartPage from './pages/marketplace/cart/page';
 
+import ClickerPage from './pages/clicker/page';
+
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
@@ -192,6 +194,7 @@ const AnimatedRoutes = () => {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/teams" element={<TeamPage />} />
               <Route path="/landing" element={<LandingPage />} />
+              <Route path="/clicker" element={<ClickerPage />} />
               <Route path="/properties" element={<PropertiesPage />} />
               
               <Route path="/properties/details/:id" element={<PropertyDetailPage />} />
