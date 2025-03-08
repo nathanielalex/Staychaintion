@@ -20,12 +20,12 @@ actor {
         description = "A beautiful cabin by the beach with a wonderful view.";
         builtInDate = "2020-06-15";
         guestCapacity = 4;
-        pictures = [];
+        pictures = ["https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg", "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg", "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg", "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg"];
         propertyType = "cabin";
         location = "Tambon Huai Sat Yai, Thailand";
         latitude = 12.533784;
         longitude = 99.546974;
-        coverPicture = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
+        coverPicture = "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg";
       },
       {
         status = "unavailable";
@@ -38,12 +38,12 @@ actor {
         description = "A beautiful cabin by the beach with a wonderful view.";
         builtInDate = "2020-06-15";
         guestCapacity = 4;
-        pictures = [];
+        pictures = ["https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg"];
         propertyType = "villa";
         location = "Miami, FL";
         latitude = 25.761681;
         longitude = -80.191788;
-        coverPicture = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
+        coverPicture = "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg";
       },
       {
         status = "available";
@@ -56,12 +56,12 @@ actor {
         description = "A beautiful cabin by the beach with a wonderful view.";
         builtInDate = "2015-06-15";
         guestCapacity = 4;
-        pictures = [];
+        pictures = ["https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg", "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg", "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg", "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg"];
         propertyType = "apartment";
         location = "New York, NY";
         latitude = 40.712776;
         longitude = -74.005974;
-        coverPicture = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
+        coverPicture = "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg";
       },
       {
         status = "available";
@@ -74,12 +74,12 @@ actor {
         description = "Cozy chalet with breathtaking mountain views and nearby hiking trails.";
         builtInDate = "2018-11-20";
         guestCapacity = 6;
-        pictures = [];
+        pictures = ["https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg"];
         propertyType = "chalet";
         location = "Aspen, CO";
         latitude = 39.191097;
         longitude = -106.817535;
-        coverPicture = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
+        coverPicture = "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg";
       },
       {
         status = "available";
@@ -92,12 +92,12 @@ actor {
         description = "Modern studio loft in the heart of the city with easy access to restaurants and nightlife.";
         builtInDate = "2019-03-10";
         guestCapacity = 2;
-        pictures = [];
+        pictures = ["https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg"];
         propertyType = "apartment";
         location = "Austin, TX";
         latitude = 30.267153;
         longitude = 2.352221;
-        coverPicture = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
+        coverPicture = "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg";
       },
       {
         status = "unavailable";
@@ -110,12 +110,12 @@ actor {
         description = "Spacious retreat by the lake with private dock and boat access. Perfect for family gatherings.";
         builtInDate = "2017-07-22";
         guestCapacity = 10;
-        pictures = [];
+        pictures = ["https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg"];
         propertyType = "house";
         location = "Lake Tahoe, CA";
         latitude = 39.0885405;
         longitude = -120.0503528;
-        coverPicture = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
+        coverPicture = "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg";
       },
       {
         status = "available";
@@ -128,12 +128,12 @@ actor {
         description = "Charming bungalow steps away from the ocean with stunning sunset views.";
         builtInDate = "2022-01-15";
         guestCapacity = 4;
-        pictures = [];
+        pictures = ["https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg", "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg"];
         propertyType = "bungalow";
         location = "Maui, HI";
         latitude = 20.8029568;
         longitude = -156.3106833;
-        coverPicture = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-gvONpOFIC37Bb7g9SlIBfIfbDwbSlT.png";
+        coverPicture = "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg";
       },
     ];
 
