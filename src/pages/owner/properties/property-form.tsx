@@ -174,7 +174,6 @@ export default function PropertyForm({
             coverPicture: images[0],
             reviewCount: 0n,
           };
-          // If the update is successful, update the state with the new property
           setProperties((prevProperties) => [...prevProperties, newProperty]);
         }
       } catch (err) {
