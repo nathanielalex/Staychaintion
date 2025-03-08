@@ -36,7 +36,8 @@
     },
     "Voucher_backend": {
       "type": "motoko",
-      "main": "backend/Voucher_backend/Voucher.mo"
+      "dependencies": ["Property_backend"],
+      "main": "backend/Storages/Voucher/Voucher.mo"
     },
     "Property_seeder": {
       "type": "motoko",
