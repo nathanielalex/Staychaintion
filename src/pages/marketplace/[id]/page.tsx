@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -9,52 +9,53 @@ import { ShoppingCart, Heart, Share2, Star, ChevronLeft, ChevronRight, Check, In
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useNavigate, useParams } from "react-router-dom";
-import type { Product } from "@/pages/marketplace/page"
 import RelatedProducts from "@/components/marketplace/related-products"
+import { Product } from "@/declarations/Product_backend/Product_backend.did"
+import { Product_backend } from "@/declarations/Product_backend"
 
 // Sample products data (same as in marketplace page)
-const products: Product[] = [
-  {
-    id: "1",
-    name: "Cozy Throw Blanket",
-    productType: "Merchandise",
-    shortDescription: "Super soft and comfortable throw blanket",
-    description:
-      'This luxurious throw blanket is perfect for those cozy nights at home. Made from premium materials, it provides exceptional comfort and warmth. The elegant design complements any home decor style.\n\nFeatures:\n- Size: 50" x 60"\n- Material: 100% Premium Microfiber\n- Machine washable\n- Available in multiple colors\n- Hypoallergenic\n\nWhether you\'re curling up with a good book or watching your favorite movie, this throw blanket will keep you comfortable and stylish.',
-    price: 39.99,
-    coverPicture: "/placeholder.svg?height=300&width=300",
-    pictures: [
-      "/placeholder.svg?height=600&width=600&text=Blanket+Front",
-      "/placeholder.svg?height=600&width=600&text=Blanket+Folded",
-      "/placeholder.svg?height=600&width=600&text=Blanket+Detail",
-      "/placeholder.svg?height=600&width=600&text=Blanket+In+Use",
-    ],
-    seller: "HomeComfort",
-    discountType: "Percentage",
-    discount: 10,
-    rating: 4,
-  },
-  {
-    id: "2",
-    name: "Modern Coffee Table",
-    productType: "Furniture",
-    shortDescription: "Elegant coffee table with storage",
-    description:
-      "This modern coffee table combines style and functionality. With its sleek design and hidden storage compartments, it's the perfect centerpiece for your living room. Made from high-quality materials for durability.",
-    price: 199.99,
-    coverPicture: "/placeholder.svg?height=300&width=300",
-    pictures: [
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-      "/placeholder.svg?height=600&width=600",
-    ],
-    seller: "ModernLiving",
-    discountType: "Fixed",
-    discount: 20,
-    rating: 5,
-  },
-  // Other products...
-]
+// const products: Product[] = [
+//   {
+//     id: "1",
+//     name: "Cozy Throw Blanket",
+//     productType: "Merchandise",
+//     shortDescription: "Super soft and comfortable throw blanket",
+//     description:
+//       'This luxurious throw blanket is perfect for those cozy nights at home. Made from premium materials, it provides exceptional comfort and warmth. The elegant design complements any home decor style.\n\nFeatures:\n- Size: 50" x 60"\n- Material: 100% Premium Microfiber\n- Machine washable\n- Available in multiple colors\n- Hypoallergenic\n\nWhether you\'re curling up with a good book or watching your favorite movie, this throw blanket will keep you comfortable and stylish.',
+//     price: 39.99,
+//     coverPicture: "/placeholder.svg?height=300&width=300",
+//     pictures: [
+//       "/placeholder.svg?height=600&width=600&text=Blanket+Front",
+//       "/placeholder.svg?height=600&width=600&text=Blanket+Folded",
+//       "/placeholder.svg?height=600&width=600&text=Blanket+Detail",
+//       "/placeholder.svg?height=600&width=600&text=Blanket+In+Use",
+//     ],
+//     seller: "HomeComfort",
+//     discountType: "Percentage",
+//     discount: 10,
+//     rating: 4,
+//   },
+//   {
+//     id: "2",
+//     name: "Modern Coffee Table",
+//     productType: "Furniture",
+//     shortDescription: "Elegant coffee table with storage",
+//     description:
+//       "This modern coffee table combines style and functionality. With its sleek design and hidden storage compartments, it's the perfect centerpiece for your living room. Made from high-quality materials for durability.",
+//     price: 199.99,
+//     coverPicture: "/placeholder.svg?height=300&width=300",
+//     pictures: [
+//       "/placeholder.svg?height=600&width=600",
+//       "/placeholder.svg?height=600&width=600",
+//       "/placeholder.svg?height=600&width=600",
+//     ],
+//     seller: "ModernLiving",
+//     discountType: "Fixed",
+//     discount: 20,
+//     rating: 5,
+//   },
+//   // Other products...
+// ]
 
 // Reviews data
 const reviews = [
@@ -93,34 +94,57 @@ export default function ProductDetailPage() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [isLiked, setIsLiked] = useState(false)
+  const [productInfo, setProductInfo] = useState<Product | null>(null)
   const navigate = useNavigate();
 
-//   const { id } = useParams();
+  const { id } = useParams();
+  if(!id) {
+    navigate('/marketplace');
+    return;
+  }
 
-//     // Convert id to a number safely
-//     const productId = parseInt(id); 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>("");
 
-//     // Find the product based on the ID from the URL
-//     const product = products.find((p) => p.id === productId) || products[0];
+  const fetchProductInfo = async (id: string) => {
+    try{
+      setLoading(true);
+      const product = await Product_backend.getProductInfo(id);
+      if(product) {
+        setProductInfo(product[0]!);
+      } else {
+        navigate('/marketplace');
+      }
+    } catch(err){
+      console.log(err)
+      navigate('/marketplace');
+    } finally {
+      setLoading(false);
+    }
+  }
 
-const product = products[0]
+  useEffect(() => {
+    fetchProductInfo(id);
+  }, [])
+
+  if(!productInfo) return <></>
 
   // Calculate discounted price
   const discountedPrice =
-    product.discountType === "Percentage"
-      ? product.price * (1 - product.discount / 100)
-      : product.price - product.discount
+    productInfo.discountType === "Percentage"
+      ? productInfo.price * (1 - productInfo.discount / 100)
+      : productInfo.price - productInfo.discount
 
   // Check if product has a discount
-  const hasDiscount = product.discount > 0
+  const hasDiscount = productInfo.discount > 0
 
   // Handle image navigation
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev === product.pictures.length - 1 ? 0 : prev + 1))
+    setCurrentImageIndex((prev) => (prev === productInfo.pictures.length - 1 ? 0 : prev + 1))
   }
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev === 0 ? product.pictures.length - 1 : prev - 1))
+    setCurrentImageIndex((prev) => (prev === 0 ? productInfo.pictures.length - 1 : prev - 1))
   }
 
   // Handle quantity changes
@@ -170,15 +194,15 @@ const product = products[0]
                 className="h-full w-full relative"
               >
                 <img
-                  src={product.pictures[currentImageIndex] || "/placeholder.svg"}
-                  alt={`${product.name} - Image ${currentImageIndex + 1}`}
+                  src={productInfo.pictures[currentImageIndex] || "/placeholder.svg"}
+                  alt={`${productInfo.name} - Image ${currentImageIndex + 1}`}
                   
                   className="object-contain"
                   
                 />
               </motion.div>
 
-              {product.pictures.length > 1 && (
+              {productInfo.pictures.length > 1 && (
                 <>
                   <Button
                     variant="ghost"
@@ -201,15 +225,15 @@ const product = products[0]
 
               {hasDiscount && (
                 <Badge className="absolute top-4 left-4 bg-red-500 hover:bg-red-600">
-                  {product.discountType === "Percentage" ? `${product.discount}% OFF` : `$${product.discount} OFF`}
+                  {productInfo.discountType === "Percentage" ? `${productInfo.discount}% OFF` : `$${productInfo.discount} OFF`}
                 </Badge>
               )}
             </div>
 
             {/* Thumbnail Gallery */}
-            {product.pictures.length > 1 && (
+            {productInfo.pictures.length > 1 && (
               <div className="flex space-x-2 overflow-x-auto pb-2">
-                {product.pictures.map((pic, index) => (
+                {productInfo.pictures.map((pic, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
@@ -234,34 +258,34 @@ const product = products[0]
             <div>
               <div className="flex items-center justify-between mb-2">
                 <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50">
-                  {product.productType}
+                  {productInfo.productType}
                 </Badge>
                 <div className="flex items-center">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
-                      className={`h-4 w-4 ${i < product.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                      className={`h-4 w-4 ${i < productInfo.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
                     />
                   ))}
-                  <span className="ml-2 text-sm text-gray-600">{product.rating}/5</span>
+                  <span className="ml-2 text-sm text-gray-600">{Number(productInfo.rating)}/5</span>
                 </div>
               </div>
 
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{productInfo.name}</h1>
 
-              <p className="text-gray-600 mb-4">{product.shortDescription}</p>
+              <p className="text-gray-600 mb-4">{productInfo.shortDescription}</p>
 
               <div className="flex items-center mb-6">
                 <div className="flex items-baseline">
                   <span className="text-3xl font-bold text-gray-900">${discountedPrice.toFixed(2)}</span>
                   {hasDiscount && (
-                    <span className="ml-2 text-lg text-gray-500 line-through">${product.price.toFixed(2)}</span>
+                    <span className="ml-2 text-lg text-gray-500 line-through">${productInfo.price.toFixed(2)}</span>
                   )}
                 </div>
 
                 {hasDiscount && (
                   <Badge className="ml-4 bg-green-500 hover:bg-green-600">
-                    Save ${(product.price - discountedPrice).toFixed(2)}
+                    Save ${(productInfo.price - discountedPrice).toFixed(2)}
                   </Badge>
                 )}
               </div>
@@ -270,7 +294,7 @@ const product = products[0]
             <Separator />
 
             {/* Seller Info */}
-            <div className="flex items-center space-x-4">
+            {/* <div className="flex items-center space-x-4">
               <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
                 <User className="h-6 w-6 text-blue-600" />
               </div>
@@ -278,7 +302,7 @@ const product = products[0]
                 <p className="text-sm text-gray-500">Sold by</p>
                 <p className="font-medium">{product.seller}</p>
               </div>
-            </div>
+            </div> */}
 
             <Separator />
 
@@ -365,7 +389,7 @@ const product = products[0]
           <TabsContent value="description" className="mt-0">
             <Card className="p-6">
               <div className="prose max-w-none">
-                {product.description.split("\n\n").map((paragraph, index) => (
+                {productInfo.description.split("\n\n").map((paragraph, index) => (
                   <p key={index} className="mb-4">
                     {paragraph}
                   </p>
@@ -383,7 +407,7 @@ const product = products[0]
                     <tbody>
                       <tr className="border-b">
                         <td className="py-2 text-gray-600">Product Type</td>
-                        <td className="py-2 font-medium">{product.productType}</td>
+                        <td className="py-2 font-medium">{productInfo.productType}</td>
                       </tr>
                       <tr className="border-b">
                         <td className="py-2 text-gray-600">Material</td>
@@ -530,7 +554,7 @@ const product = products[0]
         </Tabs>
 
         {/* Related Products */}
-        <RelatedProducts currentProductId={product.id} />
+        {/* <RelatedProducts currentProductId={product.id} /> */}
       </motion.div>
     </div>
   )
