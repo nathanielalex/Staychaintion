@@ -1,17 +1,29 @@
-"use client"
+'use client';
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ShoppingCart, Heart, Share2, Star, ChevronLeft, ChevronRight, Check, Info, User } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { useNavigate, useParams } from "react-router-dom";
-import RelatedProducts from "@/components/marketplace/related-products"
-import { Product } from "@/declarations/Product_backend/Product_backend.did"
-import { Product_backend } from "@/declarations/Product_backend"
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  ShoppingCart,
+  Heart,
+  Share2,
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  Info,
+  User,
+} from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { useNavigate, useParams } from 'react-router-dom';
+import RelatedProducts from '@/components/marketplace/related-products';
+import { Product } from '@/declarations/Product_backend/Product_backend.did';
+import { useAuth } from '@/utility/use-auth-client';
+import { Product_backend } from '@/declarations/Product_backend';
+import { Cart_backend } from '@/declarations/Cart_backend';
 
 // Sample products data (same as in marketplace page)
 // const products: Product[] = [
@@ -61,111 +73,134 @@ import { Product_backend } from "@/declarations/Product_backend"
 const reviews = [
   {
     id: 1,
-    name: "Sarah Johnson",
-    avatar: "/placeholder.svg?height=40&width=40",
+    name: 'Sarah Johnson',
+    avatar: '/placeholder.svg?height=40&width=40',
     rating: 5,
-    date: "2023-10-15",
-    comment: "Absolutely love this blanket! It's so soft and the quality is excellent. Perfect for chilly evenings.",
+    date: '2023-10-15',
+    comment:
+      "Absolutely love this blanket! It's so soft and the quality is excellent. Perfect for chilly evenings.",
     helpful: 12,
   },
   {
     id: 2,
-    name: "Michael Chen",
-    avatar: "/placeholder.svg?height=40&width=40",
+    name: 'Michael Chen',
+    avatar: '/placeholder.svg?height=40&width=40',
     rating: 4,
-    date: "2023-09-28",
-    comment: "Great product for the price. The material is nice and it washes well. Would recommend.",
+    date: '2023-09-28',
+    comment:
+      'Great product for the price. The material is nice and it washes well. Would recommend.',
     helpful: 8,
   },
   {
     id: 3,
-    name: "Emily Rodriguez",
-    avatar: "/placeholder.svg?height=40&width=40",
+    name: 'Emily Rodriguez',
+    avatar: '/placeholder.svg?height=40&width=40',
     rating: 5,
-    date: "2023-11-02",
+    date: '2023-11-02',
     comment:
       "This blanket exceeded my expectations. It's the perfect weight and so cozy. I'm buying another one as a gift!",
     helpful: 5,
   },
-]
+];
 
 export default function ProductDetailPage() {
-
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [quantity, setQuantity] = useState(1)
-  const [isLiked, setIsLiked] = useState(false)
-  const [productInfo, setProductInfo] = useState<Product | null>(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [isLiked, setIsLiked] = useState(false);
+  const [productInfo, setProductInfo] = useState<Product | null>(null);
   const navigate = useNavigate();
 
+  const { principal } = useAuth();
+
   const { id } = useParams();
-  if(!id) {
+  if (!id) {
     navigate('/marketplace');
     return;
   }
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>("");
+  const [error, setError] = useState<string | null>('');
 
   const fetchProductInfo = async (id: string) => {
-    try{
+    try {
       setLoading(true);
+
       const product = await Product_backend.getProductInfo(id);
-      if(product) {
+      if (product) {
         setProductInfo(product[0]!);
       } else {
         navigate('/marketplace');
       }
-    } catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
       navigate('/marketplace');
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     fetchProductInfo(id);
-  }, [])
+  }, []);
 
-  if(!productInfo) return <></>
+  if (!productInfo) return <></>;
 
   // Calculate discounted price
   const discountedPrice =
-    productInfo.discountType === "Percentage"
+    productInfo.discountType === 'Percentage'
       ? productInfo.price * (1 - productInfo.discount / 100)
-      : productInfo.price - productInfo.discount
+      : productInfo.price - productInfo.discount;
 
   // Check if product has a discount
-  const hasDiscount = productInfo.discount > 0
+  const hasDiscount = productInfo.discount > 0;
 
   // Handle image navigation
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev === productInfo.pictures.length - 1 ? 0 : prev + 1))
-  }
+    setCurrentImageIndex((prev) =>
+      prev === productInfo.pictures.length - 1 ? 0 : prev + 1,
+    );
+  };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev === 0 ? productInfo.pictures.length - 1 : prev - 1))
-  }
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? productInfo.pictures.length - 1 : prev - 1,
+    );
+  };
 
   // Handle quantity changes
-  const increaseQuantity = () => setQuantity((prev) => prev + 1)
-  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1))
+  const increaseQuantity = () => setQuantity((prev) => prev + 1);
+  const decreaseQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   // Handle add to cart
-  const addToCart = () => {
+  const addToCart = async () => {
     // Add to cart logic would go here
     // For now, just navigate to cart page
-    navigate("/marketplace/cart")
-  }
+    try {
+      if (principal) {
+        await Cart_backend.addItem(principal, productInfo.id, BigInt(100));
+        navigate('/marketplace/cart');
+      } else {
+        navigate('/marketplace');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Calculate average rating from reviews
-  const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+  const averageRating =
+    reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
 
   // Format date for display
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" }
-    return new Date(dateString).toLocaleDateString(undefined, options)
-  }
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -176,7 +211,10 @@ export default function ProductDetailPage() {
         className="container mx-auto px-4 py-12"
       >
         <div className="mb-6">
-          <a href="/marketplace" className="text-blue-600 hover:text-blue-800 flex items-center">
+          <a
+            href="/marketplace"
+            className="text-blue-600 hover:text-blue-800 flex items-center"
+          >
             <ChevronLeft className="h-4 w-4 mr-1" />
             Back to Marketplace
           </a>
@@ -194,11 +232,12 @@ export default function ProductDetailPage() {
                 className="h-full w-full relative"
               >
                 <img
-                  src={productInfo.pictures[currentImageIndex] || "/placeholder.svg"}
+                  src={
+                    productInfo.pictures[currentImageIndex] ||
+                    '/placeholder.svg'
+                  }
                   alt={`${productInfo.name} - Image ${currentImageIndex + 1}`}
-                  
                   className="object-contain"
-                  
                 />
               </motion.div>
 
@@ -225,7 +264,9 @@ export default function ProductDetailPage() {
 
               {hasDiscount && (
                 <Badge className="absolute top-4 left-4 bg-red-500 hover:bg-red-600">
-                  {productInfo.discountType === "Percentage" ? `${productInfo.discount}% OFF` : `$${productInfo.discount} OFF`}
+                  {productInfo.discountType === 'Percentage'
+                    ? `${productInfo.discount}% OFF`
+                    : `$${productInfo.discount} OFF`}
                 </Badge>
               )}
             </div>
@@ -238,13 +279,14 @@ export default function ProductDetailPage() {
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
                     className={`relative w-20 h-20 rounded-md overflow-hidden flex-shrink-0 border-2 ${
-                      currentImageIndex === index ? "border-blue-500" : "border-transparent"
+                      currentImageIndex === index
+                        ? 'border-blue-500'
+                        : 'border-transparent'
                     }`}
                   >
                     <img
-                      src={pic || "/placeholder.svg"}
+                      src={pic || '/placeholder.svg'}
                       alt={`Thumbnail ${index + 1}`}
-                      
                       className="object-cover"
                     />
                   </button>
@@ -257,29 +299,42 @@ export default function ProductDetailPage() {
           <div className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50">
+                <Badge
+                  variant="outline"
+                  className="text-blue-600 border-blue-200 bg-blue-50"
+                >
                   {productInfo.productType}
                 </Badge>
                 <div className="flex items-center">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
-                      className={`h-4 w-4 ${i < productInfo.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                      className={`h-4 w-4 ${i < productInfo.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                     />
                   ))}
-                  <span className="ml-2 text-sm text-gray-600">{Number(productInfo.rating)}/5</span>
+                  <span className="ml-2 text-sm text-gray-600">
+                    {Number(productInfo.rating)}/5
+                  </span>
                 </div>
               </div>
 
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{productInfo.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {productInfo.name}
+              </h1>
 
-              <p className="text-gray-600 mb-4">{productInfo.shortDescription}</p>
+              <p className="text-gray-600 mb-4">
+                {productInfo.shortDescription}
+              </p>
 
               <div className="flex items-center mb-6">
                 <div className="flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900">${discountedPrice.toFixed(2)}</span>
+                  <span className="text-3xl font-bold text-gray-900">
+                    ${discountedPrice.toFixed(2)}
+                  </span>
                   {hasDiscount && (
-                    <span className="ml-2 text-lg text-gray-500 line-through">${productInfo.price.toFixed(2)}</span>
+                    <span className="ml-2 text-lg text-gray-500 line-through">
+                      ${productInfo.price.toFixed(2)}
+                    </span>
                   )}
                 </div>
 
@@ -310,11 +365,20 @@ export default function ProductDetailPage() {
             <div>
               <p className="font-medium mb-2">Quantity</p>
               <div className="flex items-center space-x-3">
-                <Button variant="outline" size="icon" onClick={decreaseQuantity} disabled={quantity <= 1}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={decreaseQuantity}
+                  disabled={quantity <= 1}
+                >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <span className="w-8 text-center">{quantity}</span>
-                <Button variant="outline" size="icon" onClick={increaseQuantity}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={increaseQuantity}
+                >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -322,13 +386,24 @@ export default function ProductDetailPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
-              <Button size="lg" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white" onClick={addToCart}>
+              <Button
+                size="lg"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={addToCart}
+              >
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Button>
-              <Button variant="outline" size="lg" className="flex-1" onClick={() => setIsLiked(!isLiked)}>
-                <Heart className={`mr-2 h-5 w-5 ${isLiked ? "fill-red-500 text-red-500" : ""}`} />
-                {isLiked ? "Saved" : "Save for Later"}
+              <Button
+                variant="outline"
+                size="lg"
+                className="flex-1"
+                onClick={() => setIsLiked(!isLiked)}
+              >
+                <Heart
+                  className={`mr-2 h-5 w-5 ${isLiked ? 'fill-red-500 text-red-500' : ''}`}
+                />
+                {isLiked ? 'Saved' : 'Save for Later'}
               </Button>
               <Button variant="outline" size="icon" className="hidden sm:flex">
                 <Share2 className="h-5 w-5" />
@@ -389,11 +464,13 @@ export default function ProductDetailPage() {
           <TabsContent value="description" className="mt-0">
             <Card className="p-6">
               <div className="prose max-w-none">
-                {productInfo.description.split("\n\n").map((paragraph, index) => (
-                  <p key={index} className="mb-4">
-                    {paragraph}
-                  </p>
-                ))}
+                {productInfo.description
+                  .split('\n\n')
+                  .map((paragraph, index) => (
+                    <p key={index} className="mb-4">
+                      {paragraph}
+                    </p>
+                  ))}
               </div>
             </Card>
           </TabsContent>
@@ -407,7 +484,9 @@ export default function ProductDetailPage() {
                     <tbody>
                       <tr className="border-b">
                         <td className="py-2 text-gray-600">Product Type</td>
-                        <td className="py-2 font-medium">{productInfo.productType}</td>
+                        <td className="py-2 font-medium">
+                          {productInfo.productType}
+                        </td>
                       </tr>
                       <tr className="border-b">
                         <td className="py-2 text-gray-600">Material</td>
@@ -423,7 +502,9 @@ export default function ProductDetailPage() {
                       </tr>
                       <tr className="border-b">
                         <td className="py-2 text-gray-600">Color Options</td>
-                        <td className="py-2 font-medium">Blue, Gray, Beige, Green</td>
+                        <td className="py-2 font-medium">
+                          Blue, Gray, Beige, Green
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -459,23 +540,29 @@ export default function ProductDetailPage() {
               {/* Reviews Summary */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="md:col-span-1 flex flex-col items-center justify-center">
-                  <div className="text-5xl font-bold text-gray-900 mb-2">{averageRating.toFixed(1)}</div>
+                  <div className="text-5xl font-bold text-gray-900 mb-2">
+                    {averageRating.toFixed(1)}
+                  </div>
                   <div className="flex mb-2">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
-                        className={`h-5 w-5 ${i < Math.round(averageRating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                        className={`h-5 w-5 ${i < Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                       />
                     ))}
                   </div>
-                  <p className="text-sm text-gray-500">{reviews.length} reviews</p>
+                  <p className="text-sm text-gray-500">
+                    {reviews.length} reviews
+                  </p>
                 </div>
 
                 <div className="md:col-span-2">
                   <h3 className="font-medium mb-4">Rating Breakdown</h3>
                   {[5, 4, 3, 2, 1].map((rating) => {
-                    const count = reviews.filter((r) => r.rating === rating).length
-                    const percentage = (count / reviews.length) * 100
+                    const count = reviews.filter(
+                      (r) => r.rating === rating,
+                    ).length;
+                    const percentage = (count / reviews.length) * 100;
 
                     return (
                       <div key={rating} className="flex items-center mb-2">
@@ -491,9 +578,11 @@ export default function ProductDetailPage() {
                             className="h-full bg-yellow-400 rounded-full"
                           />
                         </div>
-                        <span className="text-sm text-gray-500 ml-2 w-12">{count}</span>
+                        <span className="text-sm text-gray-500 ml-2 w-12">
+                          {count}
+                        </span>
                       </div>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -515,18 +604,25 @@ export default function ProductDetailPage() {
                     <div className="flex justify-between mb-2">
                       <div className="flex items-center">
                         <div className="h-10 w-10 rounded-full overflow-hidden mr-3">
-                          <img src={review.avatar || "/placeholder.svg"} alt={review.name} width={40} height={40} />
+                          <img
+                            src={review.avatar || '/placeholder.svg'}
+                            alt={review.name}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <div>
                           <p className="font-medium">{review.name}</p>
-                          <p className="text-sm text-gray-500">{formatDate(review.date)}</p>
+                          <p className="text-sm text-gray-500">
+                            {formatDate(review.date)}
+                          </p>
                         </div>
                       </div>
                       <div className="flex">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                            className={`h-4 w-4 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                           />
                         ))}
                       </div>
@@ -535,10 +631,18 @@ export default function ProductDetailPage() {
                     <p className="text-gray-700 mb-3">{review.comment}</p>
 
                     <div className="flex items-center">
-                      <Button variant="ghost" size="sm" className="text-sm text-gray-500">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-sm text-gray-500"
+                      >
                         Helpful ({review.helpful})
                       </Button>
-                      <Button variant="ghost" size="sm" className="text-sm text-gray-500">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-sm text-gray-500"
+                      >
                         Report
                       </Button>
                     </div>
@@ -557,6 +661,5 @@ export default function ProductDetailPage() {
         {/* <RelatedProducts currentProductId={product.id} /> */}
       </motion.div>
     </div>
-  )
+  );
 }
-

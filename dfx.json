@@ -56,7 +56,7 @@
     "Product_seeder": {
       "type": "motoko",
       "dependencies": ["Product_backend"],
-      "main": "backend/Storages/Seeders/ProductSeeder.mdo"
+      "main": "backend/Storages/Seeders/ProductSeeder.mo"
     },
     "Cart_backend": {
       "type": "motoko",

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ShoppingCart, Star, Heart, ArrowRight } from "lucide-react"
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import type { Product } from "@/pages/marketplace/page"
+import { Product } from "@/declarations/Product_backend/Product_backend.did"
 
 interface FeaturedProductProps {
   product: Product & { originalPrice?: number }
@@ -60,15 +60,15 @@ export default function FeaturedProduct({ product }: FeaturedProductProps) {
                       className={`h-4 w-4 ${i < product.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
                     />
                   ))}
-                  <span className="ml-2 text-sm text-gray-600">{product.rating}/5</span>
+                  <span className="ml-2 text-sm text-gray-600">{Number(product.rating)}/5</span>
                 </div>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">{product.name}</h2>
               <p className="text-gray-600 mb-6">{product.shortDescription}</p>
               <div className="space-y-4 mb-6">
-                <div className="flex items-center text-sm text-gray-500">
+                {/* <div className="flex items-center text-sm text-gray-500">
                   <span className="font-medium text-gray-700 mr-2">Seller:</span> {product.seller}
-                </div>
+                </div> */}
                 <p className="text-gray-600 line-clamp-3">{product.description}</p>
               </div>
             </div>
