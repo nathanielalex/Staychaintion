@@ -10,14 +10,8 @@ import Char "mo:base/Char";
 import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
-import Voucher "Voucher/Voucher";
 
 module {
-    public type VoucherType = {
-        #fixed;
-        #percentage;
-        #unknown;
-    };
     
     public type UserProfile = {
         id: Principal;
@@ -135,23 +129,21 @@ module {
         discount: Nat;
         voucherType: Text;
         start_date: Nat;
+        end_date: Nat;
         expired_date: Nat;
     };
 
-    public func voucherTypeToVar(voucherType: Text): VoucherType {
-        switch (voucherType) {
-            case ("fixed") return #fixed;
-            case ("percentage") return #percentage;
-            case (_) return #unknown;
-        }
+    public type ChatbotResponse = {
+        message: Text;
+        considerations: [Text];
+        pros: [Text];
+        cons: [Text];
+        recommendations: [Text];
     };
 
-    public func voucherTypeToText(voucherType: VoucherType) {
-        switch (voucherType) {
-            case (#fixed) return "fixed";
-            case (#percentage) return "percentage";
-            case (#unknown) return "unknown";
-        }
+    public type ChatbotMessage = {
+        prompt: Text;
+        response: ChatbotResponse;
     };
 
     public func userRoleVal(role: Text) : Bool {
