@@ -19,7 +19,7 @@ module {
         fullName: Text;
         email: Text;
         dateOfBirth: Text;
-        ballance: Float;
+        balance: Float;
         profilePictureUrl: Text;
         propertiesId: ?[Text];
     };
@@ -133,12 +133,27 @@ module {
         expired_date: Nat;
     };
 
+    public type PropertyRecommendation = {
+        id: Text;
+        name: Text;
+        coverPicture: Text;
+        price_per_night: Nat;
+    };
+
+    public type ProductRecommendation = {
+        id: Text;
+        name: Text;
+        coverPicture: Text;
+        price: Nat;
+    };
+
     public type ChatbotResponse = {
         message: Text;
         considerations: [Text];
         pros: [Text];
         cons: [Text];
-        recommendations: [Text];
+        recommended_properties: [PropertyRecommendation];
+        recommended_products: [ProductRecommendation];
     };
 
     public type ChatbotMessage = {
