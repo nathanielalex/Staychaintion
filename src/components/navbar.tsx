@@ -50,7 +50,7 @@ export default function Navbar() {
       } flex items-center justify-between px-6 py-4 border-b border-white/10`}
     >
       {/* Logo */}
-      <a href="/" className="flex items-center space-x-2">
+      <a href="/landing" className="flex items-center space-x-2">
         <House className="w-8 h-8 text-blue-500" />
         <span className="text-gray-900 font-medium text-xl">StayChaintion</span>
       </a>
@@ -60,16 +60,43 @@ export default function Navbar() {
         <NavLink href="/landing">Home</NavLink>
         <NavLink href="/properties">Properties</NavLink>
         <NavLink href="/ai">AI Features</NavLink>
-        <NavLink href="/marketing">Marketing</NavLink>
-        <NavLink href="/marketplace">Marketplace</NavLink>
+        <NavLink href="/features">Main Features</NavLink>
+
+        {/* <NavLink href="/marketing">Marketing</NavLink>
+        <NavLink href="/marketplace">Marketplace</NavLink> */}
       </div>
+
+      {/* {window.ic?.plug?.isConnected && (
+
+      <div className="hidden md:flex items-center space-x-8">
+
+        <NavLink
+          href={isConnected ? "/history" : "/wallet"}
+          className="flex flex-col space-y-4"
+        >
+          <div className="flex flex-row space-x-2">
+            <LucideWallet2 />
+            <div>Balance: {balance?.toFixed(2)} ICP</div>
+          </div>
+        </NavLink>
+
+        <NavLink
+          href="/register"
+        >
+          <div className="flex flex-row space-x-2">
+            <LucideIdCard />
+            <div>Profile</div>
+          </div>
+        </NavLink>
+        
+      </div>
+
+      )} */}
 
       {window.ic?.plug?.isConnected && (
 
 
         <div className="relative hidden md:flex">
-
-          {/* <ThemeToggleButton/> */}
 
           <div
             className="flex flex-row items-center cursor-pointer space-x-2"
@@ -105,7 +132,8 @@ export default function Navbar() {
 
               <li className="p-2">
                 <NavLink
-                  href={isConnected ? "/history" : "/wallet"}
+                  // href={isConnected ? "/history" : "/wallet"}
+                  href="/wallet"
                   className="flex flex-col space-y-4"
                 >
                   <div className="flex flex-row space-x-2">
@@ -116,19 +144,13 @@ export default function Navbar() {
                 </NavLink>
               </li>
 
-              {/* <li className="p-2">
-                  <div className="flex flex-row space-x-1">
-                    <ThemeToggleButton/>
-                  </div>
-              </li> */}
-
             </ul>
             
           )}
 
-          {/* Uncomment ini untuk Darkmode Toggle -> Darkmode Toggle belum sepenuhnya bagus */}
+          {/* Uncomment ini untuk Darkmode Toggle -> Darkmode Toggle belum sepenuhnya bagus
 
-          {/* <ThemeToggleButton/> */}
+          <ThemeToggleButton/> */}
 
         </div>
 
@@ -174,12 +196,16 @@ export default function Navbar() {
           <NavLink href="/ai" onClick={() => setIsMenuOpen(false)}>
             AI Features
           </NavLink>
-          <NavLink href="/marketing" onClick={() => setIsMenuOpen(false)}>
+          <NavLink href="/features" onClick={() => setIsMenuOpen(false)}>
+            Main Features
+          </NavLink>
+
+          {/* <NavLink href="/marketing" onClick={() => setIsMenuOpen(false)}>
             Marketing
           </NavLink>
           <NavLink href="/marketplace" onClick={() => setIsMenuOpen(false)}>
             Marketplace
-          </NavLink>
+          </NavLink> */}
           
           {window.ic?.plug?.isConnected && (
         <div className="relative">

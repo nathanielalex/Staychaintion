@@ -36,9 +36,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       href: "/admin/analytics",
     },
     // {
-    //   title: "Settings",
-    //   icon: Settings,
-    //   href: "/admin/settings",
+    //   title: "Back to Home",
+    //   icon: Home,
+    //   href: "/landing",
     // },
   ]
 
@@ -77,6 +77,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <span>{item.title}</span>
             </a>
           ))}
+
+            <a
+              key="Back to Home"
+              href="/landing"
+              className="flex items-center space-x-2 px-12 py-5 text-white rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors fixed bottom-5 bg-blue-400"
+            >
+              <Home className="w-5 h-5" />
+              <div>Back to Home</div>
+            </a>
+            
         </nav>
       </motion.aside>
 
@@ -89,7 +99,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </button>
           <div className="flex items-center space-x-4">
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-blue-600 font-medium">R</span>
+              <span className="text-blue-600 font-medium">A</span>
             </div>
           </div>
         </header>

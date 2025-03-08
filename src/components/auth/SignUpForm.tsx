@@ -78,11 +78,12 @@ export default function SignUpForm() {
     if(principal != null && formData.dateOfBirth != null) {
       const userData: UserProfile = {
         id: principal,
+        walletId: [],
         role: formData.role,
         fullName: formData.name,
         email: formData.email,
         dateOfBirth: formData.dateOfBirth.toDateString(),
-        ballance: 0,
+        balance: 0,
         profilePictureUrl: formData.profilePicture,
         propertiesId: []
       }

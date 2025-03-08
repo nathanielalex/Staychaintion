@@ -5,15 +5,19 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Heart, Star, MapPin, ArrowRight, Search, Home, MessageSquare } from "lucide-react"
+import { Property_backend } from "@/declarations/Property_backend"
+import { Transaction, Property, PaginationQuery } from "@/declarations/Property_backend/Property_backend.did"
+import { useState, useEffect } from "react"
+import { useAuth } from "@/utility/use-auth-client"
 
-const upcomingBookings = [
+const dumyUpcomingBooking = [
   {
     id: 1,
     property: "Luxury Beach Villa",
     location: "Miami, FL",
     checkIn: "2024-06-15",
     checkOut: "2024-06-20",
-    image: "/placeholder.svg?height=100&width=150",
+    image: "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg",
     price: 1200,
     status: "confirmed",
   },
@@ -23,7 +27,7 @@ const upcomingBookings = [
     location: "Aspen, CO",
     checkIn: "2024-07-10",
     checkOut: "2024-07-15",
-    image: "/placeholder.svg?height=100&width=150",
+    image: "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg",
     price: 950,
     status: "pending",
   },
@@ -64,7 +68,7 @@ const recentActivity = [
   },
 ]
 
-const recommendedProperties = [
+const dummyRecommendedProperties = [
   {
     id: 1,
     name: "Beachfront Paradise",
@@ -72,7 +76,7 @@ const recommendedProperties = [
     price: 180,
     rating: 4.9,
     reviews: 124,
-    image: "/placeholder.svg?height=200&width=300",
+    image: "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg",
   },
   {
     id: 2,
@@ -81,7 +85,7 @@ const recommendedProperties = [
     price: 150,
     rating: 4.7,
     reviews: 89,
-    image: "/placeholder.svg?height=200&width=300",
+    image: "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg",
   },
   {
     id: 3,
@@ -90,11 +94,41 @@ const recommendedProperties = [
     price: 120,
     rating: 4.8,
     reviews: 56,
-    image: "/placeholder.svg?height=200&width=300",
+    image: "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg",
   },
 ]
 
 export default function UserDashboard() {
+  const [upcomingBookings, setupcomingBookings] = useState<Transaction[]>([]);
+  const [recommendedProperties, setRecommendedProperties] = useState<Property[]>([]);
+  const { principal } = useAuth();
+
+  useEffect(()=>{
+    if (principal){
+      Property_backend.getUserUncompletedTransactions(principal).then((result:Transaction[]) => {
+        setupcomingBookings(result);
+      }).catch((err: Error) => {
+        console.log(err);
+      });
+    }
+
+    Property_backend.getPropertyPaginate({
+      comparisons: "",
+      page: BigInt(1),
+      count: BigInt(3),
+      orderAttr: "rating,",
+      textQueries: "available,",
+      textAttrs: "status,",
+      orderDir: "desc",
+      numQueries: "",
+      numAttrs: "",
+
+    }).then(([properties, _totalCount]) => {
+      setRecommendedProperties(properties);
+    })
+
+  }, []);
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -181,8 +215,8 @@ export default function UserDashboard() {
                     <div className="flex flex-col md:flex-row">
                       <div className="relative w-full md:w-48 h-48 md:h-auto">
                         <img
-                          src={booking.image || "/placeholder.svg"}
-                          alt={booking.property}
+                          src={booking.propCoverPicture || "/placeholder.svg"}
+                          alt={booking.propName}
                           
                           className="object-cover"
                         />
@@ -190,20 +224,20 @@ export default function UserDashboard() {
                       <div className="p-6 flex-grow">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
                           <div>
-                            <h3 className="text-xl font-semibold">{booking.property}</h3>
+                            <h3 className="text-xl font-semibold">{booking.propName}</h3>
                             <div className="flex items-center text-gray-500 mt-1">
                               <MapPin className="h-4 w-4 mr-1" />
-                              <span>{booking.location}</span>
+                              <span>{booking.propLocation}</span>
                             </div>
                           </div>
                           <Badge
                             className={`mt-2 md:mt-0 ${
-                              booking.status === "confirmed"
+                              booking.transactionStatus === "confirmed"
                                 ? "bg-green-100 text-green-800 hover:bg-green-100"
                                 : "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
                             }`}
                           >
-                            {booking.status}
+                            {booking.transactionStatus}
                           </Badge>
                         </div>
 
@@ -212,19 +246,19 @@ export default function UserDashboard() {
                             <p className="text-sm text-gray-500">Check-in</p>
                             <div className="flex items-center">
                               <Calendar className="h-4 w-4 text-blue-600 mr-1" />
-                              <p className="font-medium">{new Date(booking.checkIn).toLocaleDateString()}</p>
+                              <p className="font-medium">{new Date(booking.checkInDate).toLocaleDateString()}</p>
                             </div>
                           </div>
                           <div>
                             <p className="text-sm text-gray-500">Check-out</p>
                             <div className="flex items-center">
                               <Calendar className="h-4 w-4 text-blue-600 mr-1" />
-                              <p className="font-medium">{new Date(booking.checkOut).toLocaleDateString()}</p>
+                              <p className="font-medium">{new Date(booking.checkOutDate).toLocaleDateString()}</p>
                             </div>
                           </div>
                           <div>
                             <p className="text-sm text-gray-500">Total</p>
-                            <p className="font-semibold text-green-600">${booking.price}</p>
+                            <p className="font-semibold text-green-600">${booking.totalPrice}</p>
                           </div>
                         </div>
 
@@ -306,7 +340,7 @@ export default function UserDashboard() {
                   <div className="rounded-lg overflow-hidden border border-gray-200 h-full">
                     <div className="relative h-40">
                       <img
-                        src={property.image || "/placeholder.svg"}
+                        src={property.coverPicture || "/placeholder.svg"}
                         alt={property.name}
                         
                         className="object-cover group-hover:scale-110 transition-transform duration-300"
@@ -329,9 +363,9 @@ export default function UserDashboard() {
                         <div className="flex items-center">
                           <Star className="h-4 w-4 text-yellow-500 fill-current" />
                           <span className="text-sm ml-1">{property.rating}</span>
-                          <span className="text-xs text-gray-500 ml-1">({property.reviews})</span>
+                          <span className="text-xs text-gray-500 ml-1">({Number(property.reviewCount)})</span>
                         </div>
-                        <p className="font-semibold">${property.price}/night</p>
+                        <p className="font-semibold">${property.pricePerNight}/night</p>
                       </div>
                     </div>
                   </div>

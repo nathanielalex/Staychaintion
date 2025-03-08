@@ -3,11 +3,11 @@ import Property "canister:Property_backend";
 import User "canister:User_backend";
 
 actor {
-  public func run(userId : Principal) : async () {
-    let props = await Property.getProperties(3);
+  public func run(userId : Principal, count: Nat) : async () {
+    let props = await Property.getProperties(count);
 
     for(prop in props.vals()) {
-      let userPropertyId = await User.transferPropertyToUser(userId, prop.id);
+      let status = await User.transferPropertyToUser(userId, prop.id);
     };
   };
 };

@@ -66,19 +66,19 @@ export default function SettingsPage() {
       <motion.div variants={item}>
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <TabsTrigger value="profile" className="flex items-center">
+            <TabsTrigger value="profile" className="flex items-center text-white">
               <User className="w-4 h-4 mr-2" />
               Profile
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center">
+            <TabsTrigger value="security" className="flex items-center text-white">
               <Shield className="w-4 h-4 mr-2" />
               Security
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center">
+            <TabsTrigger value="notifications" className="flex items-center text-white">
               <Bell className="w-4 h-4 mr-2" />
               Notifications
             </TabsTrigger>
-            <TabsTrigger value="payment" className="flex items-center">
+            <TabsTrigger value="payment" className="flex items-center text-white">
               <CreditCard className="w-4 h-4 mr-2" />
               Payment
             </TabsTrigger>

@@ -1,0 +1,64 @@
+# Chat Canister Documentation
+
+## Types
+
+### Message
+Structure for storing message information:
+- `id`: Text - Unique identifier for the message
+- `content`: Text - Content of the message
+- `sender`: Principal - Principal identifier of the sender
+- `timestamp`: Time.Time - Timestamp of when message was sent
+
+### Chat
+Structure for storing chat information:
+- `id`: Text - Unique identifier for the chat
+- `user1`: Principal - Principal identifier for the first user
+- `user2`: Principal - Principal identifier for the second user
+- `messages`: [Text] - Array of message IDs in the chat
+
+## Functions
+
+### getMessage
+Retrieves a message by its ID.
+- **Internal function**
+- Params: `messageId: Text` - ID of the message to retrieve
+- Returns: `Result.Result<Message, Text>` - Message object if found, error message if not found
+
+### getAllChats
+Retrieves all chats for a given user.
+- **Public shared function**
+- Params: `currUser: Principal` - Principal ID of the current user
+- Returns: `async Result.Result<[UserProfile.UserProfile], Text>` - Array of user profiles that the user has chatted with or error message
+
+### getChat
+Retrieves a chat between two users.
+- **Public shared query function**
+- Params: 
+    - `user1: Principal` - Principal ID of the first user
+    - `user2: Principal` - Principal ID of the second user
+- Returns: `async Result.Result<Chat, Text>` - Chat object if found, error message if not found
+
+### getAllMessages
+Retrieves all messages between two users with metadata.
+- **Public shared function**
+- Params:
+    - `user1: Principal` - Principal ID of the first user
+    - `user2: Principal` - Principal ID of the second user
+- Returns: `async Result.Result<[(Text, Text, Int, Principal, Text)], Text>` - Array of tuples containing sender name, message content, timestamp, sender principal, and sender profile picture, or error message
+
+### createChat
+Creates a new chat between two users, or returns existing chat if one exists.
+- **Public shared function**
+- Params:
+    - `user1: Principal` - Principal ID of the first user
+    - `user2: Principal` - Principal ID of the second user
+- Returns: `async Result.Result<Chat, Text>` - Newly created chat or existing chat, or error message
+
+### sendMessage
+Sends a message from one user to another.
+- **Public shared function**
+- Params:
+    - `user1: Principal` - Principal ID of the message sender
+    - `user2: Principal` - Principal ID of the message receiver
+    - `content: Text` - Content of the message
+- Returns: `async Result.Result<Message, Text>` - The created message object or error message if chat doesn't exist

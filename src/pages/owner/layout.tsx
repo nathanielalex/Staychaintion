@@ -50,7 +50,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         )}
       >
         <div className="flex h-16 items-center justify-between px-4 border-b border-gray-200">
-          <a href="/admin" className="flex items-center space-x-2">
+          <a href="/owner" className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
               <span className="text-white font-semibold"><House/></span>
             </div>
@@ -72,6 +72,16 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               <span>{item.title}</span>
             </a>
           ))}
+
+          <a
+            key="Back to Home"
+            href="/landing"
+            className="flex items-center space-x-2 px-12 py-5 text-white rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors fixed bottom-5 bg-blue-400"
+          >
+            <Home className="w-5 h-5" />
+            <div>Back to Home</div>
+          </a>
+
         </nav>
       </motion.aside>
 

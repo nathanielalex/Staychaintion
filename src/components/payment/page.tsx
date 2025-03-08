@@ -1,9 +1,11 @@
 import { Property_backend } from "@/declarations/Property_backend";
-import { Property } from "@/declarations/Property_backend/Property_backend.did";
+import { User_backend } from "@/declarations/User_backend";
+import { Property, UnregisteredTransaction } from "@/declarations/Property_backend/Property_backend.did";
 import { AxiosError } from "axios";
 import { Calendar, Clock, CreditCard, Home, MapPin, Tag, User, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "@/utility/use-auth-client";
 import { toast } from "react-toastify";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Label } from "../ui/label";
@@ -13,19 +15,19 @@ import { Button } from "../ui/button";
 import { useDebounce } from "use-debounce";
 import { DatePickerWithRange } from "../ui/date-range-picker";
 import { DateRange } from "react-day-picker";
-import { format, differenceInDays } from "date-fns"
+import { format, differenceInDays, setDate } from "date-fns"
 
 interface Discount {
     promotion?: {
         code: string;
         discount?: number;
-        type?: 'fixed' | 'percent',
+        type?: 'fixed' | 'percentage',
         isValid?: boolean;
     },
     voucher?: {
         code?: string;
         discount?: number;
-        type?: 'fixed' | 'percent',
+        type?: 'fixed' | 'percentage',
         isValid?: boolean;
     },
     total?: number;
@@ -38,12 +40,16 @@ interface Reservation {
 };
 
 export default function TransactionPage() {
+    const fee = 10000;
     const { id } = useParams();
+    const { principal } = useAuth();
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [property, setProperty] = useState<Property>();
     const [voucher, setVoucher] = useState<string>();
     const [discount, setDiscount] = useState<Discount>({});
+    const [dateRange, setDateRange] = useState<DateRange>();
+    const [totalPrice, setTotalPrice] = useState<number>(0);
     const [reservation, setReservation] = useState<Reservation>({
         propertyId: id!,
         price: property?.pricePerNight ?? 0,
@@ -53,6 +59,11 @@ export default function TransactionPage() {
         },
     });
     const [debouncedVoucherCode] = useDebounce(discount?.voucher?.code, 600);
+
+    useEffect(() => {
+        setTotalPrice((property?.pricePerNight ?? 0) * differenceInDays(dateRange?.to!, dateRange?.from!) - (discount.total ?? 0));
+    }, [dateRange])
+    
 
     const fetchProperty = async() => {
         try {
@@ -79,6 +90,67 @@ export default function TransactionPage() {
             });
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    const handlePayment = async () => {
+        if (!property || !principal) {
+            toast.error('Property details are missing');
+            return;
+        }
+
+        //check if property is available or not, if not then return or throw error
+        if(!(await Property_backend.checkPropertyAvailability(property.id))){
+            toast.error('Property is not available for the selected date range');
+            return;
+        };
+
+        // check if user has enough balance to make the payment, if not then return or throw error
+        let bal = await User_backend.getUserBalance(principal);
+        if(bal < totalPrice+fee){
+            toast.error('Insufficient balance');
+            return;
+        };
+
+        
+        
+        const transactionData: UnregisteredTransaction = {
+            propertyId: property.id,
+            user: principal, // Replace with actual user Principal as string
+            owner: property.owner, // Replace with actual owner Principal as string
+            checkInDate: reservation.dateRange.from ? format(reservation.dateRange.from, "dd-MM-yyyy") : "",
+            checkOutDate: reservation.dateRange.to ? format(reservation.dateRange.to, "dd-MM-yyyy") : "",
+            totalPrice: totalPrice,
+            propName: property.name,
+            propType: property.propertyType,
+            propLocation: property.location,
+            propCoverPicture: property.coverPicture,
+            transactionStatus: "booked",
+            imageUrl: property.coverPicture,
+        };
+        
+        // initiate the transaction
+        try {
+            let transactionId = await Property_backend.initiateTransaction(transactionData); //to make sure we deduct user balance based on existing transaction
+            let [registeredTransaction] = await Property_backend.getTransaction(transactionId);
+            let propertyStatusChange = await Property_backend.updatePropertyStatus(property.id, "booked");
+            if(registeredTransaction){
+                // deduct the balance from user account instantly because wallet or ledger transaction is not implemented yet
+                let deductStatus = await User_backend.updateUserBalance(principal, bal-(totalPrice+fee));
+                if(deductStatus > 0){
+                    toast.success('Payment initiated successfully');
+                    return;
+                } else {
+                    toast.error('Failed to process payment');
+                    return;
+                }
+            } else {
+                toast.error('Failed to process payment');
+                return;
+            }
+        } catch (error) {
+            toast.error('Failed to process payment');
+            console.error(error);
         }
     }
 
@@ -142,12 +214,14 @@ export default function TransactionPage() {
                                         Reservation Period
                                     </Label>
                                     
-                                    <DatePickerWithRange onDateChange={(range: DateRange) => {
-                                        setReservation(res => ({
-                                            ...res,
-                                            dateRange: range,
-                                        }));
-                                    }} />
+                                    <DatePickerWithRange 
+                                        onDateChange={(range: DateRange) => {
+                                            setReservation((prevReservation) => ({
+                                            ...prevReservation,
+                                            dateRange: range, // Update the reservation's dateRange
+                                            }));
+                                        }} 
+                                    />
                                 </div>
                             </div>
                         </CardContent>
@@ -224,6 +298,7 @@ export default function TransactionPage() {
                         <CardFooter>
                         <Button
                             className="w-full bg-blue-600 hover:bg-blue-700 text-lg"
+                            onClick={() => {handlePayment();}}
                         >
                             Complete payment
                         </Button>

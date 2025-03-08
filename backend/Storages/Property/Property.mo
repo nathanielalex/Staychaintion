@@ -155,6 +155,15 @@ actor {
         };
     };
 
+    public query func checkPropertyAvailability(propId: Text): async Bool {
+        switch(propertyInfo.get(propId)){
+            case(?prop) {
+                return prop.status == "available";
+            };
+            case(null) { return false; };
+        };
+    };
+
     public query func getPropertyIdFromTextAttribute(attribute: Text, text_query: Text): async [Text] {
         var itertyp = propertyInfo.vals();
 
@@ -433,23 +442,7 @@ actor {
                 
                 // Create a new property object with updated rating
                 let updatedProperty : Property = {
-                    id = property.id;
-                    owner = property.owner;
-                    name = property.name;
-                    status = property.status;
-                    propertyType = property.propertyType;
-                    pricePerNight = property.pricePerNight;
-                    description = property.description;
-                    location = property.location;
-                    latitude = property.latitude;
-                    longitude = property.longitude;
-                    builtInDate = property.builtInDate;
-                    bedroomCount = property.bedroomCount;
-                    guestCapacity = property.guestCapacity;
-                    bathroomCount = property.bathroomCount;
-                    bedCount = property.bedCount;
-                    pictures = property.pictures;
-                    coverPicture = property.coverPicture;
+                    property with
                     rating = newAvgRating;
                     reviewCount = currentCount + 1; // Increment review count
                 };
@@ -484,6 +477,65 @@ actor {
         return (Vector.toArray(reviews));
     };
 
+    /**
+     * Transaction Management Module
+     * This module provides functions to create, update, and manage property rental transactions.
+     * 
+     * TRANSACTION FUNCTIONS:
+     * 
+     * initiateTransaction:
+     * Creates a new transaction for property booking with a unique ID.
+     * Returns the generated transaction ID or an empty string if validation fails.
+     * One property can only have one ongoing transaction at a time.
+     * @param newTransaction - An UnregisteredTransaction object without an ID
+     * @return Text - The generated transaction ID or empty string on failure
+     * 
+     * updateTransaction:
+     * Updates an existing transaction with new details.
+     * @param updatedTransaction - A Transaction object with modified fields
+     * @return Int - 1 on success, 0 on failure
+     * 
+     * changeTransactionStatus:
+     * Modifies the status of an existing transaction.
+     * Valid statuses are enforced by Util.transactionStatusVal.
+     * @param transactionId - The ID of the transaction to update
+     * @param newStatus - The new status to set
+     * @return Int - 1 on success, 0 on failure
+     * 
+     * removeTransaction:
+     * Deletes a transaction from the system.
+     * @param transactionId - The ID of the transaction to remove
+     * @return Int - 1 on success, 0 on failure
+     * 
+     * getTransactionStatus:
+     * Retrieves the current status of a transaction.
+     * @param transactionId - The ID of the transaction
+     * @return Text - The status of the transaction or empty string if not found
+     * 
+     * getTransactionByStatus:
+     * Returns all transactions matching a specified status.
+     * @param status - The transaction status to filter by
+     * @return [Transaction] - Array of transactions with the specified status
+     * 
+     * getUserTransactionHistoryPaginate:
+     * Gets a paginated list of transactions for a specific user, optionally filtered by status.
+     * Results are sorted by transaction status priority and check-in date.
+     * @param userId - The Principal ID of the user
+     * @param status - Optional status filter
+     * @param page - Page number (starting from 1)
+     * @param count - Number of items per page
+     * @return ([Transaction], Nat) - Tuple of transactions array and total count
+     * 
+     * getPropertyTransactionHistory:
+     * Retrieves all transactions related to a specific property.
+     * @param propertyId - The ID of the property
+     * @return [Transaction] - Array of transactions for the property
+     * 
+     * getTransaction:
+     * Gets the details of a specific transaction.
+     * @param transactionId - The ID of the transaction
+     * @return ?Transaction - Optional transaction details (null if not found)
+     */
     // Transaction functions
     public shared func initiateTransaction(newTransaction: Util.UnregisteredTransaction) : async Text {   
         if(Util.transactionStatusVal(newTransaction.transactionStatus) == false) {
@@ -557,6 +609,16 @@ actor {
         let transactions = Vector.Vector<Transaction>();
         for (t in transactionHistory.vals()) {
             if(status == t.transactionStatus) {
+                transactions.add(t);
+            };
+        };
+        return (Vector.toArray(transactions));
+    };
+
+    public query func getUserUncompletedTransactions(userId: Principal) : async [Transaction] {
+        let transactions = Vector.Vector<Transaction>();
+        for (t in transactionHistory.vals()) {
+            if(userId == t.user and not (t.transactionStatus == "completed" or t.transactionStatus == "cancelled")) {
                 transactions.add(t);
             };
         };

@@ -662,7 +662,7 @@ export default function PropertiesMapPage() {
               </h2>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-white">Sort by:</span>
-                <select className="border rounded-md px-2 py-1 text-sm">
+                <select className="border rounded-md px-2 py-1 text-sm text-white">
                   <option>Recommended</option>
                   <option>Price: Low to High</option>
                   <option>Price: High to Low</option>

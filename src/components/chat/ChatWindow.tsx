@@ -44,8 +44,6 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
   return (
     <div className="flex-1 flex flex-col">
       <div className="p-4 bg-gray-200 border-b border-gray-300">
-        {/* ini seharusnya nama usernya huhu */}
-        {/* seharusnya fetch contact list di Chat */}
         <h2 className="text-xl font-semibold">{selectedName}</h2>
       </div>
       <MessageList messages={messages} />

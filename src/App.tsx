@@ -5,7 +5,6 @@ import { Principal } from '@dfinity/principal';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Wallet from './pages/Wallet';
-import RegisterPage from './pages/RegisterPage';
 import RegisterPage2 from './pages/auth/RegisterPage';
 import { SetStateAction, useEffect, useState } from 'react';
 import LandingPage from './pages/LandingPage';
@@ -83,6 +82,9 @@ import InfluencerJoinPage from './pages/influencer/join/page';
 // Marketplace Page
 
 import MarketplacePage from './pages/marketplace/page';
+import ProductDetailPage from './pages/marketplace/[id]/page';
+import MarketplaceCartPage from './pages/marketplace/cart/page';
+import OrderConfirmationPage from './pages/marketplace/order-confirmation/page';
 
 
 // Other Pages
@@ -101,6 +103,9 @@ import ScrollToTop from "./utility/ScrollToTop";
 import NewMaps from "./pages/maps/page"
 import TransactionPage from './components/payment/page';
 import { RegistrationProvider } from './utility/RegistrationContext';
+
+import FeaturesNavigation from "./pages/features/page"
+import CartPage from './pages/marketplace/cart/page';
 
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -157,12 +162,6 @@ const AnimatedRoutes = () => {
               }
             />
 
-            {/* <Route path="/home" element={<HomePage />} /> */}
-
-            {/* <Route path="/register" element={<RegisterPage setIsRegistered={function (value: SetStateAction<boolean>): void {
-              throw new Error('Function not implemented.');
-            } } />} /> */}
-
             <Route
               path="/register"
               element={
@@ -171,6 +170,7 @@ const AnimatedRoutes = () => {
                 </ProtectedRoute>
               }
             />
+            
             {/* <Route
               path="/register"
               element={<RegisterPage2 />}
@@ -181,27 +181,33 @@ const AnimatedRoutes = () => {
 
             <Route path="/chat" element={<ChatPage />} />
 
-            <Route path="/maps" element={<Maps />} />
-
-            <Route path="/map" element={<NewMaps />} />
+            {/* <Route path="/maps" element={<Maps />} /> */}
 
             {/* MAIN PAGES SECTION */}
 
             <Route element={<MainLayout/>}>
+
+              <Route path="/map" element={<NewMaps />} />
+              
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/teams" element={<TeamPage />} />
+              <Route path="/landing" element={<LandingPage />} />
+              <Route path="/properties" element={<PropertiesPage />} />
+              
+              <Route path="/properties/details/:id" element={<PropertyDetailPage />} />
+              <Route path="/properties/reserve/:id" element={<TransactionPage />} />
+
+              {/* <Route path="/properties/details" element={<PropertyDetailPage />} /> */}
+
               {/* <Route path="/list" element={
                 <PropertyFilterProvider>
                   <PropertyListPage/>
                 </PropertyFilterProvider>
               } /> */}
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/teams" element={<TeamPage />} />
-              <Route path="/landing" element={<LandingPage />} />
-              <Route path="/properties" element={<PropertiesPage />} />
-              {/* <Route path="/properties/details" element={<PropertyDetailPage />} /> */}
-              <Route path="/properties/details/:id" element={<PropertyDetailPage />} />
-              <Route path="/properties/reserve/:id" element={<TransactionPage />} />
 
             </Route>
+
+            {/* DASHBOARD SECTIONS */}
 
             {/* ADMIN PAGES SECTION */}
             
@@ -257,7 +263,7 @@ const AnimatedRoutes = () => {
 
               <Route path="/chatbot" element={<StayAI />} />
 
-              <Route path="/predicts-old" element={<PredictPriceArchieved />} />
+              {/* <Route path="/predicts-old" element={<PredictPriceArchieved />} /> */}
               
             </Route>
 
@@ -282,6 +288,9 @@ const AnimatedRoutes = () => {
 
             <Route element={<MainLayout/>}>
               <Route path="/marketplace" element={<MarketplacePage />} />
+              <Route path="/marketplace/:id" element={<ProductDetailPage />} />
+              <Route path="/marketplace/cart" element={<CartPage />} />
+              <Route path="/marketplace/order-confirmation" element={<OrderConfirmationPage />} />
             </Route>
 
             {/* Other */}
@@ -290,6 +299,7 @@ const AnimatedRoutes = () => {
               <Route path="/balance" element={<BalancePage />} />
               <Route path="/community" element={<CommunityPage />} />
               <Route path="/disputes" element={<DisputesPage />} />
+              <Route path="/features" element={<FeaturesNavigation />} />
             </Route>
 
             {/* ERROR PAGE SECTION */}
@@ -317,7 +327,8 @@ function App() {
   if (!auth) return null;
 
   const { isAuthenticated, principal } = auth;
-
+  console.log('isAuthenticated ', isAuthenticated);
+  
   useEffect(() => {
     const checkIfRegistered = async () => {
       if (isAuthenticated && principal) {
@@ -332,7 +343,7 @@ function App() {
       }
       setLoading(false);
     };
-
+    
     if (isAuthenticated && principal) {
       checkIfRegistered();
     } else {

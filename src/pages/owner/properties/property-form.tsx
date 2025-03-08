@@ -174,7 +174,6 @@ export default function PropertyForm({
             coverPicture: images[0],
             reviewCount: 0n,
           };
-          // If the update is successful, update the state with the new property
           setProperties((prevProperties) => [...prevProperties, newProperty]);
         }
       } catch (err) {
@@ -192,7 +191,7 @@ export default function PropertyForm({
         <h2 className="text-2xl font-semibold">
           {isUpdating ? 'Edit Property' : 'Add New Property'}
         </h2>
-        <Button variant="ghost" size="icon" onClick={onClose}>
+        <Button size="icon" onClick={onClose}>
           <X className="w-5 h-5" />
         </Button>
       </div>

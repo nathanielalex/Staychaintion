@@ -2,6 +2,8 @@ import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import Option "mo:base/Option";
 import Text "mo:base/Text";
+import User "canister:User_backend";
+
 actor class Backend() {
   public shared func greet(name : Text) : async Text {
     let message = "Hello, " # name # "!";
@@ -9,36 +11,18 @@ actor class Backend() {
   };
 
   public shared (msg) func whoami() : async Principal {
-    msg.caller
+    msg.caller;
   };
+  
   private let userBalances = HashMap.HashMap<Principal, Nat>(
-    0, Principal.equal, Principal.hash
+    0,
+    Principal.equal,
+    Principal.hash,
   );
 
-  public query func checkBalance(user : Principal) : async Nat {
-    switch (userBalances.get(user)) {
-      case null { return 0 };
-      case (?balance) { return balance };
-    }
-  };
-
-  type UserProfile = {
-    name : Text;
-    dateOfBirth: Text;
-    // profilePicture : Text; // URL or base64 encoded image
-  };
-
-  // Map to store user profiles, keyed by their Principal
-  private var userProfiles = HashMap.HashMap<Principal, UserProfile>(0, Principal.equal, Principal.hash);
-
-  /// Public function to register or update a user profile
-  public shared(msg) func registerProfile(name : Text, dateOfBith : Text) : async () {
-    let userPrincipal = msg.caller;
-    let profile : UserProfile = {
-      name = name;
-      dateOfBirth = dateOfBith;
-    };
-    userProfiles.put(userPrincipal, profile);
+  public shared func checkBalance(user : Principal) : async Float {
+    let bal: Float = await User.getUserBalance(user);
+    return bal;
   };
 
   // Public function to get a user's profile
@@ -52,7 +36,7 @@ actor class Backend() {
   // };
 
   // Public function to check if a user has registered a profile
-  public query func hasProfile(userPrincipal : Principal) : async Bool {
-    return Option.isSome(userProfiles.get(userPrincipal));
+  public shared func hasProfile(userPrincipal : Principal) : async Bool {
+    return Option.isSome(await User.getUser(userPrincipal));
   };
 };

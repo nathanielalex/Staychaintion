@@ -135,7 +135,7 @@ export function ActiveCases({ onSelectCase, selectedCase, className = "" }: Acti
       <div className="p-4 border-b border-blue-100 dark:border-blue-900 bg-blue-50/50 dark:bg-blue-950/50">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-blue-800 dark:text-blue-300">Active Cases</h2>
-          <Button variant="ghost" size="sm" className="text-slate-600 dark:text-slate-300">
+          <Button variant="ghost" size="sm" className="text-blue-100 dark:text-slate-300">
             <Filter size={16} className="mr-1" /> Filter
           </Button>
         </div>
