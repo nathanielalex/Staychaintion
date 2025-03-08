@@ -182,13 +182,12 @@ const AnimatedRoutes = () => {
 
             <Route path="/chat" element={<ChatPage />} />
 
-            <Route path="/maps" element={<Maps />} />
-
-            <Route path="/map" element={<NewMaps />} />
+            {/* <Route path="/maps" element={<Maps />} /> */}
 
             {/* MAIN PAGES SECTION */}
 
             <Route element={<MainLayout/>}>
+              <Route path="/map" element={<NewMaps />} />
               {/* <Route path="/list" element={
                 <PropertyFilterProvider>
                   <PropertyListPage/>
