@@ -48,6 +48,15 @@
       "type": "motoko",
       "dependencies": ["Property_backend", "User_backend"],
       "main": "backend/Storages/Seeders/UserPropertySeeder.mo"
+    },
+    "Product_backend": {
+      "type": "motoko",
+      "main": "backend/Storages/Product/Product.mo"
+    },
+    "Product_seeder": {
+      "type": "motoko",
+      "dependencies": ["Product_backend"],
+      "main": "backend/Storages/Seeders/ProductSeeder.mo"
     }
   },
   "defaults": {
