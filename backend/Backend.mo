@@ -16,15 +16,9 @@ actor class Backend() {
     0, Principal.equal, Principal.hash
   );
 
-  public query func checkBalance(user : Principal) : async Float {
-    switch(await User.getUserBalance(user)) {
-      case (null) {
-        return 0.0;
-      };
-      case (balance) {
-        return balance;
-      };
-    };
+  public shared func checkBalance(user : Principal) : async Float {
+    let bal: Float = await User.getUserBalance(user);
+    return bal;
   };
 
   // Public function to get a user's profile
