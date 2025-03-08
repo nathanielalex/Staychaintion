@@ -30,7 +30,7 @@
       "type": "motoko",
       "main": "backend/Chat_backend/Chat.mo"
     },
-    "Chatbot": {
+    "Chatbot_backend": {
       "type": "motoko",
       "main": "backend/Storages/Chatbot/Chatbot.mo"
     },
