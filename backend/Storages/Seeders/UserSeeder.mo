@@ -149,7 +149,7 @@ actor {
           usr with
           balance = usr.balance + amount
         });
-        return "Your balance is now " # Float.toText(updatedUserStatus.balance);
+        return "Your balance is now " # Float.toText(usr.balance + amount);
       };
     };
   };
