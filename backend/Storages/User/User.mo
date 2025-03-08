@@ -70,10 +70,10 @@ actor {
         return userArray;
     };
 
-    public query func getUserBallance(id: Principal) : async Float {
+    public query func getUserBalance(id: Principal) : async Float {
         switch (userProfiles.get(id)) {
             case null { return 0 };
-            case (?user) { return user.ballance };
+            case (?user) { return user.balance };
         };
     };
 
@@ -112,20 +112,20 @@ actor {
         };
     };
 
-    public shared func updateUserBallance(id: Principal, newBallance: Float) : async Nat {
+    public shared func updateUserBalance(id: Principal, newBalance: Float) : async Nat {
         switch (userProfiles.get(id)) {
             case null { return 0 };
             case (?user) {
                 let updatedUser = {
                     user with
-                    ballance = newBallance;
+                    balance = newBalance;
                 };
                 
                 try {
                     userProfiles.put(id, updatedUser);
                     return 1;
                 } catch (e: Error) {
-                    print("Error updating user ballance: " # Error.message(e));
+                    print("Error updating user balance: " # Error.message(e));
                     return 0;
                 };
             };
@@ -235,7 +235,7 @@ actor {
         };
     };
 
-    public shared func deleterPropertyFromUser(userId: Principal, propertyId: Text) : async Nat {
+    public shared func deletePropertyFromUser(userId: Principal, propertyId: Text) : async Nat {
         switch (userProfiles.get(userId)) {
             case null { return 0 };
             case (?user) {
@@ -307,7 +307,7 @@ actor {
         var itertyp = userProfiles.vals();
         itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
             let value: Float = switch (attribute) {
-                case ("ballance") { user.ballance };
+                case ("balance") { user.balance };
                 case (_) { 0 };
             };
 
@@ -349,7 +349,7 @@ actor {
      * @param {Text} numAttrs - A string containing numeric attribute names separated by commas, semicolons, or newlines.
      * @param {Text} numQueries - A string containing numeric queries corresponding to the numeric attributes, separated by commas, semicolons, or newlines.
      * @param {Text} comparisons - A string containing comparison operators (e.g., "mt" for more than/greater than or equal, "eq" for equal, "lt" for less than or equal) separated by commas, semicolons, or newlines.
-     * @param {Text} orderAttr - The attribute name by which to sort the results (ballance, id, role, fullName, email, dateOfBirth, or profilePictureUrl).
+     * @param {Text} orderAttr - The attribute name by which to sort the results (balance, id, role, fullName, email, dateOfBirth, or profilePictureUrl).
      * @param {Text} orderDir - The direction of sorting, either "asc" for ascending or "desc" for descending.
      * @param {Nat} page - The page number to retrieve (must be greater than 0).
      * @param {Nat} count - The number of user profiles to retrieve per page (must be greater than 0).
@@ -373,13 +373,13 @@ actor {
      * - profilePictureUrl
      *
      * And the following numeric attributes:
-     * - ballance (if decimal, use a dot as the decimal separator)
+     * - balance (if decimal, use a dot as the decimal separator)
      *
      * Example usage:
      * ```
      * let (profiles, resultCount) = await getUserPaginate(
      *     "fullName,email", "John,example.com",
-     *     "ballance", "10.5", "mt",
+     *     "balance", "10.5", "mt",
      *     "fullName", "asc",
      *     1, 10
      * );
@@ -431,7 +431,7 @@ actor {
                                 let query_float = Util.textToFloat(quer);
                                 itertyp := Iter.filter<UserProfile>(itertyp, func (user: UserProfile): Bool {
                                     let value: Float = switch (attr) {
-                                        case ("ballance") { user.ballance };
+                                        case ("balance") { user.balance };
                                         case (_) { 0 };
                                     };
 
@@ -445,7 +445,7 @@ actor {
                             };
                             case(null, null, null) { 
                                 let sorted = if(switch(queries.orderAttr) {
-                                    case ("ballance") { true };
+                                    case ("balance") { true };
                                     case ("id"){ true };
                                     case ("role"){ true };
                                     case ("fullName"){ true };
@@ -488,7 +488,7 @@ actor {
 
     private func compareAsc(x_user: UserProfile, y_user: UserProfile, attribute: Text): Order.Order {
         switch (attribute) {
-            case ("ballance") { if (Float.less(x_user.ballance, y_user.ballance)) #less else if (Float.equal(x_user.ballance, y_user.ballance)) #equal else #greater };
+            case ("balance") { if (Float.less(x_user.balance, y_user.balance)) #less else if (Float.equal(x_user.balance, y_user.balance)) #equal else #greater };
             case ("id") { if (Text.less(Principal.toText(x_user.id), Principal.toText(y_user.id))) #less else if (Principal.toText(x_user.id) == Principal.toText(y_user.id)) #equal else #greater };
             case ("role") { if (Text.less(x_user.role, y_user.role)) #less else if (x_user.role == y_user.role) #equal else #greater };
             case ("fullName") { if (Text.less(x_user.fullName, y_user.fullName)) #less else if (x_user.fullName == y_user.fullName) #equal else #greater };
@@ -501,7 +501,7 @@ actor {
 
     private func compareDesc(x_user: UserProfile, y_user: UserProfile, attribute: Text): Order.Order {
         switch (attribute) {
-            case ("ballance") { if (Float.greater(x_user.ballance, y_user.ballance)) #less else if (Float.equal(x_user.ballance, y_user.ballance)) #equal else #greater };
+            case ("balance") { if (Float.greater(x_user.balance, y_user.balance)) #less else if (Float.equal(x_user.balance, y_user.balance)) #equal else #greater };
             case ("id") { if (Text.greater(Principal.toText(x_user.id), Principal.toText(y_user.id))) #less else if (Principal.toText(x_user.id) == Principal.toText(y_user.id)) #equal else #greater };
             case ("role") { if (Text.greater(x_user.role, y_user.role)) #less else if (x_user.role == y_user.role) #equal else #greater };            
             case ("fullName") { if (Text.greater(x_user.fullName, y_user.fullName)) #less else if (x_user.fullName == y_user.fullName) #equal else #greater };

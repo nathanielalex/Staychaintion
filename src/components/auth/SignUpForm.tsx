@@ -83,7 +83,7 @@ export default function SignUpForm() {
         fullName: formData.name,
         email: formData.email,
         dateOfBirth: formData.dateOfBirth.toDateString(),
-        ballance: 0,
+        balance: 0,
         profilePictureUrl: formData.profilePicture,
         propertiesId: []
       }
