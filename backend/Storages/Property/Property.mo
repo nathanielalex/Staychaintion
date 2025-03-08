@@ -155,6 +155,15 @@ actor {
         };
     };
 
+    public query func checkPropertyAvailability(propId: Text): async Bool {
+        switch(propertyInfo.get(propId)){
+            case(?prop) {
+                return prop.status == "available";
+            };
+            case(null) { return false; };
+        };
+    };
+
     public query func getPropertyIdFromTextAttribute(attribute: Text, text_query: Text): async [Text] {
         var itertyp = propertyInfo.vals();
 
