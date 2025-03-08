@@ -1,172 +1,161 @@
-# Property Management Smart Contract
+# Property Management Smart Contract Documentation
 
+## Overview
 This canister manages property listings, transactions, reviews, and reservations for a decentralized vacation rental platform on the Internet Computer.
 
-## PROPERTY MANAGEMENT
+## Functions
 
-registerProperty:
+### Property Management
+
+#### registerProperty
 Registers a new property with a unique ID and adds it to the system.
-@param unreg - An UnregisteredProperty object with all property details
-@return Text - The generated property ID or empty string on validation failure
+- Params: `unreg: UnregisteredProperty` - An UnregisteredProperty object with all property details
+- Returns: `async Text` - The generated property ID or empty string on validation failure
 
-updateProperty:
+#### updateProperty
 Updates an existing property with new details.
-@param updatedProp - A Property object with modified fields
-@return Int - 1 on success, 0 on failure
+- Params: `updatedProp: Property` - A Property object with modified fields
+- Returns: `async Int` - 1 on success, 0 on failure
 
-removeProperty:
+#### removeProperty
 Deletes a property from the system.
-@param propId - The ID of the property to remove
-@return Int - 1 on success, 0 on failure
+- Params: `propId: Text` - The ID of the property to remove
+- Returns: `async Int` - 1 on success, 0 on failure
 
-getPropertyInfo:
+#### getPropertyInfo
 Retrieves detailed information about a specific property.
-@param propertyId - The ID of the property to retrieve
-@return ?Property - Optional property details (null if not found)
+- Params: `propertyId: Text` - The ID of the property to retrieve
+- Returns: `async ?Property` - Optional property details (null if not found)
 
-getAllProperties:
+#### getAllProperties
 Gets a list of all registered properties in the system.
-@return [Property] - Array of all properties
+- Returns: `async [Property]` - Array of all properties
 
-getProperties:
+#### getProperties
 Retrieves a limited number of properties.
-@param count - Maximum number of properties to return
-@return [Property] - Array of properties up to the specified count
+- Params: `count: Nat` - Maximum number of properties to return
+- Returns: `async [Property]` - Array of properties up to the specified count
 
-getOwnerProperties:
+#### getOwnerProperties
 Gets all properties owned by a specific user.
-@param ownerId - The Principal ID of the property owner
-@return [Property] - Array of properties owned by the specified user
+- Params: `ownerId: Principal` - The Principal ID of the property owner
+- Returns: `async [Property]` - Array of properties owned by the specified user
 
-propertyCount:
+#### propertyCount
 Returns the total number of registered properties.
-@return Nat - Count of properties in the system
+- Returns: `async Nat` - Count of properties in the system
 
-updatePropertyStatus:
+#### updatePropertyStatus
 Changes the status of a property (e.g., available, booked, maintenance).
-@param propId - The ID of the property to update
-@param status - The new status to set
-@return Nat - 1 on success, 0 on failure or invalid status
+- Params:
+    - `propId: Text` - The ID of the property to update
+    - `status: Text` - The new status to set
+- Returns: `async Nat` - 1 on success, 0 on failure or invalid status
 
-checkPropertyAvailability:
+#### checkPropertyAvailability
 Checks if a property is currently available for booking.
-@param propId - The ID of the property to check
-@return Bool - True if property is available, false otherwise
+- Params: `propId: Text` - The ID of the property to check
+- Returns: `async Bool` - True if property is available, false otherwise
 
-getPropertyIdFromTextAttribute:
+#### getPropertyIdFromTextAttribute
 Searches for properties by text attributes and returns matching property IDs.
-@param attribute - The property attribute to search by (owner, name, status, etc.)
-@param text_query - The search text to match
-@return [Text] - Array of property IDs matching the search criteria
+- Params:
+    - `attribute: Text` - The property attribute to search by (owner, name, status, etc.)
+    - `text_query: Text` - The search text to match
+- Returns: `async [Text]` - Array of property IDs matching the search criteria
 
-getPropIdFromNatAttribute:
+#### getPropIdFromNatAttribute
 Searches for properties by numeric attributes and returns matching property IDs.
-@param attribute - The property attribute to search by (price, bedrooms, etc.)
-@param order - Sorting order (not used in filtering)
-@param comparison - Comparison operator ("mt", "eq", or "lt")
-@param numQuery - The numeric value to compare against
-@return [Text] - Array of property IDs matching the search criteria
+- Params:
+    - `attribute: Text` - The property attribute to search by (price, bedrooms, etc.)
+    - `order: Text` - Sorting order (not used in filtering)
+    - `comparison: Text` - Comparison operator ("mt", "eq", or "lt")
+    - `numQuery: Float` - The numeric value to compare against
+- Returns: `async [Text]` - Array of property IDs matching the search criteria
 
-getPropertyPaginate:
+#### getPropertyPaginate
 Retrieves a paginated list of properties based on various filtering and sorting criteria.
-@param queries - A PaginationQuery object containing all search parameters
-@return ([Property], Nat) - Tuple containing array of properties and total count
+- Params: `queries: PaginationQuery` - A PaginationQuery object containing all search parameters
+- Returns: `async ([Property], Nat)` - Tuple containing array of properties and total count
 
-getProperty:
+#### getProperty
 Gets property details for a list of property IDs.
-@param propIds - Array of property IDs to retrieve
-@return [Property] - Array of property objects for the specified IDs
+- Params: `propIds: [Text]` - Array of property IDs to retrieve
+- Returns: `async [Property]` - Array of property objects for the specified IDs
 
-## REVIEW MANAGEMENT
+### Review Management
 
-addReview:
+#### addReview
 Adds a review for a property and updates its average rating.
-@param newPropertyId - The ID of the property being reviewed
-@param newReviewer - Principal ID of the reviewer
-@param newReviewerName - Name of the reviewer
-@param newReviewerPP - Profile picture URL of reviewer
-@param newRating - Rating value (typically 0-5)
-@param newReviewText - Text content of the review
-@param newReviewDate - Date string when review was created
-@return Text - The generated review ID or error message on failure
+- Params:
+    - `newPropertyId: Text` - The ID of the property being reviewed
+    - `newReviewer: Principal` - Principal ID of the reviewer
+    - `newReviewerName: Text` - Name of the reviewer
+    - `newReviewerPP: Text` - Profile picture URL of reviewer
+    - `newRating: Float` - Rating value (typically 0-5)
+    - `newReviewText: Text` - Text content of the review
+    - `newReviewDate: Text` - Date string when review was created
+- Returns: `async Text` - The generated review ID or error message on failure
 
-getAllPropertyReviews:
+#### getAllPropertyReviews
 Retrieves all reviews for a specific property.
-@param propertyId - The ID of the property
-@return [PropertyReview] - Array of reviews for the property
+- Params: `propertyId: Text` - The ID of the property
+- Returns: `async [PropertyReview]` - Array of reviews for the property
 
-## TRANSACTION MANAGEMENT
+### Transaction Management
 
-initiateTransaction:
+#### initiateTransaction
 Creates a new transaction for property booking with a unique ID.
-@param newTransaction - An UnregisteredTransaction object without an ID
-@return Text - The generated transaction ID or empty string on failure
+- Params: `newTransaction: UnregisteredTransaction` - An UnregisteredTransaction object without an ID
+- Returns: `async Text` - The generated transaction ID or empty string on failure
 
-updateTransaction:
+#### updateTransaction
 Updates an existing transaction with new details.
-@param updatedTransaction - A Transaction object with modified fields
-@return Int - 1 on success, 0 on failure
+- Params: `updatedTransaction: Transaction` - A Transaction object with modified fields
+- Returns: `async Int` - 1 on success, 0 on failure
 
-changeTransactionStatus:
+#### changeTransactionStatus
 Modifies the status of an existing transaction.
-@param transactionId - The ID of the transaction to update
-@param newStatus - The new status to set
-@return Int - 1 on success, 0 on failure
+- Params:
+    - `transactionId: Text` - The ID of the transaction to update
+    - `newStatus: Text` - The new status to set
+- Returns: `async Int` - 1 on success, 0 on failure
 
-removeTransaction:
+#### removeTransaction
 Deletes a transaction from the system.
-@param transactionId - The ID of the transaction to remove
-@return Int - 1 on success, 0 on failure
+- Params: `transactionId: Text` - The ID of the transaction to remove
+- Returns: `async Int` - 1 on success, 0 on failure
 
-getTransactionStatus:
+#### getTransactionStatus
 Retrieves the current status of a transaction.
-@param transactionId - The ID of the transaction
-@return Text - The status of the transaction or empty string if not found
+- Params: `transactionId: Text` - The ID of the transaction
+- Returns: `async Text` - The status of the transaction or empty string if not found
 
-getTransactionByStatus:
+#### getTransactionByStatus
 Returns all transactions matching a specified status.
-@param status - The transaction status to filter by
-@return [Transaction] - Array of transactions with the specified status
+- Params: `status: Text` - The transaction status to filter by
+- Returns: `async [Transaction]` - Array of transactions with the specified status
 
-getUserUncompletedTransactions:
+#### getUserUncompletedTransactions
 Gets all active (non-completed, non-cancelled) transactions for a specific user.
-@param userId - The Principal ID of the user
-@return [Transaction] - Array of active transactions for the user
+- Params: `userId: Principal` - The Principal ID of the user
+- Returns: `async [Transaction]` - Array of active transactions for the user
 
-getUserTransactionHistoryPaginate:
+#### getUserTransactionHistoryPaginate
 Gets a paginated list of transactions for a specific user, optionally filtered by status.
-@param userId - The Principal ID of the user
-@param status - Optional status filter
-@param page - Page number (starting from 1)
-@param count - Number of items per page
-@return ([Transaction], Nat) - Tuple of transactions array and total count
+- Params:
+    - `userId: Principal` - The Principal ID of the user
+    - `status: ?Text` - Optional status filter
+    - `page: Nat` - Page number (starting from 1)
+    - `count: Nat` - Number of items per page
+- Returns: `async ([Transaction], Nat)` - Tuple of transactions array and total count
 
-getPropertyTransactionHistory:
+#### getPropertyTransactionHistory
 Retrieves all transactions related to a specific property.
-@param propertyId - The ID of the property
-@return [Transaction] - Array of transactions for the property
+- Params: `propertyId: Text` - The ID of the property
+- Returns: `async [Transaction]` - Array of transactions for the property
 
-getTransaction:
+#### getTransaction
 Gets the details of a specific transaction.
-@param transactionId - The ID of the transaction
-@return ?Transaction - Optional transaction details (null if not found)
-/**
- * Property Management Smart Contract
- * 
- * This canister manages property listings, transactions, reviews, and reservations
- * for a decentralized vacation rental platform on the Internet Computer.
- * 
- * PROPERTY MANAGEMENT:
- * 
- * registerProperty: 
- * Registers a new property with a unique ID and adds it to the system.
- * @param unreg - An UnregisteredProperty object with all property details
- * @return Text - The generated property ID or empty string on validation failure
- * 
- * updateProperty:
- * Updates an existing property with new details.
- * @param updatedProp - A Property object with modified fields
- * @return Int - 1 on success, 0 on failure
- * 
- * removeProperty:
- * Deletes
+- Params: `transactionId: Text` - The ID of the transaction
+- Returns: `async ?Transaction` - Optional transaction details (null if not found)

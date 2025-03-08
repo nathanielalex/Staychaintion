@@ -21,10 +21,3 @@ Retrieves the balance of a specified user from the User canister.
 Verifies whether a user has registered a profile in the User canister.
 - Params: `userPrincipal: Principal` - Principal ID to check
 - Returns: `Bool` - True if the user has a registered profile, False otherwise
-
-## State Variables
-
-### userBalances
-A HashMap that stores user balances.
-- Key: `Principal` - User's principal identifier
-- Value: `Nat` - User's balance as a natural number

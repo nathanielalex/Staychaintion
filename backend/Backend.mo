@@ -13,12 +13,6 @@ actor class Backend() {
   public shared (msg) func whoami() : async Principal {
     msg.caller;
   };
-  
-  private let userBalances = HashMap.HashMap<Principal, Nat>(
-    0,
-    Principal.equal,
-    Principal.hash,
-  );
 
   public shared func checkBalance(user : Principal) : async Float {
     let bal: Float = await User.getUserBalance(user);

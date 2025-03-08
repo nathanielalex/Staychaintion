@@ -48,3 +48,31 @@
 - **Returns**: Text message indicating the new balance
 - **Purpose**: Increases the caller's account balance by the specified amount
 - **Usage**: Use to add funds to a user account for testing or demonstration purposes.
+
+# ProductSeeder
+
+The ProductSeeder actor is responsible for seeding the database with initial product data for testing or demonstration purposes.
+
+## Overview
+This module creates a collection of sample travel-related products in the system by calling the Product canister's registration methods.
+
+## Functions
+
+### `run() : async ()`
+Executes the seeding process by creating a predefined list of sample products and registering them in the Product canister.
+
+- **Return Type**: `async ()` - An asynchronous function that returns nothing
+- **Description**: Creates and registers 10 sample travel products including backpacks, electronics, and travel accessories with various properties like name, description, price, and discount information.
+
+## Sample Products
+The seeder creates various travel products including:
+- Adventure Backpack
+- Portable Charger
+- Comfort Pillow
+- Hydration Bottle
+- Universal Adapter
+- Noise Cancelling Earbuds
+- Secure Wallet
+- Packing Cubes
+- Compact Umbrella
+- Adventure Journal
