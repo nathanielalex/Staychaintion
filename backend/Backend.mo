@@ -3,6 +3,7 @@ import Principal "mo:base/Principal";
 import Option "mo:base/Option";
 import Text "mo:base/Text";
 import User "canister:User_backend";
+
 actor class Backend() {
   public shared func greet(name : Text) : async Text {
     let message = "Hello, " # name # "!";
@@ -10,21 +11,17 @@ actor class Backend() {
   };
 
   public shared (msg) func whoami() : async Principal {
-    msg.caller
+    msg.caller;
   };
+  
   private let userBalances = HashMap.HashMap<Principal, Nat>(
-    0, Principal.equal, Principal.hash
+    0,
+    Principal.equal,
+    Principal.hash,
   );
 
-  public query func checkBalance(user : Principal) : async Float {
-    switch(await User.getUserBalance(user)) {
-      case (null) {
-        return 0.0;
-      };
-      case (balance) {
-        return balance;
-      };
-    };
+  public shared func checkBalance(user : Principal) : async Float {
+    return await User.getUserBalance(user);
   };
 
   // Public function to get a user's profile

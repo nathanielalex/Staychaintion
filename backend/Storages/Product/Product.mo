@@ -34,7 +34,7 @@ actor {
     return (Vector.toArray(products));
   };
 
-  public func registerProduct(unreg : UnregisteredProduct) : async Text {
+  public shared func registerProduct(unreg : UnregisteredProduct) : async Text {
     let id = await Util.generateUUID();
 
     let prod : Product = {

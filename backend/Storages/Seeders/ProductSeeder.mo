@@ -11,7 +11,7 @@ actor {
         productType = "Travel Gear";
         shortDescription = "Durable travel backpack";
         description = "A spacious and durable travel backpack with multiple compartments and anti-theft features.";
-        price = 59.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "fixed";
@@ -24,7 +24,7 @@ actor {
         productType = "electronics";
         shortDescription = "High-capacity portable charger";
         description = "A high-capacity portable charger with fast charging capabilities, perfect for travel.";
-        price = 29.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "percentage";
@@ -37,7 +37,7 @@ actor {
         productType = "travel accessories";
         shortDescription = "Comfortable travel pillow";
         description = "A memory foam travel pillow that provides excellent neck support for long journeys.";
-        price = 19.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "fixed";
@@ -50,7 +50,7 @@ actor {
         productType = "travel gear";
         shortDescription = "Insulated stainless steel bottle";
         description = "A durable and insulated stainless steel water bottle that keeps drinks cold for 24 hours.";
-        price = 19.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "fixed";
@@ -63,7 +63,7 @@ actor {
         productType = "electronics";
         shortDescription = "Universal travel adapter";
         description = "A universal travel adapter with multiple USB ports, compatible with outlets in over 150 countries.";
-        price = 24.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "percentage";
@@ -76,7 +76,7 @@ actor {
         productType = "electronics";
         shortDescription = "Wireless noise cancelling earbuds";
         description = "High-quality wireless earbuds with noise cancelling feature, perfect for travel.";
-        price = 79.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = " fixed ";
@@ -89,7 +89,7 @@ actor {
         productType = " travel accessories ";
         shortDescription = " RFID blocking travel wallet ";
         description = " A slim and stylish travel wallet with RFID blocking technology to protect your cards.";
-        price = 34.99;
+        price = 100_000.00;
         coverPicture = " https : //www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "fixed";
@@ -102,7 +102,7 @@ actor {
         productType = "travel accessories";
         shortDescription = "Set of packing cubes";
         description = "A set of packing cubes to help organize your luggage and maximize space.";
-        price = 25.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "percentage";
@@ -115,7 +115,7 @@ actor {
         productType = "travel gear";
         shortDescription = "Compact travel umbrella";
         description = "A lightweight and compact travel umbrella that fits easily in your bag.";
-        price = 15.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "fixed";
@@ -128,7 +128,7 @@ actor {
         productType = "travel accessories";
         shortDescription = "Leather travel journal";
         description = "A beautifully crafted leather travel journal to document your adventures.";
-        price = 22.99;
+        price = 100_000.00;
         coverPicture = "https://www.briggs-riley.com/cdn/shop/collections/travel-backpacks.webp?v=1735829781";
         pictures = [];
         discountType = "fixed";
