@@ -13,7 +13,7 @@ const upcomingBookings = [
     location: "Miami, FL",
     checkIn: "2024-06-15",
     checkOut: "2024-06-20",
-    image: "/placeholder.svg?height=100&width=150",
+    image: "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg",
     price: 1200,
     status: "confirmed",
   },
@@ -23,7 +23,7 @@ const upcomingBookings = [
     location: "Aspen, CO",
     checkIn: "2024-07-10",
     checkOut: "2024-07-15",
-    image: "/placeholder.svg?height=100&width=150",
+    image: "https://i.ibb.co.com/jPxJFbHt/Staychaintion-Property-Placeholder1.jpg",
     price: 950,
     status: "pending",
   },
@@ -72,7 +72,7 @@ const recommendedProperties = [
     price: 180,
     rating: 4.9,
     reviews: 124,
-    image: "/placeholder.svg?height=200&width=300",
+    image: "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg",
   },
   {
     id: 2,
@@ -81,7 +81,7 @@ const recommendedProperties = [
     price: 150,
     rating: 4.7,
     reviews: 89,
-    image: "/placeholder.svg?height=200&width=300",
+    image: "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg",
   },
   {
     id: 3,
@@ -90,7 +90,7 @@ const recommendedProperties = [
     price: 120,
     rating: 4.8,
     reviews: 56,
-    image: "/placeholder.svg?height=200&width=300",
+    image: "https://i.ibb.co.com/23VCP6fV/Staychaintion-Property-Placeholder2.jpg",
   },
 ]
 

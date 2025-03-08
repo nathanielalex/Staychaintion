@@ -121,7 +121,7 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors duration-200 ${
               activeTab === "overview"
                 ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
-                : "border-transparent text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                : "border-transparent text-blue-100 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
             }`}
             onClick={() => setActiveTab("overview")}
           >
@@ -131,7 +131,7 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors duration-200 ${
               activeTab === "timeline"
                 ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
-                : "border-transparent text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                : "border-transparent text-blue-100 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
             }`}
             onClick={() => setActiveTab("timeline")}
           >
@@ -141,7 +141,7 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
             className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors duration-200 ${
               activeTab === "evidence"
                 ? "border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
-                : "border-transparent text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                : "border-transparent text-blue-100 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
             }`}
             onClick={() => setActiveTab("evidence")}
           >

@@ -192,7 +192,7 @@ export default function PropertyForm({
         <h2 className="text-2xl font-semibold">
           {isUpdating ? 'Edit Property' : 'Add New Property'}
         </h2>
-        <Button variant="ghost" size="icon" onClick={onClose}>
+        <Button size="icon" onClick={onClose}>
           <X className="w-5 h-5" />
         </Button>
       </div>
