@@ -4,7 +4,7 @@ import { Property, UnregisteredTransaction } from "@/declarations/Property_backe
 import { AxiosError } from "axios";
 import { Calendar, Clock, CreditCard, Home, MapPin, Tag, User, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAuth } from "@/utility/use-auth-client";
 import { toast } from "react-toastify";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
@@ -16,22 +16,24 @@ import { useDebounce } from "use-debounce";
 import { DatePickerWithRange } from "../ui/date-range-picker";
 import { DateRange } from "react-day-picker";
 import { format, differenceInDays, setDate } from "date-fns"
+import { Voucher_backend } from "@/declarations/Voucher_backend";
+import { Voucher } from "@/declarations/Voucher_backend/Voucher_backend.did";
 
-interface Discount {
-    promotion?: {
-        code: string;
-        discount?: number;
-        type?: 'fixed' | 'percentage',
-        isValid?: boolean;
-    },
-    voucher?: {
-        code?: string;
-        discount?: number;
-        type?: 'fixed' | 'percentage',
-        isValid?: boolean;
-    },
-    total?: number;
-};
+// interface Discount {
+//     promotion?: {
+//         code: string;
+//         discount?: number;
+//         type?: 'fixed' | 'percentage',
+//         isValid?: boolean;
+//     },
+//     voucher?: {
+//         code?: string;
+//         discount?: number;
+//         type?: 'fixed' | 'percentage',
+//         isValid?: boolean;
+//     },
+//     total?: number;
+// };
 
 interface Reservation {
     propertyId: string;
@@ -40,14 +42,23 @@ interface Reservation {
 };
 
 export default function TransactionPage() {
+    const initialVoucher: Voucher = {
+        id: "",
+        code: "",
+        voucherType: "",
+        start_date: 0n,   
+        discount: 0n,     
+        expired_date: 0n, 
+    };
+
     const fee = 10000;
     const { id } = useParams();
     const { principal } = useAuth();
-
+    const [voucherCode, setVoucherCode] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [property, setProperty] = useState<Property>();
-    const [voucher, setVoucher] = useState<string>();
-    const [discount, setDiscount] = useState<Discount>({});
+    // const [voucher, setVoucher] = useState<string>();
+    const [discount, setDiscount] = useState<Voucher>(initialVoucher);
     const [dateRange, setDateRange] = useState<DateRange>();
     const [totalPrice, setTotalPrice] = useState<number>(0);
     const [reservation, setReservation] = useState<Reservation>({
@@ -58,10 +69,11 @@ export default function TransactionPage() {
             to: new Date(),
         },
     });
-    const [debouncedVoucherCode] = useDebounce(discount?.voucher?.code, 600);
+    // const [debouncedVoucherCode] = useDebounce(discount?.voucher?.code, 600);
+
 
     useEffect(() => {
-        setTotalPrice((property?.pricePerNight ?? 0) * differenceInDays(dateRange?.to!, dateRange?.from!) - (discount.total ?? 0));
+        setTotalPrice((property?.pricePerNight ?? 0) * differenceInDays(dateRange?.to!, dateRange?.from!) - (Number(discount.discount) ?? 0));
     }, [dateRange])
     
 
@@ -79,13 +91,15 @@ export default function TransactionPage() {
         }
     }
 
-    const fetchVoucher = async(debouncedVoucherCode: string) => {
+    const fetchVoucher = async() => {
         try {
             setIsLoading(true);
-            const property = await Property_backend.getProperty([id!]);
-            setProperty(property[0]);
+            const discount = await Voucher_backend.getVoucher(voucherCode);
+            if (Array.isArray(discount) && discount.length > 0 && discount[0] !== undefined) {
+                setDiscount(discount[0]);
+            }
         } catch (err) {
-            toast.error('Error fetching property details.', {
+            toast.error('Error fetching voucher details.', {
                 position: 'top-center',
             });
         } finally {
@@ -126,6 +140,7 @@ export default function TransactionPage() {
             propLocation: property.location,
             propCoverPicture: property.coverPicture,
             transactionStatus: "booked",
+            imageUrl: property.coverPicture,
         };
         
         // initiate the transaction
@@ -137,7 +152,7 @@ export default function TransactionPage() {
                 // deduct the balance from user account instantly because wallet or ledger transaction is not implemented yet
                 let deductStatus = await User_backend.updateUserBalance(principal, bal-(totalPrice+fee));
                 if(deductStatus > 0){
-                    toast.success('Payment successfull');
+                    toast.success('Payment initiated successfully');
                     return;
                 } else {
                     toast.error('Failed to process payment');
@@ -153,9 +168,9 @@ export default function TransactionPage() {
         }
     }
 
-    useEffect(() => {
-        fetchVoucher(debouncedVoucherCode!);
-    }, [debouncedVoucherCode]);
+    // useEffect(() => {
+    //     fetchVoucher(debouncedVoucherCode!);
+    // }, [debouncedVoucherCode]);
 
     useEffect(() => {
         fetchProperty();
@@ -182,19 +197,16 @@ export default function TransactionPage() {
                                         <Tag className="h-5 w-5" />
                                         Voucher
                                     </Label>
-                                    <Input onChange={e => {
-                                        e.preventDefault();
-                                        setDiscount(
-                                            disc => ({
-                                                ...disc,
-                                                voucher: {
-                                                    code: e.target.value,
-                                                    discount: 0,
-                                                    isValid: false,
-                                                }
-                                            })
-                                        );
-                                    }} />
+                                    <Input
+                                        id="voucher-code"
+                                        type="text"
+                                        value={voucherCode}
+                                        onChange={(e) => setVoucherCode(e.target.value)} 
+                                        placeholder="Enter your voucher code"
+                                    />
+                                    <Button onClick={fetchVoucher} className="mt-4 bg-blue-600 hover:bg-blue-700">
+                                        Validate Voucher
+                                    </Button>
                                 </div>
                             </div>
                         </CardContent>
@@ -234,7 +246,11 @@ export default function TransactionPage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                         <div className="flex gap-4">
-                            <div className="w-24 h-24 bg-gray-200 rounded-md flex-shrink-0"></div>
+                            <img
+                                src={property?.coverPicture} // Use the property cover picture as the image source
+                                alt={property?.name} // Provide alt text for accessibility
+                                className="w-24 h-24 bg-gray-200 rounded-md object-cover flex-shrink-0"
+                            />
                             <div>
                             <h3 className="font-semibold">{property?.name}</h3>
                             <div className="flex items-center text-sm text-gray-500">
@@ -264,10 +280,10 @@ export default function TransactionPage() {
                                 </div>
                             </div>
                             <div className="flex flex-col justify-between">
-                                <span>{discount.voucher?.isValid ? `Voucher (${discount.voucher.code}):` : 'Voucher:' }</span>
+                                <span>Voucher</span>
                                 <div className="flex justify-between">
-                                    <span>{discount.voucher?.isValid ? discount.voucher.code : '-'}</span>
-                                    <span>Rp {(discount.voucher?.type === "fixed" ? (discount.voucher.discount ?? 0) : (property?.pricePerNight ?? 0) * differenceInDays(reservation?.dateRange?.to!, reservation?.dateRange?.from!) * (discount.voucher?.discount ?? 0)).toLocaleString()}</span>
+                                    <span>{discount.code ?? '-'}</span>
+                                    <span>Rp {(discount.voucherType === "fixed" ? (discount.discount ?? 0) : (property?.pricePerNight ?? 0) * differenceInDays(reservation?.dateRange?.to!, reservation?.dateRange?.from!) * (Number(discount.discount) ?? 0)).toLocaleString()}</span>
                                 </div>
                             </div>
                             {/* <div className="flex justify-between">
@@ -284,7 +300,7 @@ export default function TransactionPage() {
 
                         <div className="flex justify-between font-semibold">
                             <span>Total before taxes</span>
-                            <span>Rp {((property?.pricePerNight ?? 0) * differenceInDays(reservation?.dateRange?.to!, reservation?.dateRange?.from!) - (discount.total ?? 0)).toLocaleString()}</span>
+                            <span>Rp {((property?.pricePerNight ?? 0) * differenceInDays(reservation?.dateRange?.to!, reservation?.dateRange?.from!) * (1-(Number(discount.discount) ?? 0))).toLocaleString()}</span>
                         </div>
 
                         <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-700 flex items-start gap-2">

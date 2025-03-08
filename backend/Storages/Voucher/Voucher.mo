@@ -36,11 +36,26 @@ actor {
         let currTime = Time.now() / 1_000_000_000;
         for (v in voucherList.vals()) {
             if (v.code == code) {
-                if (currTime >= v.start_date and currTime < v.end_date) return 1; 
+                if (currTime >= v.start_date and currTime < v.expired_date) return 1; 
                 return -1;
             }
         };
         return 0;
+    };
+
+    public shared func getVoucher(code: Text) : async ?Voucher {
+        let currTime = Time.now() / 1_000_000_000;
+        for (v in voucherList.vals()) {
+            if (v.code == code) {
+                if (currTime >= v.start_date and currTime < v.expired_date) {
+                    return ?v; 
+                } else {
+                    return null; 
+                }
+            }
+        };
+        return null;
     }
+
 
 };
