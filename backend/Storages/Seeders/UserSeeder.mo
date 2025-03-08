@@ -2,6 +2,9 @@ import Util "../Util";
 import User "canister:User_backend";
 import Principal "mo:base/Principal";
 import Blob "mo:base/Blob";
+import Nat "mo:base/Nat";
+import Text "mo:base/Text";
+import Float "mo:base/Float";
 
 actor {
 
@@ -15,7 +18,7 @@ actor {
       fullName = "superadmin";
       email = "superadmin@gmail.com";
       dateOfBirth = "2005-05-06";
-      ballance = 10000000;
+      balance = 10000000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       },
@@ -26,7 +29,7 @@ actor {
       fullName = "iAmUser";
       email = "user123@gmail.com";
       dateOfBirth = "2005-05-06";
-      ballance = 10000000;
+      balance = 10000000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       },
@@ -37,7 +40,7 @@ actor {
       fullName = "iAmRenter";
       email = "renter123@gmail.com";
       dateOfBirth = "2005-05-06";
-      ballance = 10000000;
+      balance = 10000000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       },
@@ -48,7 +51,7 @@ actor {
       fullName = "iAmGuest";
       email = "guest123@gmail.com";
       dateOfBirth = "2005-05-06";
-      ballance = 10000000;
+      balance = 10000000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       },
@@ -59,7 +62,7 @@ actor {
       fullName = "John Smith";
       email = "johnsmith@example.com";
       dateOfBirth = "1990-03-15";
-      ballance = 5000000;
+      balance = 5000000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       },
@@ -70,7 +73,7 @@ actor {
       fullName = "Sarah Johnson";
       email = "sarahj@example.com";
       dateOfBirth = "1988-11-23";
-      ballance = 7500000;
+      balance = 7500000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       },
@@ -81,7 +84,7 @@ actor {
       fullName = "Michael Brown";
       email = "mbrown@example.com";
       dateOfBirth = "1995-07-30";
-      ballance = 3200000;
+      balance = 3200000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       },
@@ -92,7 +95,7 @@ actor {
       fullName = "Emily Davis";
       email = "edavis@example.com";
       dateOfBirth = "1992-09-18";
-      ballance = 6700000;
+      balance = 6700000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       },
@@ -103,7 +106,7 @@ actor {
       fullName = "David Wilson";
       email = "dwilson@example.com";
       dateOfBirth = "1985-04-12";
-      ballance = 2500000;
+      balance = 2500000;
       profilePictureUrl = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg";
       propertiesId = null;
       }
@@ -133,6 +136,22 @@ actor {
       return "Invalid role " # role;
     };
 
+  };
+
+  public shared(msg) func addBalance(amount: Float): async Text{
+    let user = await User.getUser(msg.caller);
+    switch(user){
+      case (null){
+        return "You are not registered";
+      };
+      case (?usr){
+        let updatedUserStatus = await User.updateUser({
+          usr with
+          balance = usr.balance + amount
+        });
+        return "Your balance is now " # Float.toText(usr.balance + amount);
+      };
+    };
   };
 
 };

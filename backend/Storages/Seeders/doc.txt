@@ -1,0 +1,50 @@
+# Seeders Documentation
+
+## PropertySeeder Canister
+
+### `run()`
+- **Returns**: ()
+- **Purpose**: Seeds the Property canister with a predefined set of property data. Creates multiple property listings with different attributes such as:
+    - Property status (available, unavailable, booked)
+    - Property details (beds, bedrooms, bathrooms, etc.)
+    - Location information including coordinates
+    - Pricing information
+    - Images and descriptions
+- **Usage**: Call this function once during system initialization to populate the Property database with sample listings.
+
+## UserPropertySeeder Canister
+
+### `run(userId: Principal, count: Nat)`
+- **Parameters**:
+    - `userId`: The Principal ID of the user who will own the properties
+    - `count`: Number of properties to transfer to the specified user
+- **Returns**: ()
+- **Purpose**: Transfers ownership of a specified number of properties to a particular user. This function:
+    1. Gets properties from the Property canister
+    2. Transfers each property to the specified user
+- **Usage**: Use to set up test accounts with property ownership or to initialize user accounts with properties.
+
+## UserSeeder Canister
+
+### `run()`
+- **Returns**: ()
+- **Purpose**: Seeds the User canister with predefined user profiles including:
+    - Admins, regular users, renters, and guests
+    - Personal information (name, email, date of birth)
+    - Account balances
+    - Profile pictures
+- **Usage**: Call during system initialization to populate the User database with sample user accounts.
+
+### `changeRole(role: Text)`
+- **Parameters**:
+    - `role`: The new role to assign to the caller ("admin", "user", "renter", "guest")
+- **Returns**: Text message indicating success or failure
+- **Purpose**: Allows a user to change their role in the system
+- **Usage**: Call this function when a user needs to change their permission level in the system.
+
+### `addBalance(amount: Float)`
+- **Parameters**:
+    - `amount`: The amount to add to the user's balance
+- **Returns**: Text message indicating the new balance
+- **Purpose**: Increases the caller's account balance by the specified amount
+- **Usage**: Use to add funds to a user account for testing or demonstration purposes.

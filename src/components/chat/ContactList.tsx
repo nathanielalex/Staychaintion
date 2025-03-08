@@ -17,7 +17,7 @@ interface ContactListProps {
 //   email: string;
 //   dateOfBirth: string; // Optional field in case you don't use it
 //   profilePictureUrl: string; // Optional field in case you don't use it
-//   ballance: number;
+//   balance: number;
 // }
 
 // interface GetAllChatsResponse {

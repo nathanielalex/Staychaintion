@@ -82,6 +82,9 @@ import InfluencerJoinPage from './pages/influencer/join/page';
 // Marketplace Page
 
 import MarketplacePage from './pages/marketplace/page';
+import ProductDetailPage from './pages/marketplace/[id]/page';
+import MarketplaceCartPage from './pages/marketplace/cart/page';
+import OrderConfirmationPage from './pages/marketplace/order-confirmation/page';
 
 
 // Other Pages
@@ -102,6 +105,7 @@ import TransactionPage from './components/payment/page';
 import { RegistrationProvider } from './utility/RegistrationContext';
 
 import FeaturesNavigation from "./pages/features/page"
+import CartPage from './pages/marketplace/cart/page';
 
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
@@ -284,6 +288,9 @@ const AnimatedRoutes = () => {
 
             <Route element={<MainLayout/>}>
               <Route path="/marketplace" element={<MarketplacePage />} />
+              <Route path="/marketplace/:id" element={<ProductDetailPage />} />
+              <Route path="/marketplace/cart" element={<CartPage />} />
+              <Route path="/marketplace/order-confirmation" element={<OrderConfirmationPage />} />
             </Route>
 
             {/* Other */}

@@ -215,7 +215,7 @@ export default function UserDashboard() {
                     <div className="flex flex-col md:flex-row">
                       <div className="relative w-full md:w-48 h-48 md:h-auto">
                         <img
-                          src={booking.imageUrl || "/placeholder.svg"}
+                          src={booking.propCoverPicture || "/placeholder.svg"}
                           alt={booking.propName}
                           
                           className="object-cover"

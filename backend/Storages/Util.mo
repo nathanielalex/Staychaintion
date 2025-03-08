@@ -13,12 +13,174 @@ import Int64 "mo:base/Int64";
 import Principal "mo:base/Principal";
 // import Voucher "Voucher/Voucher";
 
-module {
-  public type VoucherType = {
-    #fixed;
-    #percentage;
-    #unknown;
+module {public type VoucherType = {
+  #fixed;
+  #percentage;
+  #unknown;
+};
+
+public type UserProfile = {
+  id : Principal;
+  walletId : ?Principal;
+  role : Text;
+  fullName : Text;
+  email : Text;
+  dateOfBirth : Text;
+  ballance : Float;
+  profilePictureUrl : Text;
+  propertiesId : ?[Text];
+};
+
+public type Property = {
+  id : Text;
+  owner : Principal;
+  name : Text;
+  status : Text;
+  propertyType : Text;
+  pricePerNight : Float;
+  description : Text;
+
+  location : Text;
+  latitude : Float;
+  longitude : Float;
+
+  builtInDate : Text;
+  bedroomCount : Nat;
+  guestCapacity : Nat;
+  bathroomCount : Nat;
+  bedCount : Nat;
+  pictures : [Text];
+  coverPicture : Text;
+  rating : Float;
+
+  reviewCount : Nat;
+};
+
+public type UnregisteredProperty = {
+  owner : Principal;
+  name : Text;
+  propertyType : Text;
+  status : Text;
+  pricePerNight : Float;
+  description : Text;
+
+  location : Text;
+  latitude : Float;
+  longitude : Float;
+
+  builtInDate : Text;
+  bedroomCount : Nat;
+  guestCapacity : Nat;
+  bathroomCount : Nat;
+  bedCount : Nat;
+  pictures : [Text];
+  coverPicture : Text;
+};
+
+public type Product = {
+  id : Text;
+  seller : Principal;
+  name : Text;
+  productType : Text;
+  shortDescription : Text;
+  description : Text;
+  price : Float;
+  coverPicture : Text;
+  pictures : [Text];
+  discountType : Text;
+  discount : Float;
+  rating : Nat;
+};
+
+public type UnregisteredProduct = {
+  seller : Principal;
+  name : Text;
+  productType : Text;
+  shortDescription : Text;
+  description : Text;
+  price : Float;
+  coverPicture : Text;
+  pictures : [Text];
+  discountType : Text;
+  discount : Float;
+  rating : Nat;
+};
+
+public type PropertyReview = {
+  reviewId : Text;
+  propertyId : Text;
+  reviewer : Principal;
+  reviewerName : Text;
+  reviwerPP : Text;
+  rating : Float;
+  reviewText : Text;
+  reviewDate : Text;
+};
+
+public type PaginationQuery = {
+  textAttrs : Text;
+  textQueries : Text;
+  numAttrs : Text;
+  numQueries : Text;
+  comparisons : Text;
+  orderAttr : Text;
+  orderDir : Text;
+  page : Nat;
+  count : Nat;
+};
+
+public type Transaction = {
+  id : Text;
+  propertyId : Text;
+  user : Principal;
+  owner : Principal;
+  checkInDate : Text;
+  checkOutDate : Text;
+  totalPrice : Float;
+  propName : Text;
+  propType : Text;
+  propLocation : Text;
+  propCoverPicture : Text;
+  transactionStatus : Text;
+  imageUrl : Text;
+};
+
+public type UnregisteredTransaction = {
+  propertyId : Text;
+  user : Principal;
+  owner : Principal;
+  checkInDate : Text;
+  checkOutDate : Text;
+  totalPrice : Float;
+  propName : Text;
+  propType : Text;
+  propLocation : Text;
+  propCoverPicture : Text;
+  transactionStatus : Text;
+  imageUrl : Text;
+};
+
+public type Voucher = {
+  id : Text;
+  code : Text;
+  discount : Nat;
+  voucherType : Text;
+  start_date : Nat;
+  expired_date : Nat;
+};
+
+public func voucherTypeToVar(voucherType : Text) : VoucherType {
+  switch (voucherType) {
+    case ("fixed") return #fixed;
+    case ("percentage") return #percentage;
+    case (_) return #unknown;
   };
+};
+
+public func voucherTypeToText(voucherType : VoucherType) : Text {switch (voucherType) {
+  case (#fixed) return "fixed";
+  case (#percentage) return "percentage";
+  case (#unknown) return "unknown";
 
   public type UserProfile = {
     id : Principal;
@@ -27,225 +189,85 @@ module {
     fullName : Text;
     email : Text;
     dateOfBirth : Text;
-    ballance : Float;
+    balance : Float;
     profilePictureUrl : Text;
     propertiesId : ?[Text];
   };
+};
 
-  public type Property = {
-    id : Text;
-    owner : Principal;
-    name : Text;
-    status : Text;
-    propertyType : Text;
-    pricePerNight : Float;
-    description : Text;
-
-    location : Text;
-    latitude : Float;
-    longitude : Float;
-
-    builtInDate : Text;
-    bedroomCount : Nat;
-    guestCapacity : Nat;
-    bathroomCount : Nat;
-    bedCount : Nat;
-    pictures : [Text];
-    coverPicture : Text;
-    rating : Float;
-
-    reviewCount : Nat;
+public func userRoleVal(role : Text) : Bool {
+  switch (role) {
+    case ("admin") { return true };
+    case ("owner") { return true };
+    case ("renter") { return true };
+    case ("guest") { return true };
+    case (_) { return false };
   };
+};
 
-  public type UnregisteredProperty = {
-    owner : Principal;
-    name : Text;
-    propertyType : Text;
-    status : Text;
-    pricePerNight : Float;
-    description : Text;
-
-    location : Text;
-    latitude : Float;
-    longitude : Float;
-
-    builtInDate : Text;
-    bedroomCount : Nat;
-    guestCapacity : Nat;
-    bathroomCount : Nat;
-    bedCount : Nat;
-    pictures : [Text];
-    coverPicture : Text;
+public func propStatusVal(status : Text) : Bool {
+  switch (status) {
+    case ("available") { return true };
+    case ("booked") { return true };
+    case ("unavailable") { return true };
+    case (_) { return false };
   };
+};
 
-  public type Product = {
-    id : Text;
-    seller: Principal;
-    name : Text;
-    productType: Text;
-    shortDescription: Text;
-    description : Text;
-    price : Float;
-    coverPicture : Text;
-    pictures: [Text];
-    discountType: Text;
-    discount: Float;
-    rating: Nat;
+public func propTypeVal(propType : Text) : Bool {
+  switch (propType) {
+    case ("apartment") { return true };
+    case ("cabin") { return true };
+    case ("camping") { return true };
+    case ("house") { return true };
+    case ("villa") { return true };
+    case ("bungalow") { return true };
+    case ("chalet") { return true };
+    case (_) { return false }; // Default case
   };
+};
 
-  public type UnregisteredProduct = {
-    seller: Principal;
-    name : Text;
-    productType: Text;
-    shortDescription: Text;
-    description : Text;
-    price : Float;
-    coverPicture : Text;
-    pictures: [Text];
-    discountType: Text;
-    discount: Float;
-    rating: Nat;
+public func transactionStatusVal(status : Text) : Bool {
+  switch (status) {
+    case ("waitingPayment") { return true }; // initiate transaction start payment process
+    case ("booked") { return true }; // payment finishes, waiting untill the date of check-in
+    case ("checkedIn") { return true }; // check-in date has passed, waiting for check-out
+    case ("checkedOut") { return true }; // checked-out waiting payment transfer to owner
+    case ("completed") { return true }; // checked-out, transaction finished and payment transfered to client
+    case ("cancelled") { return true }; // transaction cancelled by the user or the owner
+    case (_) { return false };
   };
+};
 
-  public type PropertyReview = {
-    reviewId : Text;
-    propertyId : Text;
-    reviewer : Principal;
-    reviewerName : Text;
-    reviwerPP : Text;
-    rating : Float;
-    reviewText : Text;
-    reviewDate : Text;
-  };
+public func generateUUID() : async Text {
+  let id = Source.Source();
+  return UUID.toText(await id.new());
+};
 
-  public type PaginationQuery = {
-    textAttrs : Text;
-    textQueries : Text;
-    numAttrs : Text;
-    numQueries : Text;
-    comparisons : Text;
-    orderAttr : Text;
-    orderDir : Text;
-    page : Nat;
-    count : Nat;
-  };
+public func sort<X>(array : [X], compare : (X, X, Text) -> Order.Order, attribute : Text) : [X] {
+  let temp : [var X] = Array.thaw(array);
+  sortInPlace<X>(temp, compare, attribute);
+  Array.freeze(temp);
+};
 
-  public type Transaction = {
-    id : Text;
-    propertyId : Text;
-    user : Principal;
-    owner : Principal;
-    checkInDate : Text;
-    checkOutDate : Text;
-    totalPrice : Float;
-    propName : Text;
-    propType : Text;
-    propLocation : Text;
-    propCoverPicture : Text;
-    transactionStatus : Text;
-    imageUrl : Text;
-  };
-
-  public type UnregisteredTransaction = {
-    propertyId : Text;
-    user : Principal;
-    owner : Principal;
-    checkInDate : Text;
-    checkOutDate : Text;
-    totalPrice : Float;
-    propName : Text;
-    propType : Text;
-    propLocation : Text;
-    propCoverPicture : Text;
-    transactionStatus : Text;
-    imageUrl : Text;
-  };
-
-  public type Voucher = {
-    id : Text;
-    code : Text;
-    discount : Nat;
-    voucherType : Text;
-    start_date : Nat;
-    expired_date : Nat;
-  };
-
-  public func voucherTypeToVar(voucherType : Text) : VoucherType {
-    switch (voucherType) {
-      case ("fixed") return #fixed;
-      case ("percentage") return #percentage;
-      case (_) return #unknown;
-    };
-  };
-
-  public func voucherTypeToText(voucherType : VoucherType) : Text {
-    switch (voucherType) {
-      case (#fixed) return "fixed";
-      case (#percentage) return "percentage";
-      case (#unknown) return "unknown";
-    };
-  };
-
-  public func userRoleVal(role : Text) : Bool {
-    switch (role) {
-      case ("admin") { return true };
-      case ("owner") { return true };
-      case ("renter") { return true };
-      case ("guest") { return true };
-      case (_) { return false };
-    };
-  };
-
-  public func propStatusVal(status : Text) : Bool {
-    switch (status) {
-      case ("available") { return true };
-      case ("booked") { return true };
-      case ("unavailable") { return true };
-      case (_) { return false };
-    };
-  };
-
-  public func propTypeVal(propType : Text) : Bool {
-    switch (propType) {
-      case ("apartment") { return true };
-      case ("cabin") { return true };
-      case ("camping") { return true };
-      case ("house") { return true };
-      case ("villa") { return true };
-      case ("bungalow") { return true };
-      case ("chalet") { return true };
-      case (_) { return false }; // Default case
-    };
-  };
-
-  public func transactionStatusVal(status : Text) : Bool {
-    switch (status) {
-      case ("waitingPayment") { return true }; // initiate transaction start payment process
-      case ("booked") { return true }; // payment finishes, waiting untill the date of check-in
-      case ("checkedIn") { return true }; // check-in date has passed, waiting for check-out
-      case ("checkedOut") { return true }; // checked-out waiting payment transfer to owner
-      case ("completed") { return true }; // checked-out, transaction finished and payment transfered to client
-      case ("cancelled") { return true }; // transaction cancelled by the user or the owner
-      case (_) { return false };
-    };
-  };
-
-  public func generateUUID() : async Text {
-    let id = Source.Source();
-    return UUID.toText(await id.new());
-  };
-
-  public func sort<X>(array : [X], compare : (X, X, Text) -> Order.Order, attribute : Text) : [X] {
-    let temp : [var X] = Array.thaw(array);
-    sortInPlace<X>(temp, compare, attribute);
-    Array.freeze(temp);
-  };
-
-  public func sortInPlace<X>(array : [var X], compare : (X, X, Text) -> Order.Order, attribute : Text) {
-    // Stable merge sort in a bottom-up iterative style. Same algorithm as the sort in Buffer.
-    let size = array.size();
-    if (size == 0) {
-      return;
+public func sortInPlace<X>(array : [var X], compare : (X, X, Text) -> Order.Order, attribute : Text) {
+  // Stable merge sort in a bottom-up iterative style. Same algorithm as the sort in Buffer.
+  let size = array.size();
+  if (size == 0) {
+    return;
+    public type Transaction = {
+      id : Text;
+      propertyId : Text;
+      user : Principal;
+      owner : Principal;
+      checkInDate : Text;
+      checkOutDate : Text;
+      totalPrice : Float;
+      propName : Text;
+      propType : Text;
+      propLocation : Text;
+      propCoverPicture : Text;
+      transactionStatus : Text;
     };
     let scratchSpace = Array.init<X>(size, array[0]);
 
@@ -261,6 +283,19 @@ module {
         let rightEnd : Nat = if (leftStart + (2 * currSize) - 1 : Nat < sizeDec) {
           leftStart + (2 * currSize) - 1;
         } else { sizeDec };
+        public type UnregisteredTransaction = {
+          propertyId : Text;
+          user : Principal;
+          owner : Principal;
+          checkInDate : Text;
+          checkOutDate : Text;
+          totalPrice : Float;
+          propName : Text;
+          propType : Text;
+          propLocation : Text;
+          propCoverPicture : Text;
+          transactionStatus : Text;
+        };
 
         // Merge subarrays elements[leftStart...mid] and elements[mid+1...rightEnd]
         var left = leftStart;
