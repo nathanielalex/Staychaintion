@@ -11,7 +11,7 @@ import Float "mo:base/Float";
 import Nat64 "mo:base/Nat64";
 import Int64 "mo:base/Int64";
 import Principal "mo:base/Principal";
-import Voucher "Voucher/Voucher";
+// import Voucher "Voucher/Voucher";
 
 module {
     public type VoucherType = {
@@ -115,6 +115,7 @@ module {
         propLocation: Text;
         propCoverPicture: Text;
         transactionStatus: Text;
+        imageUrl: Text;
     };
 
     public type UnregisteredTransaction = {
@@ -129,6 +130,7 @@ module {
         propLocation: Text;
         propCoverPicture: Text;
         transactionStatus: Text;
+        imageUrl: Text;
     };
 
     public type Voucher = {
@@ -148,7 +150,7 @@ module {
         }
     };
 
-    public func voucherTypeToText(voucherType: VoucherType) {
+    public func voucherTypeToText(voucherType: VoucherType): Text {
         switch (voucherType) {
             case (#fixed) return "fixed";
             case (#percentage) return "percentage";
