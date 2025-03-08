@@ -21,13 +21,13 @@ interface Discount {
     promotion?: {
         code: string;
         discount?: number;
-        type?: 'fixed' | 'percent',
+        type?: 'fixed' | 'percentage',
         isValid?: boolean;
     },
     voucher?: {
         code?: string;
         discount?: number;
-        type?: 'fixed' | 'percent',
+        type?: 'fixed' | 'percentage',
         isValid?: boolean;
     },
     total?: number;
@@ -126,6 +126,7 @@ export default function TransactionPage() {
             propLocation: property.location,
             propCoverPicture: property.coverPicture,
             transactionStatus: "booked",
+            imageUrl: property.coverPicture,
         };
         
         // initiate the transaction
