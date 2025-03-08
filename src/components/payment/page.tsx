@@ -213,9 +213,14 @@ export default function TransactionPage() {
                                         Reservation Period
                                     </Label>
                                     
-                                    <DatePickerWithRange onDateChange={(range: DateRange) => {
-                                        setDateRange(range);
-                                    }} />
+                                    <DatePickerWithRange 
+                                        onDateChange={(range: DateRange) => {
+                                            setReservation((prevReservation) => ({
+                                            ...prevReservation,
+                                            dateRange: range, // Update the reservation's dateRange
+                                            }));
+                                        }} 
+                                    />
                                 </div>
                             </div>
                         </CardContent>

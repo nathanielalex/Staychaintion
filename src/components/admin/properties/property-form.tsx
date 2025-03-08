@@ -73,8 +73,8 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
         propertyType: formData.type,
         location: formData.location,
         latitude: formData.latitude,
-      longitude: formData.longitude,
-      coverPicture: images[0],
+        longitude: formData.longitude,
+        coverPicture: images[0],
         reviewCount: property.reviewCount
       }
       try {
@@ -138,7 +138,6 @@ export default function PropertyForm({ property, onClose, setProperties, isUpdat
             coverPicture: images[0],
             reviewCount: 0n
           }
-          // If the update is successful, update the state with the new property
           setProperties(prevProperties => 
             [...prevProperties, newProperty]
           );
