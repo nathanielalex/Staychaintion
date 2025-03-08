@@ -68,7 +68,7 @@ const allFeatures = [
     description: "Manage your digital assets, transactions, and payment methods",
     icon: Wallet,
     image: "/images/features/transaction.png",
-    href: "/wallet",
+    href: "/balance",
     category: "user",
     isNew: false,
     isPremium: false,

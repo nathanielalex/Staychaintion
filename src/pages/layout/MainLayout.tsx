@@ -102,7 +102,7 @@ function MainLayout() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
-            <p>&copy; 2025 Unchainers. All rights reserved.</p>
+            <a href="/legal">&copy; 2025 Unchainers. All rights reserved.</a>
           </div>
         </div>
       </footer>
