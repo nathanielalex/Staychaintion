@@ -100,6 +100,8 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import ScrollToTop from "./utility/ScrollToTop"; 
 import NewMaps from "./pages/maps/page"
 
+import FeaturesNavigation from "./pages/features/page"
+
 
 const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
@@ -287,6 +289,7 @@ const AnimatedRoutes = () => {
               <Route path="/balance" element={<BalancePage />} />
               <Route path="/community" element={<CommunityPage />} />
               <Route path="/disputes" element={<DisputesPage />} />
+              <Route path="/features" element={<FeaturesNavigation />} />
             </Route>
 
             {/* ERROR PAGE SECTION */}

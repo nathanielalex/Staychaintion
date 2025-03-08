@@ -77,6 +77,11 @@ function MainLayout() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/features" className="text-gray-400 hover:text-white transition-colors">
+                    Main Features
+                  </Link>
+                </li>
+                {/* <li>
                   <Link to="/marketing" className="text-gray-400 hover:text-white transition-colors">
                     Marketing
                   </Link>
@@ -85,7 +90,7 @@ function MainLayout() {
                   <Link to="/marketplace" className="text-gray-400 hover:text-white transition-colors">
                     Marketplace
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
             <div>
