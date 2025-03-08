@@ -1,7 +1,7 @@
-import { ChatbotMessage, _SERVICE } from "@/declarations/Chatbot/Chatbot.did";
-import { Chatbot_backend } from "@/declarations/Chatbot";
+import { Chatbot_backend } from "@/declarations/Chatbot_backend";
+import { ChatbotMessage } from "@/declarations/Chatbot_backend/Chatbot_backend.did";
 import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
-import { useAuth } from "@ic-reactor/react";
+import { useAuth } from "@/utility/use-auth-client";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoSend } from "react-icons/io5";
@@ -16,13 +16,13 @@ const Chatbot: React.FC = () => {
   const [isMessageLoading, setIsMessageLoading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const { identity } = useAuth();
+  const { principal } = useAuth();
   
   const getMessages = async() => {
     setIsLoading(true);
     try {
-      const principal = identity?.getPrincipal();
-      const _messages = await Chatbot.
+      if(!principal) return;
+      const _messages = await Chatbot_backend.fetchMessages(principal!);
       setMessages(_messages);
     } catch (err) {
       

@@ -1,0 +1,42 @@
+# Voucher Module Documentation
+
+## Overview
+This module manages digital vouchers for discounts within the system. It handles voucher creation, validation, and stores voucher data in a persistent manner.
+
+## Storage Structure
+- `voucherList`: TrieMap storing vouchers with UUID as keys and Voucher objects as values
+- `stablevoucherList`: Stable storage array for persisting voucher data across upgrades
+
+## Types
+
+### Voucher
+A discount voucher with properties defined in the Util module including:
+- code: Text identifier for the voucher
+- voucherType: Text indicating discount type ("percentage" or "fixed")
+- discount: Float representing the discount amount (0-1 for percentage type)
+- start_date: Int representing the timestamp when the voucher becomes valid
+- expired_date: Int representing the timestamp when the voucher expires
+
+## Functions
+
+### registerVoucher
+Registers a new voucher in the system.
+- Params: `voucher: Voucher` - The voucher object to register
+- Returns: `async Nat` - Returns 1 if registration was successful, 0 if validation fails
+- Validation: For percentage type vouchers, ensures discount is between 0 and 1
+
+### checkValidity
+Checks if a voucher code is valid at the current time.
+- Params: `code: Text` - The voucher code to validate
+- Returns: `async Int` - Returns:
+    - 1: Voucher is valid
+    - -1: Voucher exists but is expired or not yet valid
+    - 0: Voucher code not found
+
+## System Functions
+
+### preupgrade
+Prepares voucher data for canister upgrade by saving to stable storage.
+
+### postupgrade
+Restores voucher data from stable storage after canister upgrade.

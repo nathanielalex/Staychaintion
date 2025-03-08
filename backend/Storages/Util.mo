@@ -136,7 +136,6 @@ module {
     propLocation : Text;
     propCoverPicture : Text;
     transactionStatus : Text;
-    imageUrl : Text;
   };
 
   public type UnregisteredTransaction = {
@@ -151,7 +150,6 @@ module {
     propLocation : Text;
     propCoverPicture : Text;
     transactionStatus : Text;
-    imageUrl : Text;
   };
 
   public type Voucher = {

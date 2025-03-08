@@ -77,13 +77,6 @@ actor {
         };
     };
 
-    public query func getUserWalletId(id: Principal) : async ?Principal {
-        switch (userProfiles.get(id)) {
-            case null { return null };
-            case (?user) { return user.walletId };
-        };
-    };
-
     public query func isAdmin(id: Principal): async Bool {
         switch (userProfiles.get(id)) {
             case null { return false };
