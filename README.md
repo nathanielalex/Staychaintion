@@ -1,7 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/nathanielalex/Staychaintion"><img src="https://i.ibb.co.com/v47LgwJd/Staychaintion-Logo-Final.png
-  " alt="Staychaintion" width="200"></a>
+  <a href="https://github.com/nathanielalex/Staychaintion"><img src="./src/public/Staychaintion_Logo_Final.png" alt="Staychaintion" width="200"></a>
   <br>
   	Staychaintion
   <br>
