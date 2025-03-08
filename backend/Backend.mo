@@ -21,7 +21,8 @@ actor class Backend() {
   );
 
   public shared func checkBalance(user : Principal) : async Float {
-    return await User.getUserBalance(user);
+    let bal: Float = await User.getUserBalance(user);
+    return bal;
   };
 
   // Public function to get a user's profile

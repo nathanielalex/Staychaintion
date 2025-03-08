@@ -15,12 +15,14 @@ export default function OnboardPage() {
     }, [isAuthenticated]);
 
     const handleIfRegistered = async () => {
+        console.log("IsAuthenticated: " + isAuthenticated + "\nPrincipal: " + principal);
         if(!isAuthenticated || !principal) {
             return;
         };
 
-        let user = await User_backend.getUser(principal!);
-        if (isAuthenticated && user.length > 0) {
+        let [user] = await User_backend.getUser(principal!);
+        console.log("User: " + user + "\nIsAuthenticated: " + isAuthenticated + "\nResult: " + isAuthenticated && user);
+        if (isAuthenticated && user) {
             navigate('/landing')
         }else {
             navigate('/register')
