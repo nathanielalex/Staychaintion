@@ -34,7 +34,7 @@ actor {
       {
         seller = Principal.fromText("aaaaa-aa");
         name = "Comfort Pillow";
-        productType = "travel accessories";
+        productType = "Travel Accessories";
         shortDescription = "Comfortable travel pillow";
         description = "A memory foam travel pillow that provides excellent neck support for long journeys.";
         price = 100_000.00;
@@ -86,7 +86,7 @@ actor {
       {
         seller = Principal.fromText("aaaaa-aa");
         name = " Secure Wallet ";
-        productType = " travel accessories ";
+        productType = "Travel Accessories";
         shortDescription = " RFID blocking travel wallet ";
         description = " A slim and stylish travel wallet with RFID blocking technology to protect your cards.";
         price = 100_000.00;
@@ -99,7 +99,7 @@ actor {
       {
         seller = Principal.fromText("aaaaa-aa");
         name = "Packing Cubes";
-        productType = "travel accessories";
+        productType = "Travel Accessories";
         shortDescription = "Set of packing cubes";
         description = "A set of packing cubes to help organize your luggage and maximize space.";
         price = 100_000.00;
@@ -125,7 +125,7 @@ actor {
       {
         seller = Principal.fromText("aaaaa-aa");
         name = "Adventure Journal";
-        productType = "travel accessories";
+        productType = "Travel Accessories";
         shortDescription = "Leather travel journal";
         description = "A beautifully crafted leather travel journal to document your adventures.";
         price = 100_000.00;
