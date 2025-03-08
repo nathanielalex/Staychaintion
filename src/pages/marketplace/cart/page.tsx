@@ -230,7 +230,7 @@ export default function CartPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            className="text-white hover:text-red-700 hover:bg-red-50"
                             onClick={() => removeItem(product.id)}
                           >
                             <Trash2 className="h-4 w-4 mr-1" />
@@ -279,6 +279,7 @@ export default function CartPage() {
                   </div>
 
                   <h3 className="font-medium mb-3">Payment Method</h3>
+                  
                   <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="mb-6">
                     <div className="flex items-center space-x-2 mb-2">
                       <RadioGroupItem value="credit-card" id="credit-card" />
@@ -383,7 +384,7 @@ export default function CartPage() {
                 <div className="mt-6 text-center text-sm text-gray-500">
                   <p>
                     Need help?{" "}
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/contact" className="text-blue-600 hover:underline">
                       Contact Support
                     </a>
                   </p>

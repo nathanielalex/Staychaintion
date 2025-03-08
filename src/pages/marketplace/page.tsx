@@ -335,9 +335,9 @@ export default function MarketplacePage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto overflow-x-auto">
                 <TabsList className="w-full sm:w-auto justify-start">
-                  <TabsTrigger value="all">All Products</TabsTrigger>
+                  <TabsTrigger value="all" className="text-white bg-black">All Products</TabsTrigger>
                   {productTypes.slice(1).map((type) => (
-                    <TabsTrigger key={type} value={type.toLowerCase()}>
+                    <TabsTrigger key={type} value={type.toLowerCase()} className="text-white bg-black">
                       {type}
                     </TabsTrigger>
                   ))}

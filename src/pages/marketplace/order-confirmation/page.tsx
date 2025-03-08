@@ -100,10 +100,10 @@ export default function OrderConfirmationPage() {
                 Continue Shopping
               </Button>
             </a>
-            <a href="/user" className="flex-1">
+            <a href="/landing" className="flex-1">
               <Button className="w-full bg-blue-600 hover:bg-blue-700">
                 <Home className="mr-2 h-4 w-4" />
-                Go to Dashboard
+                Go to Home
               </Button>
             </a>
           </div>
