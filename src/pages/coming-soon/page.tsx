@@ -151,7 +151,7 @@ export default function ComingSoonPage() {
 
             {/* Back to Home */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="mt-8">
-              <a href="/">
+              <a href="/landing">
                 <Button variant="ghost" className="text-blue-600">
                   <Home className="mr-2 h-4 w-4" />
                   Back to Home

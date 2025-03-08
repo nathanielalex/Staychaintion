@@ -29,7 +29,7 @@ const popularFeatures = [
     title: "Wallet Management",
     description: "Manage your digital assets and transactions",
     icon: Wallet,
-    href: "/wallet",
+    href: "/balance",
     color: "bg-cyan-500",
   },
   {
