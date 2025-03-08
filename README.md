@@ -80,6 +80,11 @@ dfx start --clean --background
 dfx deps pull
 dfx deps deploy
 
+dfx canister call Property_seeder run
+dfx canister stop Property_seeder
+dfx canister call User_seeder run
+dfx canister stop User_seeder
+
 npm run setup
 npm run start
 ```
